@@ -2603,6 +2603,21 @@
   if(location.protocol.indexOf("http")===0 && "serviceWorker" in navigator){
     try{ navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){}
   }
+  /* barra di navigazione: su mobile esce dall'intestazione (backdrop-filter
+     rompe position:fixed dei discendenti su Safari) e diventa figlia del body */
+  (function(){
+    var qnav=document.querySelector(".quicknav"); if(!qnav) return;
+    var ph=document.createElement("span"); ph.style.display="none";
+    qnav.parentNode.insertBefore(ph,qnav);
+    var mqm=window.matchMedia?window.matchMedia("(max-width:720px)"):null;
+    function placeNav(){
+      if(mqm&&mqm.matches){ if(qnav.parentNode!==document.body) document.body.appendChild(qnav); }
+      else if(ph.parentNode&&qnav.previousSibling!==ph){ ph.parentNode.insertBefore(qnav,ph.nextSibling); }
+    }
+    placeNav();
+    if(mqm&&mqm.addEventListener) mqm.addEventListener("change",placeNav);
+    window.addEventListener("orientationchange",function(){ setTimeout(placeNav,80); });
+  })();
   bindProfile(); renderWeek(); renderLibrary(); renderBottega();
   if(window.__doSearch) window.__doSearch();
 })();
