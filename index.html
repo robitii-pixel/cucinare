@@ -432,6 +432,22 @@
   .pb-bar{width:10px; border-radius:4px 4px 0 0; min-height:3px}
   .pb-bar.r{background:var(--citrus)} .pb-bar.g{background:var(--melon)}
   .pb-lbl{font-size:.62rem; color:var(--muted)}
+  .m-body{line-height:1.6}
+  .m-desc{font-size:1rem; color:var(--text)}
+  .m-sub{margin-top:20px}
+  .steps li{margin-bottom:14px; padding-left:6px}
+  .steps li::before{width:26px; height:26px; font-size:.85rem; margin-right:12px}
+  .hl{color:var(--ink); font-weight:800; font-variant-numeric:tabular-nums}
+  .qr{color:#7A5A0B; font-weight:800} .qg{color:#B0485E; font-weight:800}
+  html.dark .qr{color:#FFD97A} html.dark .qg{color:#FFB9C6}
+  .qsep{color:var(--muted); margin:0 4px; font-weight:400}
+  .mdiv{margin:26px 0 14px; padding-top:16px; border-top:1.5px dashed var(--line); font-size:.72rem; font-weight:800; letter-spacing:.11em; text-transform:uppercase; color:var(--muted)}
+  .ck-mise{list-style:none; padding:0; margin:12px 0; flex:1; overflow:auto}
+  .ck-mise li{margin-bottom:10px}
+  .ck-mise label{display:flex; gap:12px; align-items:flex-start; font-size:1.05rem; cursor:pointer}
+  .ck-mise input{width:24px; height:24px; accent-color:var(--herb); flex:none; margin-top:2px}
+  .ck-mise input:checked+span{text-decoration:line-through; opacity:.5}
+  .ck-mise small{color:var(--muted)}
   @media print{
     .bar,.hero,#bottega,#ricettario,.prof,.jumps,.prep,footer,#totop,.selrow,.stat,.fold,.warnrow,.ttmsg,.xnote,button{display:none !important}
     body{background:#fff}
@@ -520,7 +536,11 @@
       border-top:1px solid var(--line); padding:8px 10px calc(8px + env(safe-area-inset-bottom));
       display:flex; justify-content:space-around; gap:6px}
     html.dark .quicknav{background:rgba(14,26,29,.92)}
-    .qn{flex:1; padding:9px 4px; font-size:.72rem; display:flex; flex-direction:column; align-items:center; gap:2px; box-shadow:none; border:none; background:transparent; min-height:48px}
+    .quicknav{flex-wrap:nowrap}
+    .qn{flex:1 1 0; min-width:0; padding:7px 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; box-shadow:none; border:none; background:transparent; min-height:50px}
+    .qn .qi{font-size:1.15rem; line-height:1}
+    .qn .qt{font-size:.6rem; font-weight:700; letter-spacing:.01em; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    #nav-print{display:none}
     .qn:hover{background:transparent}
     .qsearch{position:fixed; left:12px; right:12px; bottom:calc(64px + env(safe-area-inset-bottom)); z-index:69; display:none; background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:10px 12px; box-shadow:0 10px 34px rgba(10,90,115,.25)}
     .qsearch.open{display:flex}
@@ -538,7 +558,10 @@
   .fchips{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px}
   .fchip{border:1.5px solid var(--line); background:#fff; border-radius:999px; min-height:40px; padding:7px 14px; font-size:.82rem; font-weight:700; color:var(--muted)}
   .fchip.on{background:var(--ink); border-color:var(--ink); color:#fff}
+  .qn .qi{margin-right:4px}
+  @media(max-width:720px){ .qn .qi{margin-right:0} }
   .qn.cur{color:var(--ink); font-weight:800}
+  @media(max-width:720px){ .qn.cur .qi{transform:scale(1.12)} }
   @media(min-width:721px){ .qn.cur{background:var(--aqua); border-color:var(--aqua-line)} }
   html.dark .fchip{background:#152A30; border-color:#2A454C}
   .card .favtag{position:absolute; top:12px; right:12px; font-size:.95rem}
@@ -546,9 +569,64 @@
   .mvrow{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 14px}
   .mvrow select{border:1px solid var(--line); border-radius:10px; padding:10px; font-family:inherit; font-size:16px; background:#fff; color:var(--text)}
   html.dark .mvrow select{background:#152A30; color:var(--text); border-color:#2A454C}
+  .ico{width:1.12em; height:1.12em; display:inline-block; vertical-align:-0.17em; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+  .qi .ico{width:1.3rem; height:1.3rem}
+  .favtag{color:var(--melon-deep)} html.dark .favtag{color:#FFB9C6}
+  .favb .ico{color:var(--melon-deep)}
+  .vgb .ico,.c-cell .ico{vertical-align:-0.15em}
+  h2 .ico,h3 .ico{width:1em; height:1em}
+  .toolbtn .ico,.reset .ico{width:1.05em; height:1.05em}
 </style>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.2 12 4l9 7.2M5.3 9.8V20h13.4V9.8"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8.3 3v3.4M15.7 3v3.4"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9.6" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.3L7.8 15h10.4L21 7H6.2"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c-2.8 3.6-5.5 5.8-5.5 9.6a5.5 5.5 0 0 0 11 0C17.5 8.8 14.8 6.6 12 3Z"/><path d="M10.3 13.6a2 2 0 0 0 3.4 1.5"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4.5 5.5a2 2 0 0 1 2-2H20v16H6.5a2 2 0 0 0-2 2Z"/><path d="M4.5 5.5V21.5M8.5 7.5h8"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.2"/><path d="m16 16 5 5"/></symbol>
+<symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8"/><rect x="4" y="8" width="16" height="8.5" rx="2"/><path d="M7 15.5h10v5H7Z"/></symbol>
+<symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M15.6 8.4 13.2 13.2 8.4 15.6 10.8 10.8Z"/></symbol>
+<symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C5 9.5 12 4.2 20 4.2 20 13 14 19 5 19Z"/><path d="M5 19c2.8-4.8 5.8-7.8 9.8-9.8"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20C6.2 15.2 3.6 12.2 3.6 8.9A4.4 4.4 0 0 1 12 6.4a4.4 4.4 0 0 1 8.4 2.5c0 3.3-2.6 6.3-8.4 11.1Z"/></symbol>
+<symbol id="i-heartf" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 20C6.2 15.2 3.6 12.2 3.6 8.9A4.4 4.4 0 0 1 12 6.4a4.4 4.4 0 0 1 8.4 2.5c0 3.3-2.6 6.3-8.4 11.1Z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 7.2V12l3.4 2"/></symbol>
+<symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.4" r="7.2"/><path d="M12 9.8v3.6l2.4 1.4M9.2 3h5.6M12 3v3"/></symbol>
+<symbol id="i-cheers" viewBox="0 0 24 24"><path d="M8 3h8l-1 7.2a3 3 0 0 1-6 0Z"/><path d="M12 13.5V20M8.8 20h6.4"/></symbol>
+<symbol id="i-hat" viewBox="0 0 24 24"><path d="M6.4 11.2C3.2 11.2 3 6.4 6.8 5.8 7.6 3.4 10.2 2.4 12 2.4s4.4 1 5.2 3.4c3.8.6 3.6 5.4.4 5.4V16H6.4Z"/><path d="M6.4 19.3h11.2"/></symbol>
+<symbol id="i-pan" viewBox="0 0 24 24"><circle cx="9.8" cy="12.6" r="6.2"/><path d="M16 12.6h5.5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-basket" viewBox="0 0 24 24"><path d="M4 9.8h16l-1.6 10.2H5.6Z"/><path d="M8.2 9.8 12 3.4l3.8 6.4M9.6 13.6v3M14.4 13.6v3"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.6 20a7.4 7.4 0 0 1 14.8 0"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16M7.3 20v-6.6M12 20V8.4M16.7 20v-8.6"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3.5v11M7.4 10l4.6 4.5L16.6 10M4.5 20h15"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 20.5v-11M7.4 14 12 9.5l4.6 4.5M4.5 4h15"/></symbol>
+<symbol id="i-plane" viewBox="0 0 24 24"><path d="M21 3 10.6 13.4M21 3l-7 18-3.4-7.6L3 10Z"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.6A8.6 8.6 0 1 1 9.4 4 6.8 6.8 0 0 0 20 14.6Z"/></symbol>
+<symbol id="i-moonhalf" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.4"/><path d="M12 3.6v16.8"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/></symbol>
+<symbol id="i-medal" viewBox="0 0 24 24"><circle cx="12" cy="15" r="4.8"/><path d="M8.8 10.8 6.2 3h3.6L12 7l2.2-4h3.6l-2.6 7.8"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2.5 5 13.2h5.6L10 21.5 19 9.6h-6Z"/></symbol>
+<symbol id="i-cycle" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.2M19.5 12a7.5 7.5 0 0 1-12.8 5.2"/><path d="M17.6 3v4h-4M6.4 21v-4h4"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9"/></symbol>
+<symbol id="i-ice" viewBox="0 0 24 24"><path d="M4.5 8.4 12 5l7.5 3.4V16L12 19.4 4.5 16Z"/><path d="M4.5 8.4 12 11.8l7.5-3.4M12 11.8v7.6"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.2C15 8 18.4 10.8 18.4 14.8a6.4 6.4 0 0 1-12.8 0C5.6 10.8 9 8 12 3.2Z"/></symbol>
+<symbol id="i-wand" viewBox="0 0 24 24"><path d="M3.5 20.5 15 9M15 9l3.4-3.4M18.6 2.6v4.2M16.5 4.7h4.2"/></symbol>
+<symbol id="i-plate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4"/></symbol>
+<symbol id="i-dice" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="9" cy="9" r="1.15" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.15" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.15" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1.15" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-run" viewBox="0 0 24 24"><circle cx="14.6" cy="4.6" r="1.9"/><path d="M9.2 20.5 11 15.4l-2.6-2.2 1.8-4.6 4 1.4 2.8 2.6M8.4 8.6 5 10.4M13.6 15.2l2 5.3"/></symbol>
+<symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4c3 2.6 3 14.6 0 17.2M3.6 10.2c4.4-2 12.4-2 16.8 0"/></symbol>
+<symbol id="i-dumbbell" viewBox="0 0 24 24"><path d="M8.6 12h6.8M4 9v6M6.5 7.4v9.2M20 9v6M17.5 7.4v9.2"/></symbol>
+<symbol id="i-rest" viewBox="0 0 24 24"><path d="M18.6 13.8A7.6 7.6 0 1 1 10 4.6a6 6 0 0 0 8.6 9.2Z"/><path d="M15.5 3.5h4l-4 4h4"/></symbol>
+<symbol id="i-cup" viewBox="0 0 24 24"><path d="M4.5 8.5h12.6v5.4a5 5 0 0 1-5 5H9.5a5 5 0 0 1-5-5Z"/><path d="M17.1 9.6h1.4a2.5 2.5 0 0 1 0 5h-1.4"/></symbol>
+<symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4.5 9.4v5.2h3.4l4.6 3.8V5.6L7.9 9.4Z"/><path d="M15.8 9a4.5 4.5 0 0 1 0 6M18.4 6.6a8 8 0 0 1 0 10.8"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 6.5h15M9 6.5v-2h6v2M6.5 6.5 7.4 20h9.2l.9-13.5M10 10.5v6M14 10.5v6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 21 19.5H3Z"/><path d="M12 10v4M12 16.6v.2"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9.6 3.5h4.8M10.6 3.5v5.2L4.8 18.6a2 2 0 0 0 1.8 2.9h10.8a2 2 0 0 0 1.8-2.9L13.4 8.7V3.5"/><path d="M7.6 14.5h8.8"/></symbol>
+<symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3.6 11.5h16.8a8.4 8.4 0 0 1-16.8 0Z"/><path d="M9.3 20h5.4"/></symbol>
+</svg>
+
 
 <header class="hero">
   <div class="sun"></div>
@@ -562,18 +640,18 @@
 <div class="bar">
   <div class="wrap">
     <nav class="quicknav">
-      <button class="qn" id="nav-today">🏠 Oggi</button>
-      <button class="qn" id="nav-week">📅 Settimana</button>
-      <button class="qn" id="nav-shop">🛒 Spesa</button>
-      <button class="qn" id="nav-bottega">🔧 Bottega</button>
-      <button class="qn" id="nav-ric">📖 Ricettario</button>
-      <button class="qn" id="nav-print" title="Stampa la settimana">🖨</button>
-      <button class="qn" id="nav-search">🔍 Cerca</button>
+      <button class="qn" id="nav-today"><span class="qi"><svg class=ico><use href=#i-home></use></svg></span><span class="qt">Oggi</span></button>
+      <button class="qn" id="nav-week"><span class="qi"><svg class=ico><use href=#i-cal></use></svg></span><span class="qt">Settimana</span></button>
+      <button class="qn" id="nav-shop"><span class="qi"><svg class=ico><use href=#i-cart></use></svg></span><span class="qt">Spesa</span></button>
+      <button class="qn" id="nav-bottega"><span class="qi"><svg class=ico><use href=#i-flame></use></svg></span><span class="qt">Bottega</span></button>
+      <button class="qn" id="nav-ric"><span class="qi"><svg class=ico><use href=#i-book></use></svg></span><span class="qt">Ricettario</span></button>
+      <button class="qn" id="nav-print" title="Stampa la settimana"><span class="qi"><svg class=ico><use href=#i-print></use></svg></span><span class="qt">Stampa</span></button>
+      <button class="qn" id="nav-search"><span class="qi"><svg class=ico><use href=#i-search></use></svg></span><span class="qt">Cerca</span></button>
       <span class="qsearch"><input type="search" id="q" placeholder="Cerca piatti e tecniche…" autocomplete="off"><span class="qn-n" id="q-n"></span></span>
     </nav>
     <div class="legend legend-min">
       <button class="reset" id="help-btn" title="Guida">?</button>
-      <button class="reset" id="dark-toggle" title="Modalità scura">🌙</button>
+      <button class="reset" id="dark-toggle" title="Modalità scura"><svg class=ico><use href=#i-moon></use></svg></button>
       <button class="reset" id="font-toggle" title="Dimensione testo">A<span style="font-size:.68em">A</span></button>
     </div>
   </div>
@@ -615,13 +693,13 @@
       </div>
     </div>
     <div class="databar">
-      <button class="toolbtn" id="btn-export">💾 Esporta i vostri dati</button>
-      <button class="toolbtn" id="btn-import">📥 Importa</button>
-      <button class="toolbtn" id="btn-prog">📈 Progressi</button>
+      <button class="toolbtn" id="btn-export"><svg class=ico><use href=#i-down></use></svg> Esporta i vostri dati</button>
+      <button class="toolbtn" id="btn-import"><svg class=ico><use href=#i-up></use></svg> Importa</button>
+      <button class="toolbtn" id="btn-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button>
       <button class="toolbtn" id="btn-trip"></button>
       <input type="file" id="import-file" accept=".json,application/json" style="display:none">
     </div>
-    <p class="prof-note">Calcolo dichiarato: metabolismo basale con <b>Mifflin–St Jeor</b>, fabbisogno con fattore 1,40 (vita quotidiana sedentaria — corsa, forza e volley vengono <b>già aggiunti giorno per giorno</b> dalle schede, quindi qui non si contano due volte). Obiettivo: ricomposizione −5%, definizione −15%, mantenimento 0, massa +8%. Proteine: 1,8 g/kg (ricomposizione e massa), 2,0 (definizione), 1,6 (mantenimento) — calcolate sul <b>peso di riferimento</b> (BMI 25) se il peso attuale lo supera, con tetto pratico a 135 g: oltre, da vegetariani senza integratori, la dieta si snaturerebbe — e per la ricomposizione non serve. Finché i campi sono vuoti restano i valori di base concordati. Le stime restano stime: bilancia e specchio a 3–4 settimane sono i veri giudici. <b>Nota, da collega:</b> se la settimana diventa prevalentemente vegetale, la B12 va integrata sempre (non è opinabile), e meritano attenzione ferro, iodio e omega-3 (semi di lino, noci).</p>
+    <p class="prof-note">Calcolo dichiarato: metabolismo basale con <b>Mifflin–St Jeor</b>, fabbisogno con fattore 1,40 (vita quotidiana sedentaria — corsa, forza e volley vengono <b>già aggiunti giorno per giorno</b> dalle schede, quindi qui non si contano due volte). Obiettivo: ricomposizione −5%, definizione −15%, mantenimento 0, massa +8%. Proteine: 1,8 g/kg (ricomposizione e massa), 2,0 (definizione), 1,6 (mantenimento) — calcolate sul <b>peso di riferimento</b> (BMI 25) se il peso attuale lo supera, con tetto pratico a 135 g: oltre, da vegetariani senza integratori, la dieta si snaturerebbe — e per la ricomposizione non serve. Finché i campi sono vuoti restano i valori di base concordati. Le stime restano stime: bilancia e specchio a 3–4 settimane sono i veri giudici. <b>Nota:</b> tutti i valori di kcal e proteine sono <b>stime indicative</b>, utili per orientarsi — non sostituiscono una valutazione nutrizionale professionale, e la bilancia a 3–4 settimane resta il giudice vero. <b>Da collega:</b> se la settimana diventa prevalentemente vegetale, la B12 va integrata sempre (non è opinabile), e meritano attenzione ferro, iodio e omega-3 (semi di lino, noci).</p>
   </details>
 </section>
 
@@ -630,13 +708,13 @@
   <div class="legend legend-week">
     <span class="goal r"><span class="dot" style="background:var(--citrus)"></span><span id="leg-r">Roberto</span></span>
     <span class="goal g"><span class="dot" style="background:var(--melon)"></span><span id="leg-g">Gigi</span></span>
-    <span class="water">💧 2,5 L · sale con l'allenamento</span>
-    <button class="reset" id="gen-week">🪄 Prepara la prossima</button>
+    <span class="water"><svg class=ico><use href=#i-drop></use></svg> 2,5 L · sale con l'allenamento</span>
+    <button class="reset" id="gen-week"><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</button>
     <button class="reset" id="reset-all">↺ Ripristina</button>
   </div>
-  <p class="sec-sub">Le schede seguono il calendario reale — oggi è evidenziato, e con ‹ › nel riepilogo navighi tra le settimane, ognuna con il suo piano salvato. Scegliete allenamento e orario per ciascuno; a fine giornata segnate <b>✓ seguita</b> o <b>🍕 sgarro</b>: è così che si verifica se il programma sta funzionando.</p>
+  <p class="sec-sub">Le schede seguono il calendario reale — oggi è evidenziato, e con ‹ › nel riepilogo navighi tra le settimane, ognuna con il suo piano salvato. Scegliete allenamento e orario per ciascuno; a fine giornata segnate <b>✓ seguita</b> o <b><svg class=ico><use href=#i-plate></use></svg> sgarro</b>: è così che si verifica se il programma sta funzionando.</p>
   <div class="weeksum" id="weeksum"></div>
-  <div class="tools"><button class="toolbtn" id="btn-shop">🛒 La spesa, al momento giusto</button></div>
+  <div class="tools"><button class="toolbtn" id="btn-shop"><svg class=ico><use href=#i-cart></use></svg> La spesa, al momento giusto</button></div>
   <div class="jumps" id="jumps"></div>
   <div class="days" id="week"></div>
 </section>
@@ -671,7 +749,7 @@
 <section class="wrap sec-bottega" id="bottega">
   <div class="sec-head" style="align-items:center; gap:14px; flex-wrap:wrap">
     <h2>La Bottega delle tecniche</h2>
-    <button class="toolbtn" id="btn-tk-random" style="margin-left:auto">🎲 Stasera provo…</button>
+    <button class="toolbtn" id="btn-tk-random" style="margin-left:auto"><svg class=ico><use href=#i-dice></use></svg> Stasera provo…</button>
   </div>
   <p class="sec-sub">Le tecniche che alzano il gusto dei piatti della settimana — comprese quelle sperimentali, orientali e la via vegetale — sostituire uova, latte e formaggi, dolci compresi, restando nella nostra cucina. Ognuna finisce in un piatto vero, già in linea con la dieta. Nei giorni veloci le Fondamenta, nel weekend le Alchimie.</p>
   <div class="btprog"><span class="btrank" id="bt-rank">Apprendista</span><span class="btn-n" id="bt-progn">0/26</span>
@@ -681,10 +759,10 @@
 </section>
 
 <section class="wrap sec-ric" id="ricettario">
-  <div class="sec-head" style="align-items:center; gap:14px; flex-wrap:wrap"><h2>Il ricettario</h2><button class="toolbtn" id="btn-pantry" style="margin-left:auto">🧺 Da ciò che c’è in casa</button><button class="toolbtn" id="btn-add-dish">➕ Vostro piatto</button></div>
+  <div class="sec-head" style="align-items:center; gap:14px; flex-wrap:wrap"><h2>Il ricettario</h2><button class="toolbtn" id="btn-pantry" style="margin-left:auto"><svg class=ico><use href=#i-basket></use></svg> Da ciò che c’è in casa</button><button class="toolbtn" id="btn-add-dish"><svg class=ico><use href=#i-plus></use></svg> Vostro piatto</button></div>
   <p class="sec-sub">Tutti i piatti, da sfogliare e usare come alternative. Apri per la ricetta e segna il giudizio: quelli “mai più” spariscono dalle proposte di cambio.</p>
   <div class="gmenus">
-    <p class="m-sub" style="margin:4px 0 10px">🥂 Menù pronti per gli ospiti <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--muted)">· dosi ×ospiti dentro ogni ricetta</span></p>
+    <p class="m-sub" style="margin:4px 0 10px"><svg class=ico><use href=#i-cheers></use></svg> Menù pronti per gli ospiti <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--muted)">· dosi ×ospiti dentro ogni ricetta</span></p>
     <div class="cards" style="margin-bottom:20px">
       <div class="card"><div class="nm">Cena d’estate con amici</div>
         <div class="ds"><button class="c-link" data-openlib="d3">Caponata</button> con carasau · <button class="c-link" data-openlib="p14">Malloreddus al pesto rosso</button> · <button class="c-link" data-openlib="s18">Crema e fragole</button></div>
@@ -695,14 +773,23 @@
       <div class="card"><div class="nm">Pranzo della domenica</div>
         <div class="ds"><button class="c-link" data-openlib="s15">Primo sale marinato</button> e giardiniera · <button class="c-link" data-openlib="p13">Pasta con ricotta e pomodoro</button> o i vostri malloreddus a mano · <button class="c-link" data-openlib="s20">Biscotti banana e avena</button></div>
         <div class="meta"><span class="time">≈ 1.000 kcal · il pranzo lungo, fatto in due</span></div></div>
+      <div class="card"><div class="nm">Onnivori scettici</div>
+        <div class="ds">Per chi dice “senza carne non è cena”: <button class="c-link" data-openlib="d2">Parmigiana</button> · <button class="c-link" data-openlib="d19">Burger di lenticchie</button> · <button class="c-link" data-openlib="s19">Mousse al cacao</button></div>
+        <div class="meta"><span class="time">≈ 1.100 kcal · nessuno chiederà dov’è la carne</span></div></div>
+      <div class="card"><div class="nm">Amici sportivi</div>
+        <div class="ds">Proteine vere e recupero: <button class="c-link" data-openlib="p15">Fregola verdure e ceci</button> · <button class="c-link" data-openlib="p17">Pasta e fagioli</button> · <button class="c-link" data-openlib="s18">Crema e fragole</button></div>
+        <div class="meta"><span class="time">≈ 1.000 kcal · ≈65 g di proteine a testa</span></div></div>
+      <div class="card"><div class="nm">Cena leggera, improvvisata</div>
+        <div class="ds">Ospiti dell’ultimo minuto: <button class="c-link" data-openlib="d21">Pappa al pomodoro fredda</button> · <button class="c-link" data-openlib="d13">Panelle</button> · <button class="c-link" data-openlib="s16">Ceci croccanti</button></div>
+        <div class="meta"><span class="time">≈ 750 kcal · mezz’ora, quasi tutto dalla dispensa</span></div></div>
     </div>
   </div>
   <div class="fchips" id="fchips">
     <button class="fchip on" data-f="all">Tutti</button>
-    <button class="fchip" data-f="fav">❤️ Preferiti</button>
-    <button class="fchip" data-f="vg">🌱 Vegetali</button>
-    <button class="fchip" data-f="fast">⏱ Veloci</button>
-    <button class="fchip" data-f="gst">🥂 Ospiti</button>
+    <button class="fchip" data-f="fav"><svg class=ico><use href=#i-heartf></use></svg> Preferiti</button>
+    <button class="fchip" data-f="vg"><svg class=ico><use href=#i-leaf></use></svg> Vegetali</button>
+    <button class="fchip" data-f="fast"><svg class=ico><use href=#i-clock></use></svg> Veloci</button>
+    <button class="fchip" data-f="gst"><svg class=ico><use href=#i-cheers></use></svg> Ospiti</button>
   </div>
   <div id="library"></div>
 </section>
@@ -710,7 +797,7 @@
 <section class="wrap sec-week" id="sec-dolci" style="padding-top:0">
   <div class="duo">
     <div class="panel">
-      <h3>🍈 Dolci e recupero</h3><p class="lead">Semplici, di stagione; i proteici per dopo l'allenamento.</p>
+      <h3><svg class=ico><use href=#i-bowl></use></svg> Dolci e recupero</h3><p class="lead">Semplici, di stagione; i proteici per dopo l'allenamento.</p>
       <ul class="listy">
         <li>Frutta fresca: anguria, melone, pesche, fichi</li>
         <li>Ricotta con miele e mandorle</li>
@@ -720,7 +807,7 @@
       </ul>
     </div>
     <div class="panel cool">
-      <h3>🥤 Bevande · 2,5 L</h3><p class="lead">L'idratazione è parte dell'allenamento.</p>
+      <h3><svg class=ico><use href=#i-cup></use></svg> Bevande · 2,5 L</h3><p class="lead">L'idratazione è parte dell'allenamento.</p>
       <ul class="listy">
         <li>Acqua, la base, distribuita nella giornata</li>
         <li>Acqua con limone e menta</li>
@@ -747,7 +834,7 @@
   var warnedQuota=false;
   function save(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }
     catch(e){ mem=o;
-      if(!warnedQuota&&typeof toast==="function"){ warnedQuota=true; toast("\u26A0\uFE0F Memoria del browser piena: esporta un backup dai Profili",6000); } } }
+      if(!warnedQuota&&typeof toast==="function"){ warnedQuota=true; toast("<svg class=ico><use href=#i-warn></use></svg> Memoria del browser piena: esporta un backup dai Profili",6000); } } }
   var state=load();
   state.plan=state.plan||{}; state.verdict=state.verdict||{}; state.checked=state.checked||{};
   state.shop=state.shop||{}; state.fav=state.fav||{}; state.cooked=state.cooked||{}; state.dnote=state.dnote||{}; state.whist=state.whist||{r:[],g:[]}; state.custom=state.custom||[];
@@ -848,7 +935,7 @@
         steps:["Tosta il pane, spalma la crema, erbe e pepe."]},
       {id:"s18",sea:"estate",gst:1,pm:"dolce",vg:1,name:"Crema pasticcera vegana con fragole",time:"12 min + freddo",desc:"La crema della Bottega, senza uova: vaniglia, limone e frutta fresca.",kr:210,kg:185,pr:5,pg:4,
         ing:[{n:"Crema pasticcera vegana (Bottega)",q:"1 coppetta"},{n:"Fragole o pesche",q:"1 porzione"},{n:"Granella di nocciole",q:"1 cucchiaino"}],
-        steps:["Componi: crema fredda, frutta a pezzi, granella. Fine."]},
+        left:"la crema regge 2 giorni in frigo, sempre con pellicola a contatto: la base per una crostatina improvvisata.",steps:["Componi: crema fredda, frutta a pezzi, granella. Fine."]},
       {id:"s19",gst:1,pm:"dolce",vg:1,name:"Mousse al cacao di aquafaba",time:"10 min + 1 ora",desc:"Due ingredienti, nessuno indovina il segreto.",kr:190,kg:170,pr:4,pg:4,
         ing:[{n:"Aquafaba montata (Bottega)",q:"da 3 cucchiai"},{n:"Cioccolato fondente ≥70%",r:"25 g",g:"22 g"}],
         steps:["Cioccolato fuso e intiepidito, incorporato all’aquafaba montata con movimenti dal basso.","Un’ora in frigo in coppette: mousse vera."]},
@@ -898,7 +985,7 @@
         steps:["Scalda il sugo.","Stempera la ricotta con un po' d'acqua di cottura.","Manteca la pasta con sugo e ricotta; basilico."]},
       {id:"p14",gst:1,fam:"pasta",pm:"legumi",vg:1,name:"Malloreddus al pesto rosso di anacardi e ceci croccanti",time:"20 min",desc:"Pesto di pomodori secchi e anacardi, ceci tostati sopra: vegetale, e non lo dice.",kr:640,kg:555,pr:30,pg:28,
         ing:[{n:"Malloreddus",r:"90 g",g:"75 g"},{n:"Pomodori secchi",q:"6"},{n:"Anacardi",r:"30 g",g:"30 g"},{n:"Ceci croccanti",r:"80 g",g:"80 g"},{n:"Lievito alimentare",q:"2 cucchiai"},{n:"Basilico e olio",q:"q.b."}],
-        steps:["Frulla pomodori secchi (ammollati 10 minuti), anacardi, basilico, olio e un mestolino d’acqua di cottura: pesto rosso cremoso.","Cuoci i malloreddus e mantecali col pesto fuori dal fuoco.","Sopra: ceci croccanti e lievito in scaglie — il “formaggio” che non c’è."]},
+        left:"il pesto rosso avanzato: 4 giorni in frigo coperto d’olio — su pane, fregola o dentro la farifrittata.",steps:["Frulla pomodori secchi (ammollati 10 minuti), anacardi, basilico, olio e un mestolino d’acqua di cottura: pesto rosso cremoso.","Cuoci i malloreddus e mantecali col pesto fuori dal fuoco.","Sopra: ceci croccanti e lievito in scaglie — il “formaggio” che non c’è."]},
       {id:"p15",fam:"pasta",pm:"legumi",vg:1,name:"Fregola con verdure al forno e ceci",time:"15 min (con la base)",desc:"La domenica che lavora per te: verdure già pronte, ceci, fregola tostata.",kr:640,kg:555,pr:31,pg:29,
         ing:[{n:"Fregola",r:"90 g",g:"75 g"},{n:"Verdure al forno della base",q:"abbondanti"},{n:"Ceci",r:"180 g",g:"180 g"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Limone e basilico",q:"q.b."}],
         steps:["Fregola tostata e risottata (nel brodo delle croste, se c’è).","Verdure e ceci dentro negli ultimi 3 minuti.","Limone, basilico, parmigiano di mandorle."]},
@@ -907,7 +994,7 @@
         steps:["Verdure a dadini rosolate vivaci con cumino.","Cous cous idratato con acqua bollente salata e un filo d’olio, sgranato con la forchetta.","Tutto insieme con ceci, mandorle, menta e limone. Buono anche freddo domani."]},
       {id:"p17",sea:"inverno",fam:"pasta",pm:"legumi",vg:1,name:"Pasta e fagioli, la nostra",time:"30 min",desc:"Metà fagioli frullati, metà interi: cremosa senza un grammo di panna.",kr:655,kg:565,pr:32,pg:30,
         ing:[{n:"Pasta corta",r:"80 g",g:"65 g"},{n:"Borlotti o cannellini",r:"220 g",g:"220 g"},{n:"Il vostro soffritto (Bottega)",q:"1 base"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Rosmarino e pomodoro",q:"2 cucchiai di passata"}],
-        steps:["Soffritto, pomodoro e rosmarino; metà fagioli frullati con la loro acqua, metà interi.","Cuoci la pasta DENTRO la zuppa, mescolando: l’amido lega tutto.","Riposo 5 minuti: la pasta e fagioli si mangia tiepida, con olio a crudo e la pioggia di mandorle."]},
+        left:"la pasta e fagioli di domani è migliore di quella di stasera: un mestolo d’acqua per allentarla.",steps:["Soffritto, pomodoro e rosmarino; metà fagioli frullati con la loro acqua, metà interi.","Cuoci la pasta DENTRO la zuppa, mescolando: l’amido lega tutto.","Riposo 5 minuti: la pasta e fagioli si mangia tiepida, con olio a crudo e la pioggia di mandorle."]},
       {id:"p18",sea:"estate",fam:"insalata",pm:"legumi",vg:1,name:"Insalata di farro, ceci croccanti e verdure crude",time:"15 min (farro pronto)",desc:"Croccante tre volte: farro, ceci tostati, verdure. La schiscetta perfetta.",kr:625,kg:540,pr:29,pg:27,
         ing:[{n:"Farro cotto",r:"180 g",g:"150 g"},{n:"Ceci croccanti",r:"100 g",g:"100 g"},{n:"Pomodorini, cetriolo, sedano",q:"q.b."},{n:"Crema di anacardi alle erbe (Bottega)",q:"2 cucchiai"},{n:"Limone e menta",q:"q.b."}],
         steps:["Farro freddo con verdure a dadini e citronette al limone.","Ceci croccanti all’ultimo (altrimenti ammorbidiscono).","Cucchiaiate di crema di anacardi qua e là: le “isole” cremose fanno il piatto."]}
@@ -918,10 +1005,10 @@
         steps:["Rosola le zucchine sottili 5–6 minuti.","Versa le uova sbattute con menta e pecorino.","Cuoci 4 minuti per lato; servi con pane e pomodori."]},
       {id:"d2",gst:1,fam:"forno",pm:"formaggio",name:"Parmigiana di melanzane al forno",time:"40 min",desc:"Melanzane grigliate, non fritte.",kr:595,kg:520,pr:34,pg:32,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Melanzane",q:"2 grandi"},{n:"Sugo di pomodoro",q:"250 g"},{n:"Fior di latte",r:"100 g",g:"100 g"},{n:"Parmigiano",q:"q.b."}],
-        steps:["Griglia le melanzane (o forno 200°, 12–15 minuti).","Alterna sugo, melanzane, fior di latte e parmigiano.","Forno 190° per 20–25 minuti; fanne porzioni in più."]},
+        left:"la parmigiana il giorno dopo è più buona: porzione pranzo, scaldata in forno (mai microonde: perde la crosta). 3 giorni in frigo.",steps:["Griglia le melanzane (o forno 200°, 12–15 minuti).","Alterna sugo, melanzane, fior di latte e parmigiano.","Forno 190° per 20–25 minuti; fanne porzioni in più."]},
       {id:"d3",gst:1,vg:1,fam:"verdure",pm:"formaggio",name:"Caponata con carasau e pecorino",time:"35 min",desc:"Agrodolce di verdure, ottima dalla base.",kr:515,kg:460,pr:25,pg:23,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Melanzane e sedano",q:"abbondanti"},{n:"Pomodoro, olive, capperi",q:"q.b."},{n:"Pecorino",r:"40 g",g:"40 g"},{n:"Pane carasau",q:"per servire"}],
-        steps:["Rosola le melanzane; soffriggi il sedano (poca cipolla solo se gradita).","Aggiungi pomodoro, olive, capperi; sfuma con aceto e un pizzico di zucchero.","Servi tiepida con carasau e pecorino."]},
+        left:"la caponata regge 3–4 giorni in frigo e migliora: su pane tostato è l’aperitivo di domani, col cous cous è un pranzo.",steps:["Rosola le melanzane; soffriggi il sedano (poca cipolla solo se gradita).","Aggiungi pomodoro, olive, capperi; sfuma con aceto e un pizzico di zucchero.","Servi tiepida con carasau e pecorino."]},
       {id:"d4",fam:"insalata",pm:"legumi",name:"Insalata di cannellini, uova e finocchio",time:"15 min",desc:"Proteica e fresca, quasi senza fornelli.",kr:535,kg:440,pr:34,pg:32,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Cannellini",r:"150 g",g:"150 g"},{n:"Uova sode",r:"2",g:"2"},{n:"Finocchio e sedano",q:"q.b."},{n:"Prezzemolo e limone",q:"q.b."}],
         steps:["Unisci cannellini, finocchio affettato sottile e sedano.","Condisci con olio, limone, sale.","Completa con uova a spicchi."]},
@@ -948,7 +1035,7 @@
         steps:["Disponi le melanzane in una pirofila.","Versa le uova sbattute con parmigiano e basilico.","Forno 190° per 18–20 minuti finché gonfio e dorato."]},
       {id:"d12",gst:1,fam:"frittata",pm:"legumi",vg:1,name:"Farifrittata di zucchine e menta con lupini",time:"20 min",desc:"La frittata senza uova che l’Italia fa da secoli: farina di ceci, come la farinata.",kr:580,kg:500,pr:32,pg:30,
         ing:[{n:"Farina di ceci",r:"90 g",g:"75 g"},{n:"Acqua",q:"1,5 volte il peso della farina"},{n:"Zucchine",q:"2"},{n:"Lupini sgocciolati",r:"100 g",g:"100 g"},{n:"Menta, olio, sale",q:"q.b."},{n:"Pane",r:"40 g",g:"30 g"}],
-        steps:["Sbatti farina di ceci, acqua e sale: pastella liscia, riposo 15 minuti (perde l’amaro del crudo).","Zucchine a rondelle rosolate in padella antiaderente oliata.","Versa la pastella sulle zucchine, fiamma media coperta 6–7 minuti; gira e finisci 3 minuti: soda fuori, cremosa dentro.","Menta fresca sopra; lupini e pane accanto completano le proteine."]},
+        left:"la farifrittata fredda, a cubetti, è l’aperitivo o la schiscetta di domani. 2 giorni in frigo.",steps:["Sbatti farina di ceci, acqua e sale: pastella liscia, riposo 15 minuti (perde l’amaro del crudo).","Zucchine a rondelle rosolate in padella antiaderente oliata.","Versa la pastella sulle zucchine, fiamma media coperta 6–7 minuti; gira e finisci 3 minuti: soda fuori, cremosa dentro.","Menta fresca sopra; lupini e pane accanto completano le proteine."]},
       {id:"d13",fam:"forno",pm:"legumi",vg:1,name:"Panelle al forno con caponata",time:"35 min",desc:"La friggitoria palermitana, alleggerita: panelle di ceci al forno e la vostra caponata.",kr:590,kg:520,pr:27,pg:26,
         ing:[{n:"Farina di ceci",r:"100 g",g:"85 g"},{n:"Acqua",q:"3 volte il peso della farina"},{n:"Caponata",q:"abbondante"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Limone e prezzemolo",q:"q.b."}],
         steps:["Cuoci farina di ceci e acqua salata mescolando 8–10 minuti finché densissima; stendi su teglia unta a 1 cm e fai freddare.","Taglia a losanghe, olio in superficie, forno 220° per 18–20 minuti girando a metà: dorate e croccanti.","Limone sopra, caponata accanto, parmigiano di mandorle a pioggia."]},
@@ -963,16 +1050,16 @@
         steps:["Edamame in apertura: proteine vere, e placano la fame nervosa.","8–10 pezzi di roll alle verdure + miso ≈ 700–850 kcal.","La soia è soprattutto sale: intingere poco."]},
       {id:"d17",sea:"inverno",fam:"zuppa",pm:"legumi",vg:1,name:"Minestra di ceci e bietole con crostini",time:"25 min",desc:"La minestra della nonna, versione estiva: tiepida, con limone e olio buono.",kr:580,kg:500,pr:30,pg:28,
         ing:[{n:"Ceci cotti",r:"200 g",g:"200 g"},{n:"Bietole o spinaci",q:"300 g"},{n:"Pane per crostini",r:"60 g",g:"45 g"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Limone, rosmarino, aglio",q:"q.b."}],
-        steps:["Soffritto veloce con aglio e rosmarino, poi metà ceci frullati con la loro acqua per la cremosità.","Unisci bietole e ceci interi: 10 minuti.","Crostini tostati, limone, parmigiano di mandorle e olio a crudo."]},
+        left:"frullane l’avanzo: diventa una crema di ceci per bruschette o una salsa per la pasta di domani.",steps:["Soffritto veloce con aglio e rosmarino, poi metà ceci frullati con la loro acqua per la cremosità.","Unisci bietole e ceci interi: 10 minuti.","Crostini tostati, limone, parmigiano di mandorle e olio a crudo."]},
       {id:"d18",gst:1,fam:"forno",pm:"cereali",vg:1,name:"Peperoni ripieni di riso, capperi e olive",time:"45 min",desc:"Il classico del sud, con lupini accanto per completare le proteine.",kr:570,kg:495,pr:26,pg:24,
         ing:[{n:"Peperoni",q:"2 grandi"},{n:"Riso",r:"80 g",g:"65 g"},{n:"Capperi, olive, pomodorini",q:"q.b."},{n:"Lupini sgocciolati",r:"100 g",g:"100 g"},{n:"Pangrattato tostato (Bottega)",q:"2 cucchiai"}],
-        steps:["Riso a metà cottura condito con capperi, olive, pomodorini e basilico.","Riempi i peperoni, pangrattato sopra, olio.","Forno 190° per 30–35 minuti: peperone morbido, crosticina dorata. Lupini a parte."]},
+        left:"i peperoni ripieni freddi il giorno dopo sono un pranzo completo da portare.",steps:["Riso a metà cottura condito con capperi, olive, pomodorini e basilico.","Riempi i peperoni, pangrattato sopra, olio.","Forno 190° per 30–35 minuti: peperone morbido, crosticina dorata. Lupini a parte."]},
       {id:"d19",fam:"burger",pm:"legumi",vg:1,name:"Burger di lenticchie con pane e insalata",time:"25 min",desc:"Schiacciati bene, rosolati meglio: il burger di casa che non finge di essere carne.",kr:590,kg:510,pr:30,pg:28,
         ing:[{n:"Lenticchie cotte",r:"200 g",g:"200 g"},{n:"Pangrattato",q:"3 cucchiai"},{n:"Pane",r:"70 g",g:"55 g"},{n:"Pomodoro e insalata",q:"q.b."},{n:"Crema di anacardi o hummus",q:"2 cucchiai"},{n:"Cumino o paprica",q:"a piacere"}],
-        steps:["Schiaccia le lenticchie con forchetta (non frullare: la grana è il carattere), pangrattato e spezie.","Forma 2 burger, riposo 10 minuti in frigo (si compattano).","Rosola 3–4 minuti per lato in padella oliata ben calda, senza toccarli: la crosticina è tutto.","Nel pane con crema, pomodoro e insalata."]},
+        left:"i burger crudi si congelano già formati: la cena d’emergenza pronta in 8 minuti.",steps:["Schiaccia le lenticchie con forchetta (non frullare: la grana è il carattere), pangrattato e spezie.","Forma 2 burger, riposo 10 minuti in frigo (si compattano).","Rosola 3–4 minuti per lato in padella oliata ben calda, senza toccarli: la crosticina è tutto.","Nel pane con crema, pomodoro e insalata."]},
       {id:"d21",sea:"estate",gst:1,fam:"zuppa",pm:"legumi",vg:1,name:"Pappa al pomodoro fredda con cannellini",time:"20 min + freddo",desc:"L’estate in ciotola: pomodoro maturo, pane raffermo, basilico e legumi.",kr:580,kg:500,pr:28,pg:26,
         ing:[{n:"Pomodori maturi",q:"500 g"},{n:"Pane raffermo",r:"70 g",g:"55 g"},{n:"Cannellini",r:"180 g",g:"180 g"},{n:"Basilico abbondante, aglio, olio",q:"q.b."}],
-        steps:["Pomodori scottati 1 minuto, pelati e frullati grossolanamente con basilico.","Pane a pezzi dentro, 15 minuti a insaporire; cannellini conditi sopra.","Fredda è meglio: preparala al mattino, la sera è perfetta."]}
+        left:"il giorno dopo, ancora più fredda e riposata, è al suo massimo. Aggiungi basilico fresco.",steps:["Pomodori scottati 1 minuto, pelati e frullati grossolanamente con basilico.","Pane a pezzi dentro, 15 minuti a insaporire; cannellini conditi sopra.","Fredda è meglio: preparala al mattino, la sera è perfetta."]}
     ]
   };
   var SPECIAL={
@@ -996,10 +1083,10 @@
   };
   /* attività: k = kcal extra di carburante · pp = proteine extra */
   var ACTS={
-    riposo:{l:"Riposo",ic:"😌",cls:"rest",k:0,pp:0},
-    corsa:{l:"Corsa",ic:"🏃",cls:"run",k:150,pp:0},
-    forza:{l:"Forza",ic:"💪",cls:"gym",k:80,pp:10},
-    volley:{l:"Volley",ic:"🏐",cls:"ball",k:120,pp:0}
+    riposo:{l:"Riposo",ic:"<svg class=ico><use href=#i-rest></use></svg>",cls:"rest",k:0,pp:0},
+    corsa:{l:"Corsa",ic:"<svg class=ico><use href=#i-run></use></svg>",cls:"run",k:150,pp:0},
+    forza:{l:"Forza",ic:"<svg class=ico><use href=#i-dumbbell></use></svg>",cls:"gym",k:80,pp:10},
+    volley:{l:"Volley",ic:"<svg class=ico><use href=#i-ball></use></svg>",cls:"ball",k:120,pp:0}
   };
   var ACT_ORDER=["riposo","corsa","forza","volley"];
   var BASE={r:{k:2350,p:135,name:"Roberto"},g:{k:2075,p:125,name:"Gigi"}};
@@ -1142,11 +1229,11 @@
     var h='<div class="selrow '+cls+'"><span class="seln">'+(person==="r"?"Roberto":"Gigi")+'</span>'
       +'<button class="selbtn act-'+a.cls+'" data-cycle="'+day+'|'+person+'">'+a.ic+' '+a.l+'</button>';
     if(t.act!=="riposo"){
-      h+='<button class="selbtn when" data-when="'+day+'|'+person+'">'+(t.when==="mattina"?"☀️":"🌙")+'</button>';
+      h+='<button class="selbtn when" data-when="'+day+'|'+person+'">'+(t.when==="mattina"?"<svg class=ico><use href=#i-sun></use></svg>":"<svg class=ico><use href=#i-moon></use></svg>")+'</button>';
     }
     var dn=doneFor(day,person), sg=sgarroFor(day,person);
     h+='<span class="stat"><button class="dn'+(dn?" on":"")+'" data-dn="'+day+'|'+person+'" title="Giornata seguita">✓</button>'
-      +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Sgarro">🍕</button></span></div>';
+      +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Sgarro"><svg class=ico><use href=#i-plate></use></svg></button></span></div>';
     return h;
   }
   function fuelNote(day){
@@ -1226,13 +1313,13 @@
       var dd=id&&BY_ID[id]; if(dd&&dd.vg) vgCount++; });
     var sr=streakOf("r"), sg=streakOf("g");
     var html='<div class="coach">'
-      +'<div class="c-head">\uD83E\uDDED Il coach \u00b7 '+DAY_LABEL[DAYS[(TODAY.getDay()+6)%7]]+'</div>'
+      +'<div class="c-head"><svg class=ico><use href=#i-compass></use></svg> Il coach \u00b7 '+DAY_LABEL[DAYS[(TODAY.getDay()+6)%7]]+'</div>'
       +'<div class="c-line">'+coachTrainLine("r","Roberto")+'</div>'
       +'<div class="c-line">'+coachTrainLine("g","Gigi")+'</div>'
       +'<div class="c-grid">'
-      +'<div class="c-cell"><span class="c-k">Serie \uD83D\uDD25</span><span class="c-v">Roberto '+sr+(sr===1?" giorno":" giorni")+' \u00b7 Gigi '+sg+(sg===1?" giorno":" giorni")+'</span><span class="c-s">giornate seguite di fila \u2014 la spunta \u2713 la sera le fa crescere</span></div>'
+      +'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">Roberto '+sr+(sr===1?" giorno":" giorni")+' \u00b7 Gigi '+sg+(sg===1?" giorno":" giorni")+'</span><span class="c-s">giornate seguite di fila \u2014 la spunta \u2713 la sera le fa crescere</span></div>'
       +'<div class="c-cell'+(twDone?' okc':'')+'"><span class="c-k">Percorso · prossima tappa</span><span class="c-v">'+(twDone?"\u2713 ":"")+'<button class="c-link" data-tk="'+tw.id+'">'+tw.name+'</button></span><span class="c-s">'+(twDone?"conquistata \u2014 la prossima arriva luned\u00ec":"il percorso va in ordine: dalle Fondamenta alle Alchimie, una a settimana")+'</span></div>'
-      +'<div class="c-cell'+(vgCount>=2?' okc':'')+'"><span class="c-k">Cene vegetali \uD83C\uDF31</span><span class="c-v">'+vgCount+' su 2 in piano</span><span class="c-s">'+(vgCount>=2?"obiettivo della settimana raggiunto":"portale a due: dispensa \u2192 \u201cnel budget\u201d \u2192 in oggi")+'</span></div>'
+      +'<div class="c-cell'+(vgCount>=2?' okc':'')+'"><span class="c-k">Cene vegetali <svg class=ico><use href=#i-leaf></use></svg></span><span class="c-v">'+vgCount+' su 2 questa settimana</span><span class="c-s">'+(vgCount>=2?"obiettivo raggiunto \u2014 il microbiota ringrazia":"ne manca "+(2-vgCount<=1?"una":"ancora qualcuna")+": <button class=\"c-link\" id=\"c-vg\">scegli tra i piatti verdi</button>")+'</span></div>'
       +'<div class="c-cell"><span class="c-k">Abitudine della settimana</span><span class="c-s" style="font-size:.86rem; color:var(--text)">'+habit+'</span></div>'
       +'</div></div>';
     return html;
@@ -1261,14 +1348,14 @@
                            :'<span class="h-ok">hai tutto in casa \u2713</span>'; }
     }
     function mins(dd){ return dd&&dd.time?dd.time:""; }
-    var html='<div class="h-greet">'+greet+' \u2600\uFE0F</div>'
+    var html='<div class="h-greet">'+greet+' <svg class=ico><use href=#i-sun></use></svg></div>'
       +'<div class="h-date">'+DAY_LABEL[dk]+' '+fmtShort(TODAY)+'</div>';
     if(cdd){
       html+='<div class="h-card">'
         +'<div class="h-k">Stasera in tavola</div>'
-        +'<div class="h-name">'+(cdd.free?"Cena libera \uD83C\uDF7D":cdd.name)+(cdd.vg?' \uD83C\uDF31':'')+'</div>'
-        +(cdd.free?'':'<div class="h-meta">\u23F1 '+mins(cdd)+(pline?' \u00b7 '+pline:'')+'</div>')
-        +(cdd.free?'':'<div class="h-btns"><button class="cta" data-openslot="'+cid+'|'+dk+'|cena">Iniziamo \uD83D\uDD25</button>'
+        +'<div class="h-name">'+(cdd.free?"Cena libera <svg class=ico><use href=#i-plate></use></svg>":cdd.name)+(cdd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+'</div>'
+        +(cdd.free?'':'<div class="h-meta"><svg class=ico><use href=#i-clock></use></svg> '+mins(cdd)+(pline?' \u00b7 '+pline:'')+'</div>')
+        +(cdd.free?'':'<div class="h-btns"><button class="cta" data-openslot="'+cid+'|'+dk+'|cena">Iniziamo <svg class=ico><use href=#i-flame></use></svg></button>'
         +'<button class="toolbtn" id="h-week">Cambia o vedi il giorno</button></div>')
         +'</div>';
     }
@@ -1277,29 +1364,36 @@
         +(ndd&&!ndd.free?' <button class="c-link" data-openslot="'+nid+'|'+dk+'|'+nslot+'">apri</button>':'')+'</div>';
     }
     if(!calcPerson(state.prof.r)||!calcPerson(state.prof.g)){
-      html+='<div class="h-mini">\uD83D\uDC64 <b>Prima cosa da fare:</b> compilate i profili (et\u00e0, altezza, peso) \u2014 finch\u00e9 mancano, obiettivi e semafori usano valori di base. <button class="c-link" id="h-prof2">Apri i profili</button></div>';
+      html+='<div class="h-mini"><svg class=ico><use href=#i-user></use></svg> <b>Prima cosa da fare:</b> compilate i profili (et\u00e0, altezza, peso) \u2014 finch\u00e9 mancano, obiettivi e semafori usano valori di base. <button class="c-link" id="h-prof2">Apri i profili</button></div>';
     }
     if(PERSONAL&&!state.trip){
       var tISO=iso(TODAY);
       if(tISO>="2026-07-24"&&tISO<="2026-08-08"){
-        html+='<div class="h-mini">\u2708\uFE0F <b>Si parte per la Francia!</b> Attivate la modalit\u00e0 trasferta: piano in pausa, tre regole da viaggio, zero sensi di colpa. <button class="c-link" id="h-trip">Attivala</button></div>';
+        html+='<div class="h-mini"><svg class=ico><use href=#i-plane></use></svg> <b>Si parte per la Francia!</b> Attivate la modalit\u00e0 trasferta: piano in pausa, tre regole da viaggio, zero sensi di colpa. <button class="c-link" id="h-trip">Attivala</button></div>';
       }
     }
     html+=renderCoach();
-    html+='<div class="h-links"><button class="toolbtn" id="h-shop">\uD83D\uDED2 La spesa</button>'
-      +'<button class="toolbtn" id="h-pantry">\uD83E\uDDFA Da ci\u00f2 che c\u2019\u00e8</button>'
-      +'<button class="toolbtn" id="h-prog">\uD83D\uDCC8 Progressi</button><button class="toolbtn" id="h-prof">\uD83D\uDC64 Profili</button></div>';
+    html+='<div class="h-links"><button class="toolbtn" id="h-shop"><svg class=ico><use href=#i-cart></use></svg> La spesa</button>'
+      +'<button class="toolbtn" id="h-pantry"><svg class=ico><use href=#i-basket></use></svg> Da ci\u00f2 che c\u2019\u00e8</button>'
+      +'<button class="toolbtn" id="h-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button><button class="toolbtn" id="h-prof"><svg class=ico><use href=#i-user></use></svg> Profili</button></div>';
     var hb=document.getElementById("home-body"); if(hb) hb.innerHTML=html;
     var hw=document.getElementById("h-week"); if(hw) hw.addEventListener("click",function(){ setView("week",true); goToday(); });
     var hs=document.getElementById("h-shop"); if(hs) hs.addEventListener("click",buildShopping);
     var hp=document.getElementById("h-pantry"); if(hp) hp.addEventListener("click",openPantry);
     var ht=document.getElementById("h-trip");
-    if(ht) ht.addEventListener("click",function(){ state.trip=1; save(state); renderHome(); renderWeek(); toast("\u2708\uFE0F Buon viaggio. Ci rivediamo a tavola al ritorno.",4500); });
+    if(ht) ht.addEventListener("click",function(){ state.trip=1; save(state); renderHome(); renderWeek(); toast("<svg class=ico><use href=#i-plane></use></svg> Buon viaggio. Ci rivediamo a tavola al ritorno.",4500); });
     var hf2=document.getElementById("h-prof2");
     if(hf2) hf2.addEventListener("click",function(){ setView("week"); var pb=document.getElementById("prof-box"); if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); } });
     var hf=document.getElementById("h-prof"); if(hf) hf.addEventListener("click",function(){ setView("week"); var pb=document.getElementById("prof-box"); if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); } });
   }
   document.addEventListener("click",function(e){
+    if(e.target.closest("#c-vg")){
+      setView("ric");
+      window.__fil="vg";
+      document.querySelectorAll(".fchip").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-f")==="vg");});
+      if(window.__doSearch) window.__doSearch();
+      return;
+    }
     var os=e.target.closest("[data-openslot]");
     if(os){ var pp=os.getAttribute("data-openslot").split("|"); openModal(pp[0],pp[1],pp[2]); }
   });
@@ -1315,18 +1409,21 @@
     var end=Date.now()+min*60000;
     function tick(){ var left=Math.max(0,end-Date.now());
       var mm=Math.floor(left/60000), ss=Math.floor(left%60000/1000);
-      chip.textContent="\u23F1 "+mm+":"+(ss<10?"0":"")+ss+(label?" \u00b7 "+label:"");
-      if(left<=0){ clearInterval(tmrInt); chip.textContent="\u23F0 Pronto! (tocca per chiudere)"; chip.classList.add("done");
+      chip.innerHTML="<svg class=ico><use href=#i-clock></use></svg> "+mm+":"+(ss<10?"0":"")+ss+(label?" \u00b7 "+label:"");
+      if(left<=0){ clearInterval(tmrInt); chip.innerHTML="<svg class=ico><use href=#i-timer></use></svg> Pronto! (tocca per chiudere)"; chip.classList.add("done");
         if(navigator.vibrate) navigator.vibrate([300,120,300]); }
     }
     chip.classList.remove("done"); tick(); tmrInt=setInterval(tick,500);
+  }
+  function hlStep(x){
+    return x.replace(/(\d+(?:[\.,]\d+)?(?:\s*[\u2013-]\s*\d+)?\s*(?:minut[oi]|min\b|or[ae]\b|\u00b0|g\b|ml\b|litr[oi]))/g,'<b class="hl">$1</b>');
   }
   function stepHtml(x){
     var m=/(\d+)(?:\s*[\u2013-]\s*(\d+))?\s*min/.exec(x);
     var btn="";
     if(m){ var v=m[2]?parseInt(m[2],10):parseInt(m[1],10);
-      if(v>=1&&v<=180) btn=' <button class="tmr" data-tmr="'+v+'">\u23F1 '+v+'\u2032</button>'; }
-    return '<li><span>'+x+btn+'</span></li>';
+      if(v>=1&&v<=180) btn=' <button class="tmr" data-tmr="'+v+'"><svg class=ico><use href=#i-clock></use></svg> '+v+'\u2032</button>'; }
+    return '<li><span>'+hlStep(x)+btn+'</span></li>';
   }
   document.addEventListener("click",function(e){
     var t=e.target.closest("[data-tmr]");
@@ -1335,7 +1432,7 @@
 
 
   /* ================= MODALITÀ CUCINA ================= */
-  var COOK={steps:null,i:0,title:""};
+  var COOK={steps:null,i:0,title:"",pre:null};
   function speak(txt){
     try{ if(!window.speechSynthesis) return;
       speechSynthesis.cancel();
@@ -1344,32 +1441,43 @@
     }catch(e){}
   }
   function renderCook(){
+    if(COOK.i===-1){
+      modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+        +'<div class="kicker">Modalit\u00e0 cucina \u00b7 mise en place</div><h3 id="m-title">'+COOK.title+'</h3></div>'
+        +'<div class="m-body cookbody">'
+        +'<div class="ck-step" style="font-size:1.05rem">Tutto sul banco prima di accendere \u2014 spunta e via:</div>'
+        +'<ul class="ck-mise">'+COOK.pre.map(function(i){ var q=(i.q!==undefined?i.q:(i.r+" / "+i.g));
+            return '<li><label><input type="checkbox"><span>'+i.n+' <small>'+q+'</small></span></label></li>'; }).join("")+'</ul>'
+        +'<div class="ck-nav"><button class="ck-btn primary" id="ck-next">Si comincia \u2192</button></div></div>';
+      document.getElementById("ck-next").addEventListener("click",function(){ COOK.i=0; renderCook(); });
+      return;
+    }
     var x=COOK.steps[COOK.i];
     var m=/(\d+)(?:\s*[\u2013-]\s*(\d+))?\s*min/.exec(x);
-    var tbtn=""; if(m){ var v=m[2]?parseInt(m[2],10):parseInt(m[1],10); if(v>=1&&v<=180) tbtn='<button class="ck-tmr" data-tmr="'+v+'">\u23F1 Avvia '+v+' minuti</button>'; }
+    var tbtn=""; if(m){ var v=m[2]?parseInt(m[2],10):parseInt(m[1],10); if(v>=1&&v<=180) tbtn='<button class="ck-tmr" data-tmr="'+v+'"><svg class=ico><use href=#i-clock></use></svg> Avvia '+v+' minuti</button>'; }
     modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
       +'<div class="kicker">Modalit\u00e0 cucina \u00b7 passo '+(COOK.i+1)+' di '+COOK.steps.length+'</div>'
       +'<h3 id="m-title">'+COOK.title+'</h3></div>'
       +'<div class="m-body cookbody">'
       +'<div class="ck-step">'+x+'</div>'
       +(tbtn?'<div style="margin:14px 0">'+tbtn+'</div>':'')
-      +'<button class="ck-say" id="ck-say">\uD83D\uDD0A Leggi ad alta voce</button>'
+      +'<button class="ck-say" id="ck-say"><svg class=ico><use href=#i-speaker></use></svg> Leggi ad alta voce</button>'
       +'<div class="ck-nav">'
-      +'<button class="ck-btn" id="ck-prev"'+(COOK.i===0?' disabled':'')+'>\u2190 Indietro</button>'
+      +'<button class="ck-btn" id="ck-prev"'+((COOK.i===0&&!COOK.pre)?' disabled':'')+'>\u2190 Indietro</button>'
       +'<button class="ck-btn primary" id="ck-next">'+(COOK.i===COOK.steps.length-1?"Finito \u2713":"Avanti \u2192")+'</button>'
       +'</div></div>';
     document.getElementById("ck-say").addEventListener("click",function(){ speak(x); });
-    document.getElementById("ck-prev").addEventListener("click",function(){ if(COOK.i>0){COOK.i--; renderCook();} });
+    document.getElementById("ck-prev").addEventListener("click",function(){ if(COOK.i>0){COOK.i--; renderCook();} else if(COOK.pre){ COOK.i=-1; renderCook(); } });
     document.getElementById("ck-next").addEventListener("click",function(){
       if(COOK.i<COOK.steps.length-1){ COOK.i++; renderCook(); }
       else { try{speechSynthesis.cancel();}catch(e){} closeModal(); }
     });
   }
-  function startCook(steps,title){ COOK={steps:steps,i:0,title:title}; renderCook(); }
+  function startCook(steps,title,ing){ COOK={steps:steps,i:(ing&&ing.length?-1:0),title:title,pre:ing||null}; renderCook(); }
   document.addEventListener("click",function(e){
     var ckb=e.target.closest("[data-cookmode]");
     if(ckb){ var id=ckb.getAttribute("data-cookmode");
-      var dd=BY_ID[id]||TKBY[id]; if(dd&&dd.steps) startCook(dd.steps, dd.name); }
+      var dd=BY_ID[id]||TKBY[id]; if(dd&&dd.steps) startCook(dd.steps, dd.name, dd.ing||(dd.kit?dd.kit.map(function(k){return {n:k,q:""};}):null)); }
   });
 
 
@@ -1378,13 +1486,13 @@
     var t=document.getElementById("toastchip");
     if(!t){ t=document.createElement("div"); t.id="toastchip"; document.body.appendChild(t);
       t.addEventListener("click",function(){t.remove();}); }
-    t.textContent=msg; t.classList.add("on");
+    t.innerHTML=msg; t.classList.add("on");
     clearTimeout(t.__to); t.__to=setTimeout(function(){ t.classList.remove("on"); },ms||3000);
   }
   function season(){ var mth=TODAY.getMonth()+1; if(mth>=6&&mth<=9) return "estate"; if(mth>=11||mth<=3) return "inverno"; return "mezza"; }
   function seaTag(dd){ if(!dd.sea) return ""; 
     var ok=(season()==="mezza")||(dd.sea===season());
-    return '<span class="seab'+(ok?'':' off')+'">'+(dd.sea==="estate"?"\uD83C\uDF1E estiva":"\u2744\uFE0F invernale")+'</span>'; }
+    return '<span class="seab'+(ok?'':' off')+'">'+(dd.sea==="estate"?"<svg class=ico><use href=#i-sun></use></svg> estiva":"<svg class=ico><use href=#i-snow></use></svg> invernale")+'</span>'; }
   function vgDinners(){ var n=0; DAYS.forEach(function(dk){ var id=planFor(dk,"cena"); var dd=id&&BY_ID[id]; if(dd&&dd.vg) n++; }); return n; }
 
   /* ================= I PROGRESSI ================= */
@@ -1399,7 +1507,7 @@
     var msg;
     if(goal==="cut"){
       if(rate<=-0.3&&rate>=-0.7) msg="\u2713 "+String(Math.abs(rate)).replace(".",",")+" kg/settimana: il ritmo giusto \u2014 il muscolo resta a bordo.";
-      else if(rate<-0.7) msg="\u26A0\uFE0F pi\u00f9 veloce del previsto ("+String(rate).replace(".",",")+" kg/sett): con questo passo si perde anche muscolo. Un pasto in pi\u00f9, non in meno.";
+      else if(rate<-0.7) msg="<svg class=ico><use href=#i-warn></use></svg> pi\u00f9 veloce del previsto ("+String(rate).replace(".",",")+" kg/sett): con questo passo si perde anche muscolo. Un pasto in pi\u00f9, non in meno.";
       else if(rate<0) msg="trend in discesa lenta ("+String(rate).replace(".",",")+" kg/sett): direzione giusta, serve solo costanza.";
       else msg="il trend si \u00e8 fermato: guardiamo insieme la settimana, non il singolo giorno.";
     } else if(goal==="ricomp"){
@@ -1462,7 +1570,7 @@
 
   function renderWeek(){
     var html="";
-    if(state.trip){ html+='<div class="tripbar">\u2708\uFE0F <b>Modalit\u00e0 trasferta attiva</b> \u2014 piano in pausa: niente semafori n\u00e9 richiami, lo storico resta. Tre regole da viaggio: colazione proteica quando si pu\u00f2 \u00b7 una camminata lunga al giorno \u00b7 un pasto libero \u00e8 un pasto, non una giornata.</div>'; }
+    if(state.trip){ html+='<div class="tripbar"><svg class=ico><use href=#i-plane></use></svg> <b>Modalit\u00e0 trasferta attiva</b> \u2014 piano in pausa: niente semafori n\u00e9 richiami, lo storico resta. Tre regole da viaggio: colazione proteica quando si pu\u00f2 \u00b7 una camminata lunga al giorno \u00b7 un pasto libero \u00e8 un pasto, non una giornata.</div>'; }
     var wk={kr:0,kg:0,pr:0,pg:0,tkr:0,tkg:0,tpr:0,tpg:0,days:0};
     DAYS.forEach(function(day,di){
       var dt=dateOf(di), today=isToday(dt), past=isPast(dt);
@@ -1485,14 +1593,14 @@
         if(dd.free){ hasFree=true; } else { kr+=dd.kr||0; kg+=dd.kg||0; pr+=dd.pr||0; pg+=dd.pg||0; }
         var chips="";
         var mins=parseInt(((dd.time||"").match(/\d+/)||[0])[0],10)||0; var slow=(mins>=25);
-        if(ppR){ if(ppR.pre===slot) chips+='<span class="pp r">R·PRE 🔋</span>'; if(ppR.post===slot) chips+='<span class="pp r">R·POST 🔁</span>'; }
-        if(ppG){ if(ppG.pre===slot) chips+='<span class="pp g">G·PRE 🔋</span>'; if(ppG.post===slot) chips+='<span class="pp g">G·POST 🔁</span>'; }
+        if(ppR){ if(ppR.pre===slot) chips+='<span class="pp r"><svg class=ico><use href=#i-bolt></use></svg> carica per lo sport · R</span>'; if(ppR.post===slot) chips+='<span class="pp r"><svg class=ico><use href=#i-cycle></use></svg> recupero · R</span>'; }
+        if(ppG){ if(ppG.pre===slot) chips+='<span class="pp g"><svg class=ico><use href=#i-bolt></use></svg> carica per lo sport · G</span>'; if(ppG.post===slot) chips+='<span class="pp g"><svg class=ico><use href=#i-cycle></use></svg> recupero · G</span>'; }
         html+='<div class="slot s-'+sclass+(MINOR[slot]?' minor':'')+'"><span class="icn">'+ICONS[poolName(slot)]+'</span>'
             +'<div class="b"><div class="lab">'+lab+(chips?' '+chips:'')
-            +' <span class="sgoal">→ '+slotTarget(day,"r",slot)+'/'+slotTarget(day,"g",slot)+' kcal</span></div>'
+            +' <span class="sgoal">≈'+slotTarget(day,"r",slot)+'/'+slotTarget(day,"g",slot)+' kcal</span></div>'
             +'<button class="nm" data-open="'+day+'|'+slot+'">'+dd.name+'</button>'
             +'<div class="row">'
-            +(slow?'<span class="tempo">\uD83D\uDD70\uFE0F con calma</span>':'')+(dd.vg?'<span class="vgb">\uD83C\uDF31</span>':'')
+            +(slow?'<span class="tempo"><svg class=ico><use href=#i-clock></use></svg> con calma</span>':'')+(dd.vg?'<span class="vgb"><svg class=ico><use href=#i-leaf></use></svg></span>':'')
             +(dd.free?'':'<span class="macro"><b>'+dd.pr+'/'+dd.pg+'g</b> prot · '+dd.kr+'/'+dd.kg+' kcal</span>')
             +(v?'<span class="verdict '+v+'">'+VLABEL[v]+'</span>':'')
             +'<button class="swap" data-open="'+day+'|'+slot+'">⇄</button>'
@@ -1511,11 +1619,11 @@
           +'<span class="vs"><i class="d '+dot(k,tk)+'"></i>'+k+'/'+tk+' kcal <i class="d '+dot(p,tp,"p")+'"></i>'+p+'/'+tp+' g'
           +(hasFree?' <span class="free">+libero</span>':'')
           +(dn?' <span class="dntag">seguita</span>':'')+(sg?' <span class="sgtag">sgarro</span>':'')+'</span>'
-          +'<span class="ttmsg">'+(state.trip?'\u2708\uFE0F in trasferta \u2014 solo annotazione':statusTxt(k,tk,p,tp))+'</span></div>';
+          +'<span class="ttmsg">'+(state.trip?'<svg class=ico><use href=#i-plane></use></svg> in trasferta \u2014 solo annotazione':statusTxt(k,tk,p,tp))+'</span></div>';
       }
       kr+=EXTRA.r.k; pr+=EXTRA.r.p; kg+=EXTRA.g.k; pg+=EXTRA.g.p;
       var vw=state.trip?[]:varietyWarnings(day);
-      if(vw.length) html+='<div class="warnrow">⚠︎ Varietà: '+vw.join(" · ")+' — tocca ⇄ per cambiare</div>';
+      if(vw.length) html+='<div class="warnrow"><svg class=ico><use href=#i-warn></use></svg> Varietà: '+vw.join(" · ")+' — tocca ⇄ per cambiare</div>';
       html+='<div class="totals"><div class="xnote">incl. extra quotidiani (pane, frutta, olio, caffellatte): +'+EXTRA.r.k+'/+'+EXTRA.g.k+' kcal</div>'
           +ttRow("r","Roberto",dnR,sgR,kr,tR.k,pr,tR.p)
           +ttRow("g","Gigi",dnG,sgG,kg,tG.k,pg,tG.p)
@@ -1547,10 +1655,10 @@
         +'<div class="ws-t">Settimana '+fmtShort(curMonday)+' – '+fmtShort(end)+' '+end.getFullYear()+' <span style="font-weight:400;font-size:.78rem;opacity:.75">· '+Object.keys(state.plan||{}).length+' settimane in archivio</span>'
         +(iso(mondayOf(TODAY))===wkey()?' <span class="ws-cur">· corrente</span>':'')
         +'<div class="ws-note">media giornaliera · le serate libere non sono contate</div>'
-        +'<div class="ws-note" style="margin-top:5px">giornate seguite: R '+(wk.dnR||0)+' · G '+(wk.dnG||0)+(((wk.sgR||0)+(wk.sgG||0))?' · sgarri: '+((wk.sgR||0)+(wk.sgG||0)):'')+' · cene \uD83C\uDF31: '+vgDinners()+'/2</div></div>'
+        +'<div class="ws-note" style="margin-top:5px">giornate seguite: R '+(wk.dnR||0)+' · G '+(wk.dnG||0)+(((wk.sgR||0)+(wk.sgG||0))?' · sgarri: '+((wk.sgR||0)+(wk.sgG||0)):'')+' · cene <svg class=ico><use href=#i-leaf></use></svg>: '+vgDinners()+'/2</div></div>'
         +'<button class="wnav" data-wnav="1" aria-label="Settimana successiva">›</button></div>'
-        +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · ✓ '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · 🍕 '+(wk.sgR||0)+'</span></div>'
-        +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · ✓ '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · 🍕 '+(wk.sgG||0)+'</span></div>';
+        +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · ✓ '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgR||0)+'</span></div>'
+        +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · ✓ '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgG||0)+'</span></div>';
     }
   }
 
@@ -1563,9 +1671,9 @@
         var v=state.verdict[dd.id];
         var mins=parseInt(((dd.time||"").match(/\d+/)||[0])[0],10)||0; var slow=(mins>=25);
         html+='<button class="card'+(v==="no"?' no-dish':'')+'" data-openlib="'+dd.id+'">'
-            +(state.fav[dd.id]?'<span class="favtag">\u2764\uFE0F</span>':'')
+            +(state.fav[dd.id]?'<span class="favtag"><svg class=ico><use href=#i-heartf></use></svg></span>':'')
             +'<div class="nm">'+dd.name+'</div><div class="ds">'+dd.desc+'</div>'
-            +'<div class="meta"><span class="time">'+dd.time+'</span>'+(slow?'<span class="tempo">\uD83D\uDD70\uFE0F</span>':'')+(dd.vg?'<span class="vgb">\uD83C\uDF31</span>':'')+'<span class="pchip">'+dd.pr+'/'+dd.pg+' g prot</span>'
+            +'<div class="meta"><span class="time">'+dd.time+'</span>'+(slow?'<span class="tempo"><svg class=ico><use href=#i-clock></use></svg></span>':'')+(dd.vg?'<span class="vgb"><svg class=ico><use href=#i-leaf></use></svg></span>':'')+'<span class="pchip">'+dd.pr+'/'+dd.pg+' g prot</span>'
             +(v?'<span class="verdict '+v+'">'+VLABEL[v]+'</span>':'')+'</div></button>';
       });
       html+='</div></div>';
@@ -1585,8 +1693,10 @@
       return String(x%1?x:Math.round(x)).replace(".",",");
     });
   }
-  function ingLine(i){ var q=(i.q!==undefined?i.q:(i.r+' / '+i.g));
-    return '<li><span>'+i.n+'</span><span class="q">'+(MULT>1?'≈ ':'')+scaleQ(q,MULT)+'</span></li>'; }
+  function ingLine(i){
+    var q=(i.q!==undefined)?scaleQ(i.q,MULT)
+      :('<span class="qr">'+scaleQ(i.r,MULT)+'</span><span class="qsep">/</span><span class="qg">'+scaleQ(i.g,MULT)+'</span>');
+    return '<li><span>'+i.n+'</span><span class="q">'+(MULT>1?'≈ ':'')+q+'</span></li>'; }
 
   function openModal(id, day, slot, mult){
     MULT=mult||1;
@@ -1595,20 +1705,32 @@
     var v=state.verdict[id];
     var kk={colazione:"Colazione",spuntino:"Spuntino",pranzo:"Pranzo",cena:"Cena"}[dd.type]||"Serata libera";
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">✕</button>'
-      +'<div class="kicker">'+kk+'</div><h3 id="m-title">'+dd.name+'</h3><div class="time">⏱ '+dd.time+'</div></div><div class="m-body">';
+      +'<div class="kicker">'+kk+'</div><h3 id="m-title">'+dd.name+'</h3><div class="time"><svg class=ico><use href=#i-clock></use></svg> '+dd.time+'</div></div><div class="m-body">';
     html+='<p class="m-desc">'+dd.desc+'</p>';
     if(typeof DISH2TK!=="undefined"&&DISH2TK[id]){
-      html+='<div>'+DISH2TK[id].map(function(tid){var t=TKBY[tid]; return t?'<span class="tklink" data-tk="'+tid+'">\uD83D\uDD27 '+t.name+'</span>':"";}).join("")+'</div>';
-    }
+      }
     if(!dd.free){
-      html+='<div class="nutri"><div class="nbox r"><div class="who">Roberto</div><div class="v">'+dd.pr+' g <small>prot</small> · '+dd.kr+' <small>kcal</small></div></div>'
-          +'<div class="nbox g"><div class="who">Gigi</div><div class="v">'+dd.pg+' g <small>prot</small> · '+dd.kg+' <small>kcal</small></div></div></div>';
+            +'<div class="nbox g"><div class="who">Gigi</div><div class="v">'+dd.pg+' g <small>prot</small> · '+dd.kg+' <small>kcal</small></div></div></div>';
     }
-    if(dd.custom){ html+='<button class="toolbtn" id="del-dish" style="margin-bottom:14px">\uD83D\uDDD1 Elimina questo piatto</button>'; }
+    if(dd.custom){ html+='<button class="toolbtn" id="del-dish" style="margin-bottom:14px"><svg class=ico><use href=#i-trash></use></svg> Elimina questo piatto</button>'; }
         var ckd=state.cooked[id]||[];
-    html+='<div class="cookrow"><button class="toolbtn primaryish" data-cookmode="'+id+'">\uD83D\uDC68\u200D\uD83C\uDF73 Modalit\u00e0 cucina</button><button class="toolbtn" data-cook="'+id+'">\uD83C\uDF73 Cucinato oggi</button>'
+    html+='<div class="cookrow"><button class="toolbtn primaryish" data-cookmode="'+id+'"><svg class=ico><use href=#i-hat></use></svg> Modalit\u00e0 cucina</button><button class="toolbtn" data-cook="'+id+'"><svg class=ico><use href=#i-pan></use></svg> Cucinato oggi</button>'
       +(ckd.length?'<span class="cookinfo">fatto '+ckd.length+(ckd.length===1?' volta':' volte')+' \u00b7 ultima: '+ckd[ckd.length-1].split("-").reverse().join("/")+'</span>':'<span class="cookinfo">mai cucinato finora</span>')+'</div>';
-    html+='<button class="favb'+(state.fav[id]?' on':'')+'" data-fav="'+id+'" style="margin-bottom:14px">'+(state.fav[id]?'\u2764\uFE0F Preferito':'\u2661 Aggiungi ai preferiti')+'</button>';
+    if(dd.free){ html+='<div class="note-box">'+dd.desc+'</div>'; }
+    else{
+      if(dd.ing&&dd.ing.length&&!dd.special){
+        html+='<div class="multrow"><span class="multlbl">Dosi</span>'
+          +'<button class="multb'+(MULT===1?' on':'')+'" data-mult="1">Voi due</button>'
+          +'<button class="multb'+(MULT===2?' on':'')+'" data-mult="2">+2 ospiti</button>'
+          +'<button class="multb'+(MULT===3?' on':'')+'" data-mult="3">+4 ospiti</button></div>';
+      }
+      html+='<p class="m-sub">Ingredienti · porzioni tue / di Gigi'+(MULT>1?' · dosi ×'+MULT:'')+'</p><ul class="ing-list">'+dd.ing.map(ingLine).join("")+'</ul>';
+      if(dd.left){ html+='<div class="note-box" style="margin:0 0 14px"><svg class=ico><use href=#i-ice></use></svg> <b>Se ne avanza:</b> '+dd.left+'</div>'; }
+      html+='<p class="m-sub">Preparazione</p><ol class="steps">'+dd.steps.map(stepHtml).join("")+'</ol>';
+    html+='<div class="nutri"><div class="nbox r"><div class="who">Roberto</div><div class="v">'+dd.pr+' g <small>prot</small> · '+dd.kr+' <small>kcal</small></div></div>'
+    html+='<div>'+DISH2TK[id].map(function(tid){var t=TKBY[tid]; return t?'<span class="tklink" data-tk="'+tid+'"><svg class=ico><use href=#i-flame></use></svg> '+t.name+'</span>':"";}).join("")+'</div>';
+    }    html+='<div class="mdiv">Il vostro diario del piatto</div>';
+    html+='<button class="favb'+(state.fav[id]?' on':'')+'" data-fav="'+id+'" style="margin-bottom:14px">'+(state.fav[id]?'<svg class=ico><use href=#i-heartf></use></svg> Preferito':'<svg class=ico><use href=#i-heart></use></svg> Aggiungi ai preferiti')+'</button>';
     if(ctx.day&&!dd.special){
       var dsel='<select id="mv-day">'+DAYS.map(function(d){return '<option value="'+d+'"'+(d===ctx.day?' selected':'')+'>'+DAY_LABEL[d]+'</option>';}).join("")+'</select>';
       var ssel='<select id="mv-slot">'+SLOTS.map(function(sl){return '<option value="'+sl[0]+'"'+(sl[0]===ctx.slot?' selected':'')+'>'+sl[1]+'</option>';}).join("")+'</select>';
@@ -1620,17 +1742,7 @@
       +'<button class="vbtn ok'+(v==="ok"?' on':'')+'" data-v="ok">✓ Buono</button>'
       +'<button class="vbtn wait'+(v==="wait"?' on':'')+'" data-v="wait">↻ Un\'altra volta</button>'
       +'<button class="vbtn no'+(v==="no"?' on':'')+'" data-v="no">✕ Mai più</button></div>';
-    if(dd.free){ html+='<div class="note-box">'+dd.desc+'</div>'; }
-    else{
-      if(dd.ing&&dd.ing.length&&!dd.special){
-        html+='<div class="multrow"><span class="multlbl">Dosi</span>'
-          +'<button class="multb'+(MULT===1?' on':'')+'" data-mult="1">Voi due</button>'
-          +'<button class="multb'+(MULT===2?' on':'')+'" data-mult="2">+2 ospiti</button>'
-          +'<button class="multb'+(MULT===3?' on':'')+'" data-mult="3">+4 ospiti</button></div>';
-      }
-      html+='<p class="m-sub">Ingredienti · porzioni tue / di Gigi'+(MULT>1?' · dosi ×'+MULT:'')+'</p><ul class="ing-list">'+dd.ing.map(ingLine).join("")+'</ul>';
-      html+='<p class="m-sub">Preparazione</p><ol class="steps">'+dd.steps.map(stepHtml).join("")+'</ol>';
-    }
+
     if(day && slot){
       var pn=poolName(slot);
       var pool=LIB[pn].filter(function(x){ return x.id!==id && state.verdict[x.id]!=="no"; });
@@ -1645,7 +1757,7 @@
       pool.forEach(function(x){
         var xv=state.verdict[x.id];
         html+='<button class="alt" data-pick="'+x.id+'"><span class="an">'+x.name+'</span>'
-            +(clash(x)?'<span class="am warn">⚠︎ doppione</span>':'')
+            +(clash(x)?'<span class="am warn"><svg class=ico><use href=#i-warn></use></svg> doppione</span>':'')
             +(xv&&xv!=="no"?'<span class="av '+xv+'">'+VLABEL[xv]+'</span>':'<span class="am">'+x.pr+'/'+x.pg+' g · '+x.time+'</span>')+'</button>';
       });
       specials.forEach(function(sid){ if(sid!==id) html+='<button class="alt" data-pick="'+sid+'"><span class="an">'+SPECIAL[sid].name+'</span><span class="am">libero</span></button>'; });
@@ -1711,8 +1823,8 @@
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
       +'<div class="kicker">Settimana '+fmtShort(curMonday)+' \u2013 '+fmtShort(dateOf(6))+'</div><h3 id="m-title">La spesa, al momento giusto</h3>'
       +'<div class="time">Ordinata per banco del mercato, quantit\u00e0 gi\u00e0 sommate per voi due</div></div><div class="m-body">'
-      +trip("🛒 Spesa 1 \u00b7 weekend","Copre luned\u00ec\u2013mercoled\u00ec, insieme alla base della domenica.",function(mm){return mm.first<=2;})
-      +trip("🛒 Spesa 2 \u00b7 gioved\u00ec","Il fresco per gioved\u00ec\u2013domenica.",function(mm){return mm.first>2;})
+      +trip("<svg class=ico><use href=#i-cart></use></svg> Spesa 1 \u00b7 weekend","Copre luned\u00ec\u2013mercoled\u00ec, insieme alla base della domenica.",function(mm){return mm.first<=2;})
+      +trip("<svg class=ico><use href=#i-cart></use></svg> Spesa 2 \u00b7 gioved\u00ec","Il fresco per gioved\u00ec\u2013domenica.",function(mm){return mm.first>2;})
       +'<div class="note-box">Le quantit\u00e0 sono la somma indicativa delle porzioni tue e di Gigi nella settimana; arrotonda alla confezione. Dispensa (olio, sale, spezie) esclusa.</div></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
     document.getElementById("m-close").focus();
@@ -1775,7 +1887,7 @@
     var dark=(mode==="dark")||(mode==="auto"&&mq&&mq.matches);
     document.documentElement.classList.toggle("dark",!!dark);
     var b=document.getElementById("dark-toggle");
-    if(b) b.textContent=(mode==="auto"?"\uD83C\uDF13":mode==="dark"?"\uD83C\uDF19":"\u2600\uFE0F");
+    if(b) b.innerHTML=(mode==="auto"?"<svg class=ico><use href=#i-moonhalf></use></svg>":mode==="dark"?"<svg class=ico><use href=#i-moon></use></svg>":"<svg class=ico><use href=#i-sun></use></svg>");
     if(b) b.title="Tema: "+(mode==="auto"?"automatico":mode==="dark"?"scuro":"chiaro");
   }
   document.getElementById("dark-toggle").addEventListener("click",function(){
@@ -2052,9 +2164,9 @@
       TKS.filter(function(t){return t.lv===lv;}).forEach(function(t){
         var st=state.tk[t.id];
         html+='<button class="card tkc'+(lv===3?' exp':'')+'" data-tk="'+t.id+'">'
-          +(st==="mia"?'<span class="medal">\uD83C\uDFC5</span>':'')
+          +(st==="mia"?'<span class="medal"><svg class=ico><use href=#i-medal></use></svg></span>':'')
           +'<div class="nm">'+t.name+'</div><div class="ds">'+t.hook+'</div>'
-          +'<div class="meta"><span class="time">\u23F1 '+t.time+'</span>'
+          +'<div class="meta"><span class="time"><svg class=ico><use href=#i-clock></use></svg> '+t.time+'</span>'
           +(st?'<span class="tkbadge '+st+'">'+TKSTL[st]+'</span>':'')+'</div></button>';
       });
       html+='</div>';
@@ -2071,11 +2183,11 @@
         var t=TKBY[tid]; if(!t) return "";
         var st=state.tk[tid], cls=st==="mia"?"done":(cur&&cur.id===tid?"cur":"");
         return '<button class="pstep '+cls+'" data-tk="'+tid+'" title="'+t.name+'">'
-          +(st==="mia"?"\uD83C\uDFC5":(i+1))+'<span class="plbl">'+t.name.replace(/^(La |Le |Lo |L\u2019|I |Il |Gli )/,"")+'</span></button>';
+          +(st==="mia"?"<svg class=ico><use href=#i-medal></use></svg>":(i+1))+'<span class="plbl">'+t.name.replace(/^(La |Le |Lo |L\u2019|I |Il |Gli )/,"")+'</span></button>';
       }).join('<span class="pline"></span>');
     }
     var nEl=document.getElementById("bt-next");
-    if(nEl) nEl.innerHTML=nx?("Prossima tappa: <button class=\"c-link\" data-tk=\""+nx.id+"\">"+nx.name+"</button>"):"Percorso completato \uD83C\uDF93";
+    if(nEl) nEl.innerHTML=nx?("Prossima tappa: <button class=\"c-link\" data-tk=\""+nx.id+"\">"+nx.name+"</button>"):"Percorso completato <svg class=ico><use href=#i-medal></use></svg>";
     if(window.__doSearch) window.__doSearch();
   }
   var curTk=null;
@@ -2083,21 +2195,21 @@
     curTk=id; var t=TKBY[id]; if(!t) return;
     var st=state.tk[id];
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
-      +'<div class="kicker">Bottega \u00b7 Livello '+t.lv+' \u00b7 '+TKLV[t.lv].t+'</div><h3 id="m-title">'+t.name+'</h3><div class="time">\u23F1 '+t.time+'</div></div><div class="m-body">'
+      +'<div class="kicker">Bottega \u00b7 Livello '+t.lv+' \u00b7 '+TKLV[t.lv].t+'</div><h3 id="m-title">'+t.name+'</h3><div class="time"><svg class=ico><use href=#i-clock></use></svg> '+t.time+'</div></div><div class="m-body">'
       +'<div class="why"><h5>Perch\u00e9 funziona</h5><p>'+t.why+'</p></div>'
       +(t.kit?'<p class="m-sub">Cosa vi serve</p><ul class="kit">'+t.kit.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul>':'')
       +'<p class="m-sub">La tecnica, passo per passo</p><ol class="steps">'+t.steps.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ol>'
       +(t.err?'<p class="m-sub">Errori tipici (e rimedi)</p><ul class="errs">'+t.err.map(function(x){return '<li><b>'+x[0]+':</b> '+x[1]+'.</li>';}).join("")+'</ul>':'')
-      +'<div class="gym2"><h5>\uD83C\uDF7D La palestra</h5><p>'+t.gym+'</p></div>'
-      +'<div class="twist2"><h5>\u2697\uFE0F Il twist</h5><p>'+t.twist+'</p></div>'
+      +'<div class="gym2"><h5><svg class=ico><use href=#i-plate></use></svg> La palestra</h5><p>'+t.gym+'</p></div>'
+      +'<div class="twist2"><h5><svg class=ico><use href=#i-flask></use></svg> Il twist</h5><p>'+t.twist+'</p></div>'
       +'<div class="mealbox"><h5>Il piatto \u2014 dentro la vostra settimana</h5>'
       +'<div class="mn">'+t.meal.n+'</div><div class="md">'+t.meal.d+'</div>'
       +'<div class="chips"><span class="mchip slot">'+t.meal.slot+'</span>'
       +'<span class="mchip r">Roberto '+t.meal.kr+' kcal \u00b7 '+t.meal.pr+' g</span>'
       +'<span class="mchip g">Gigi '+t.meal.kg+' kcal \u00b7 '+t.meal.pg+' g</span></div></div>'
-      +'<div style="margin:0 0 12px"><button class="toolbtn primaryish" data-cookmode="'+t.id+'">\uD83D\uDC68\u200D\uD83C\uDF73 Modalit\u00e0 cucina</button></div>'
+      +'<div style="margin:0 0 12px"><button class="toolbtn primaryish" data-cookmode="'+t.id+'"><svg class=ico><use href=#i-hat></use></svg> Modalit\u00e0 cucina</button></div>'
       +'<div class="strow"><button class="stb prova'+(st==="prova"?' on':'')+'" data-tkst="prova">\u270B Provata</button>'
-      +'<button class="stb mia'+(st==="mia"?' on':'')+'" data-tkst="mia">\uD83C\uDFC5 Mia!</button></div>'
+      +'<button class="stb mia'+(st==="mia"?' on':'')+'" data-tkst="mia"><svg class=ico><use href=#i-medal></use></svg> Mia!</button></div>'
       +'<div style="font-size:.78rem;color:var(--muted);margin:6px 0 6px;font-weight:600">Le vostre note</div>'
       +'<textarea class="notew" id="tknote">'+(state.tknote[id]||"")+'</textarea></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
@@ -2114,8 +2226,8 @@
       var miaAfter=Object.keys(state.tk).filter(function(x){return state.tk[x]==="mia";}).length;
       if(miaAfter>miaBefore){
         var rb=tkRank(miaBefore), ra=tkRank(miaAfter);
-        if(ra!==rb) toast("\uD83C\uDF93 Nuovo grado: "+ra+"!",4000);
-        else if(miaAfter===CURRICULUM.length) toast("\uD83C\uDFC6 Percorso completato. Gran Maestri.",5000);
+        if(ra!==rb) toast("<svg class=ico><use href=#i-medal></use></svg> Nuovo grado: "+ra+"!",4000);
+        else if(miaAfter===CURRICULUM.length) toast("<svg class=ico><use href=#i-medal></use></svg> Percorso completato. Gran Maestri.",5000);
       }
       save(state); renderBottega(); openTk(curTk); return; }
   });
@@ -2133,7 +2245,7 @@
       if(state.fav[fid]) delete state.fav[fid]; else state.fav[fid]=1;
       save(state);
       fb.classList.toggle("on",!!state.fav[fid]);
-      fb.textContent=state.fav[fid]?"\u2764\uFE0F Preferito":"\u2661 Aggiungi ai preferiti";
+      fb.innerHTML=state.fav[fid]?"<svg class=ico><use href=#i-heartf></use></svg> Preferito":"<svg class=ico><use href=#i-heart></use></svg> Aggiungi ai preferiti";
       renderLibrary(); return; }
     var mv=e.target.closest("#mv-go");
     if(mv&&ctx.day){
@@ -2223,7 +2335,7 @@
     var stale=!last||((new Date())-last)/86400000>14;
     if(stale&&Object.keys(state.weeks||{}).length){
       var bar=document.createElement("div"); bar.className="bkban";
-      bar.innerHTML='<span>\uD83D\uDCBE I vostri dati non hanno un backup recente.</span><button class="toolbtn" id="bk-now">Esporta ora</button>';
+      bar.innerHTML='<span><svg class=ico><use href=#i-down></use></svg> I vostri dati non hanno un backup recente.</span><button class="toolbtn" id="bk-now">Esporta ora</button>';
       var host=document.getElementById("prof-box"); if(host&&host.parentNode) host.parentNode.insertBefore(bar,host.nextSibling);
       bar.addEventListener("click",function(e){ if(e.target.id==="bk-now"){ document.getElementById("btn-export").click(); bar.remove(); } });
     }
@@ -2250,7 +2362,7 @@
       }catch(err){ alert("File non valido."); } };
     r.readAsText(f);
   });
-  function tripBtn(){ document.getElementById("btn-trip").textContent=state.trip?"\u2708\uFE0F Trasferta ATTIVA \u2014 tocca per chiudere":"\u2708\uFE0F Attiva modalit\u00e0 trasferta"; }
+  function tripBtn(){ document.getElementById("btn-trip").innerHTML=state.trip?"<svg class=ico><use href=#i-plane></use></svg> Trasferta ATTIVA \u2014 tocca per chiudere":"<svg class=ico><use href=#i-plane></use></svg> Attiva modalit\u00e0 trasferta"; }
   document.getElementById("btn-trip").addEventListener("click",function(){ state.trip=state.trip?0:1; save(state); tripBtn(); renderWeek(); });
   tripBtn();
   document.getElementById("nav-print").addEventListener("click",function(){ window.print(); });
@@ -2288,7 +2400,7 @@
       +'<label>Nome del piatto<input id="ad-name" placeholder="Es. La parmigiana della nonna di Gigi"></label>'
       +'<label>Momento<select id="ad-type"><option value="colazione">Colazione</option><option value="spuntino">Spuntino/merenda</option><option value="pranzo">Pranzo</option><option value="cena" selected>Cena</option></select></label>'
       +'<div class="addrow"><label>Minuti<input id="ad-time" type="number" inputmode="numeric" placeholder="25"></label>'
-      +'<label>Vegetale \uD83C\uDF31<select id="ad-vg"><option value="0">No</option><option value="1">S\u00ec</option></select></label></div>'
+      +'<label>Vegetale <svg class=ico><use href=#i-leaf></use></svg><select id="ad-vg"><option value="0">No</option><option value="1">S\u00ec</option></select></label></div>'
       +'<div class="addrow"><label>kcal Roberto<input id="ad-kr" type="number" inputmode="numeric"></label><label>kcal Gigi<input id="ad-kg" type="number" inputmode="numeric"></label></div>'
       +'<div class="addrow"><label>Proteine R (g)<input id="ad-pr" type="number" inputmode="numeric"></label><label>Proteine G (g)<input id="ad-pg" type="number" inputmode="numeric"></label></div>'
       +'<label>Ingredienti \u2014 uno per riga: nome | dose tua | dose Gigi (o una dose sola)<textarea id="ad-ing" placeholder="Melanzane | 300 g | 300 g&#10;Grana | 30 g | 22 g&#10;Basilico | q.b."></textarea></label>'
@@ -2349,7 +2461,7 @@
       +'<textarea class="notew" id="pantry-in" placeholder="Es. pomodori, ceci, pane raffermo, basilico\u2026" style="min-height:60px">'+saved.replace(/</g,"&lt;")+'</textarea>'
       +'<div class="fchips" style="margin:10px 0 12px">'+chips+'</div>'
       +'<div class="fchips" id="pslot-row" style="margin:0 0 12px">'+SLOTS.map(function(sl){return '<button class="fchip'+(sl[0]===pslot?' on':'')+'" data-ps="'+sl[0]+'">'+sl[1]+'</button>';}).join("")+'</div>'
-      +'<button class="toolbtn" id="pantry-go" style="font-size:.95rem">\uD83C\uDF73 Trova i piatti</button>'
+      +'<button class="toolbtn" id="pantry-go" style="font-size:.95rem"><svg class=ico><use href=#i-pan></use></svg> Trova i piatti</button>'
       +'<div id="pantry-out" style="margin-top:16px"></div></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
     function run(){
@@ -2377,7 +2489,7 @@
       out.innerHTML='<p class="m-sub">Per '+slotLbl.toLowerCase()+' \u00b7 budget \u2248'+goalR+'/'+goalG+' kcal ('+res.length+' piatti)</p>'+res.map(function(r){
         var manca=r.m.miss.length?('<small style="color:var(--muted)">manca: '+r.m.miss.slice(0,3).join(", ")+(r.m.miss.length>3?"\u2026":"")+'</small>'):'<small style="color:var(--herb-deep);font-weight:700">hai tutto \u2713</small>';
         return '<div class="card" style="width:100%; text-align:left; margin-bottom:10px">'
-          +'<div class="nm">'+r.dd.name+(r.dd.vg?' \uD83C\uDF31':'')+(r.fit?' <span class="tempo" style="background:#DFF6E8;border-color:#9ADFB6;color:#1F8A5C">nel budget</span>':'')+'</div>'
+          +'<div class="nm">'+r.dd.name+(r.dd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+(r.fit?' <span class="tempo" style="background:#DFF6E8;border-color:#9ADFB6;color:#1F8A5C">nel budget</span>':'')+'</div>'
           +'<div class="ds">'+r.m.have+'/'+r.m.tot+' ingredienti \u00b7 '+r.dd.kr+'/'+r.dd.kg+' kcal \u00b7 '+r.dd.pr+'/'+r.dd.pg+' g prot<br>'+manca+'</div>'
           +'<div style="display:flex; gap:8px; margin-top:9px">'
           +'<button class="toolbtn" data-openlib="'+r.dd.id+'">Ricetta</button>'
@@ -2473,13 +2585,13 @@
     modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
       +'<div class="kicker">La nostra cucina</div><h3 id="m-title">Come funziona</h3>'
       +'<div class="time">La guida rapida, sempre qui sotto il punto interrogativo</div></div><div class="m-body helpb">'
-      +'<h5>\uD83C\uDFE0 Oggi</h5><p>La schermata di casa: la cena di stasera con \u201cIniziamo\u201d, il prossimo pasto, il coach con la serie \uD83D\uDD25, la tappa del percorso e l\u2019abitudine della settimana.</p>'
-      +'<h5>\uD83D\uDCC5 Settimana</h5><p>Il piano completo. Tocca un piatto per la ricetta; \u21C4 per cambiarlo; in fondo al giorno segna allenamenti, \u201cseguita \u2713\u201d e sgarri. <b>\uD83E\uDE84 Prepara la prossima</b> genera la settimana nuova con variet\u00e0 (preferiti e cene vegetali favoriti, i \u201cmai pi\u00f9\u201d esclusi).</p>'
-      +'<h5>\uD83D\uDED2 La spesa</h5><p>Due spese calcolate dal piano: weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
-      +'<h5>\uD83D\uDD25 La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'
-      +'<h5>\uD83D\uDCD6 Ricettario</h5><p>Tutti i piatti con filtri (\u2764\uFE0F \uD83C\uDF31 \u23F1 \uD83E\uDD42), i men\u00f9 per gli ospiti, \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d (scrivi gli ingredienti, ti dice cosa cucinarci e se sta nel budget del pasto) e \u201c\u2795 Vostro piatto\u201d.</p>'
-      +'<h5>\uD83D\uDC64 Profili</h5><p>In Settimana, in alto: obiettivi calcolati sui vostri dati, andamento peso, <b>esporta/importa</b> per il backup (fatelo ogni tanto: ve lo ricorda da solo) e la modalit\u00e0 \u2708\uFE0F trasferta per le vacanze.</p>'
-      +'<p class="note-box" style="margin-top:14px">Un consiglio solo: segnate \u201cseguita \u2713\u201d la sera e \u201cCucinato oggi\u201d nelle ricette \u2014 sono trenta secondi, e danno vita a serie, diario e coach.</p>'
+      +'<h5><svg class=ico><use href=#i-home></use></svg> Oggi</h5><p>La schermata di casa: la cena di stasera con \u201cIniziamo\u201d, il prossimo pasto, il coach con la serie <svg class=ico><use href=#i-flame></use></svg>, la tappa del percorso e l\u2019abitudine della settimana.</p>'
+      +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Il piano completo. Tocca un piatto per la ricetta; \u21C4 per cambiarlo; in fondo al giorno segna allenamenti, \u201cseguita \u2713\u201d e sgarri. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> genera la settimana nuova con variet\u00e0 (preferiti e cene vegetali favoriti, i \u201cmai pi\u00f9\u201d esclusi).</p>'
+      +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal piano: weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
+      +'<h5><svg class=ico><use href=#i-flame></use></svg> La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'
+      +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Tutti i piatti con filtri (<svg class=ico><use href=#i-heartf></use></svg> <svg class=ico><use href=#i-leaf></use></svg> <svg class=ico><use href=#i-clock></use></svg> <svg class=ico><use href=#i-cheers></use></svg>), i men\u00f9 per gli ospiti, \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d (scrivi gli ingredienti, ti dice cosa cucinarci e se sta nel budget del pasto) e \u201c<svg class=ico><use href=#i-plus></use></svg> Vostro piatto\u201d.</p>'
+      +'<h5><svg class=ico><use href=#i-user></use></svg> Profili</h5><p>In Settimana, in alto: obiettivi calcolati sui vostri dati, andamento peso, <b>esporta/importa</b> per il backup (fatelo ogni tanto: ve lo ricorda da solo) e la modalit\u00e0 <svg class=ico><use href=#i-plane></use></svg> trasferta per le vacanze.</p>'
+      +'<p class="note-box" style="margin-top:14px">Un consiglio solo: segnate \u201cseguita \u2713\u201d la sera e \u201cCucinato oggi\u201d nelle ricette \u2014 sono trenta secondi, e danno vita a serie, diario e coach. I numeri di kcal e proteine sono stime indicative, non prescrizioni.</p>'
       +'</div>';
     overlay.classList.add("on"); document.body.style.overflow="hidden";
     document.getElementById("m-close").focus();
