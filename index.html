@@ -448,6 +448,23 @@
   .ck-mise input{width:24px; height:24px; accent-color:var(--herb); flex:none; margin-top:2px}
   .ck-mise input:checked+span{text-decoration:line-through; opacity:.5}
   .ck-mise small{color:var(--muted)}
+  .card,.h-card,.c-cell,.mealbox{max-width:100%; min-width:0; overflow-wrap:break-word}
+  .cards>*{min-width:0}
+  .m-body,.m-head{overflow-wrap:break-word}
+  svg.ico{flex:none}
+  @media(max-width:720px){
+    .pathwrap{flex-wrap:wrap; overflow-x:visible; row-gap:26px}
+    .pline{display:none}
+    .ing-list li .q{white-space:normal; text-align:right}
+  }
+  details.libgroup summary{list-style:none; display:flex; align-items:center; gap:10px; padding:14px 4px; cursor:pointer; border-top:1px solid var(--line); min-height:52px}
+  details.libgroup summary::-webkit-details-marker{display:none}
+  details.libgroup .lg-t{font-family:Georgia,serif; font-size:1.15rem; font-weight:600}
+  details.libgroup .lg-n{margin-left:auto; font-size:.76rem; color:var(--muted); font-weight:700}
+  details.libgroup .lg-ch{color:var(--muted); transition:transform .2s; font-size:1.1rem}
+  details.libgroup[open] .lg-ch{transform:rotate(180deg)}
+  details.libgroup .cards{padding:4px 0 18px}
+  details.libgroup .icn{width:24px; height:24px; flex:none}
   @media print{
     .bar,.hero,#bottega,#ricettario,.prof,.jumps,.prep,footer,#totop,.selrow,.stat,.fold,.warnrow,.ttmsg,.xnote,button{display:none !important}
     body{background:#fff}
@@ -761,8 +778,9 @@
 <section class="wrap sec-ric" id="ricettario">
   <div class="sec-head" style="align-items:center; gap:14px; flex-wrap:wrap"><h2>Il ricettario</h2><button class="toolbtn" id="btn-pantry" style="margin-left:auto"><svg class=ico><use href=#i-basket></use></svg> Da ciò che c’è in casa</button><button class="toolbtn" id="btn-add-dish"><svg class=ico><use href=#i-plus></use></svg> Vostro piatto</button></div>
   <p class="sec-sub">Tutti i piatti, da sfogliare e usare come alternative. Apri per la ricetta e segna il giudizio: quelli “mai più” spariscono dalle proposte di cambio.</p>
-  <div class="gmenus">
-    <p class="m-sub" style="margin:4px 0 10px"><svg class=ico><use href=#i-cheers></use></svg> Menù pronti per gli ospiti <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--muted)">· dosi ×ospiti dentro ogni ricetta</span></p>
+  <details class="gmenus libgroup" id="gmenu-box">
+    <summary><span class="lg-t">Menù pronti per gli ospiti</span><span class="lg-n">6 menù</span><span class="lg-ch">⌄</span></summary>
+    <p class="m-sub" style="margin:10px 0 10px"><svg class=ico><use href=#i-cheers></use></svg> Menù pronti per gli ospiti <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--muted)">· dosi ×ospiti dentro ogni ricetta</span></p>
     <div class="cards" style="margin-bottom:20px">
       <div class="card"><div class="nm">Cena d’estate con amici</div>
         <div class="ds"><button class="c-link" data-openlib="d3">Caponata</button> con carasau · <button class="c-link" data-openlib="p14">Malloreddus al pesto rosso</button> · <button class="c-link" data-openlib="s18">Crema e fragole</button></div>
@@ -783,7 +801,7 @@
         <div class="ds">Ospiti dell’ultimo minuto: <button class="c-link" data-openlib="d21">Pappa al pomodoro fredda</button> · <button class="c-link" data-openlib="d13">Panelle</button> · <button class="c-link" data-openlib="s16">Ceci croccanti</button></div>
         <div class="meta"><span class="time">≈ 750 kcal · mezz’ora, quasi tutto dalla dispensa</span></div></div>
     </div>
-  </div>
+  </details>
   <div class="fchips" id="fchips">
     <button class="fchip on" data-f="all">Tutti</button>
     <button class="fchip" data-f="fav"><svg class=ico><use href=#i-heartf></use></svg> Preferiti</button>
@@ -1662,11 +1680,20 @@
     }
   }
 
+  function libDefaults(){
+    var mob=window.matchMedia&&window.matchMedia("(max-width:720px)").matches;
+    var gm=document.getElementById("gmenu-box"); if(gm&&!mob) gm.open=true;
+    document.querySelectorAll("#library details.libgroup").forEach(function(dt){
+      if(!mob) dt.open=true;
+    });
+  }
   function renderLibrary(){
     var titles={colazione:"Colazioni",spuntino:"Spuntini & recupero",pranzo:"Pranzi",cena:"Cene"};
     var html="";
     ["colazione","spuntino","pranzo","cena"].forEach(function(t){
-      html+='<div class="libgroup"><h3><span class="icn">'+ICONS[t]+'</span>'+titles[t]+'</h3><div class="cards">';
+      var tgt=smartSlot(); if(tgt==="merenda") tgt="cena";
+      var openNow=(t===tgt);
+      html+='<details class="libgroup" data-grp="'+t+'"'+(openNow?' open':'')+'><summary><span class="icn">'+ICONS[t]+'</span><span class="lg-t">'+titles[t]+'</span><span class="lg-n">'+LIB[t].length+' piatti</span><span class="lg-ch">⌄</span></summary><div class="cards">';
       LIB[t].forEach(function(dd){
         var v=state.verdict[dd.id];
         var mins=parseInt(((dd.time||"").match(/\d+/)||[0])[0],10)||0; var slow=(mins>=25);
@@ -1676,7 +1703,7 @@
             +'<div class="meta"><span class="time">'+dd.time+'</span>'+(slow?'<span class="tempo"><svg class=ico><use href=#i-clock></use></svg></span>':'')+(dd.vg?'<span class="vgb"><svg class=ico><use href=#i-leaf></use></svg></span>':'')+'<span class="pchip">'+dd.pr+'/'+dd.pg+' g prot</span>'
             +(v?'<span class="verdict '+v+'">'+VLABEL[v]+'</span>':'')+'</div></button>';
       });
-      html+='</div></div>';
+      html+='</div></details>';
     });
     document.getElementById("library").innerHTML=html;
     if(window.__doSearch) window.__doSearch();
@@ -2321,6 +2348,13 @@
         }
         c.style.display=hit?"":"none"; if(hit) n++;
       });
+      if(cid==="library"){
+        box.querySelectorAll("details.libgroup").forEach(function(dt){
+          var any=false;
+          dt.querySelectorAll(".card").forEach(function(c){ if(c.style.display!=="none") any=true; });
+          if(q||window.__fil!=="all"){ dt.open=any; }
+        });
+      }
     });
     qN.textContent=q?(n+" trovati"):"";
   }
@@ -2426,7 +2460,7 @@
         ing:ing.length?ing:[{n:"Da definire",q:"q.b."}], steps:steps.length?steps:["Come lo sapete fare voi."]};
       if(document.getElementById("ad-vg").value==="1") d.vg=1;
       state.custom.push(d); save(state);
-      integrateCustom(); renderLibrary(); closeModal();
+      integrateCustom(); renderLibrary(); libDefaults(); closeModal();
     });
     document.getElementById("m-close").focus();
   }
