@@ -884,7 +884,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v27";
+  var APPV="v28";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -2082,7 +2082,7 @@
     var t=e.target.closest("[data-open]");
     if(t){ var p=t.getAttribute("data-open").split("|"); openModal(planFor(p[0],p[1]),p[0],p[1]); return; }
     var l=e.target.closest("[data-openlib]"); if(l){ openModal(l.getAttribute("data-openlib")); return; }
-    if(e.target.id==="m-close"){ closeModal(); return; }
+    if(e.target.closest("#m-close")){ closeModal(); return; }
     if(e.target===overlay){ closeModal(); return; }
     var vb=e.target.closest(".vbtn");
     if(vb){ var nv=vb.getAttribute("data-v");
@@ -2629,7 +2629,7 @@
       var bar=document.createElement("div"); bar.className="bkban";
       bar.innerHTML='<span><svg class=ico><use href=#i-down></use></svg> I vostri dati non hanno un backup recente.</span><button class="toolbtn" id="bk-now">Esporta ora</button>';
       var host=document.getElementById("prof-box"); if(host&&host.parentNode) host.parentNode.insertBefore(bar,host.nextSibling);
-      bar.addEventListener("click",function(e){ if(e.target.id==="bk-now"){ document.getElementById("btn-export").click(); bar.remove(); } });
+      bar.addEventListener("click",function(e){ if(e.target.closest("#bk-now")){ document.getElementById("btn-export").click(); bar.remove(); } });
     }
   })();
   document.getElementById("btn-export").addEventListener("click",function(){

@@ -307,7 +307,12 @@ if(pantryCta){ click(pantryCta);
   click(d.getElementById("pantry-go"));
   T("pantry: cercando 'tempeh' per cena trova la ricetta nuova", /Tempeh glassato/.test(d.getElementById("pantry-out").textContent));
 
-  click(d.getElementById("m-close"));
+  // 34. il modale si chiude anche toccando l'icona dentro il pulsante, non solo il bordo
+  // (bug storico: e.target.id==="m-close" non riconosceva un click sull'<svg> figlio)
+  let closeIcon=d.querySelector("#m-close svg");
+  T("chiusura modale: l'icona interna esiste", !!closeIcon);
+  if(closeIcon) click(closeIcon);
+  T("chiusura modale: toccando l'icona il modale si chiude davvero", !d.getElementById("overlay").classList.contains("on"));
 }
 
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
