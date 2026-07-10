@@ -1,0 +1,12 @@
+{
+  "name": "la-nostra-cucina",
+  "private": true,
+  "version": "16.0.0",
+  "description": "App vegetariana di Roberto e Gigi: meal planner, scuola di cucina, coach",
+  "scripts": {
+    "build": "python3 build.py",
+    "qa": "node qa.js && node qa-web.js",
+    "check": "python3 build.py && node qa.js && node qa-web.js"
+  },
+  "devDependencies": { "jsdom": "^25.0.0" }
+}
