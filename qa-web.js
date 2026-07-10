@@ -275,6 +275,13 @@ let b8=d.querySelector('[data-scope="prep"] .ck[data-id="b8"] .lbl').textContent
 let b5Estate=/grigliate/.test(b5), b8Estate=/anguria/.test(b8);
 T("base domenica: varianti stagionali coerenti tra loro", b5Estate===b8Estate, b5+" | "+b8);
 
+// 30. dolci e bevande: coerenti con la stessa stagione della base della domenica
+let dc1=d.querySelector('[data-scope="dolci"] [data-id="dc1"]').textContent;
+let bv3=d.querySelector('[data-scope="bevande"] [data-id="bv3"]').textContent;
+let dc1Estate=/anguria/.test(dc1), bv3Estate=/freddo/.test(bv3);
+T("dolci: coerenti con la stagione della base", dc1Estate===b8Estate, dc1);
+T("bevande: coerenti con la stagione della base", bv3Estate===b8Estate, bv3);
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

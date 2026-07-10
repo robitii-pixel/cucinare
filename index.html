@@ -846,22 +846,22 @@
   <div class="duo">
     <div class="panel">
       <h3><svg class=ico><use href=#i-bowl></use></svg> Dolci e recupero</h3><p class="lead">Semplici, di stagione; i proteici per dopo l'allenamento.</p>
-      <ul class="listy">
-        <li>Frutta fresca: anguria, melone, pesche, fichi</li>
-        <li>Ricotta con miele e mandorle</li>
-        <li>Yogurt greco con frutti di bosco (ottimo post-workout)</li>
-        <li>Sorbetto al limone o granita</li>
-        <li>Una seada, ogni tanto, come strappo</li>
+      <ul class="listy" data-scope="dolci">
+        <li data-id="dc1">Frutta fresca: anguria, melone, pesche, fichi</li>
+        <li data-id="dc2">Ricotta con miele e mandorle</li>
+        <li data-id="dc3">Yogurt greco con frutti di bosco (ottimo post-workout)</li>
+        <li data-id="dc4">Sorbetto al limone o granita</li>
+        <li data-id="dc5">Una seada, ogni tanto, come strappo</li>
       </ul>
     </div>
     <div class="panel cool">
       <h3><svg class=ico><use href=#i-cup></use></svg> Bevande · 2,5 L</h3><p class="lead">L'idratazione è parte dell'allenamento.</p>
-      <ul class="listy">
-        <li>Acqua, la base, distribuita nella giornata</li>
-        <li>Acqua con limone e menta</li>
-        <li>Tè freddo non zuccherato</li>
-        <li>Caffè o orzo freddo senza zucchero</li>
-        <li>Sali minerali dopo le sedute più intense col caldo</li>
+      <ul class="listy" data-scope="bevande">
+        <li data-id="bv1">Acqua, la base, distribuita nella giornata</li>
+        <li data-id="bv2">Acqua con limone e menta</li>
+        <li data-id="bv3">Tè freddo non zuccherato</li>
+        <li data-id="bv4">Caffè o orzo freddo senza zucchero</li>
+        <li data-id="bv5">Sali minerali dopo le sedute più intense col caldo</li>
       </ul>
     </div>
   </div>
@@ -879,7 +879,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v24";
+  var APPV="v25";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -2083,12 +2083,28 @@
     b7:{estate:"Un pesto (basilico o rucola)",altro:"Un pesto di rucola o cavolo nero"},
     b8:{estate:"Pomodori, cetrioli, insalata, anguria",altro:"Agrumi, finocchi, cavolo cappuccio"}
   };
-  function applyPrepSeason(){
+  var DOLCI_SEASONAL={
+    dc1:{estate:"Frutta fresca: anguria, melone, pesche, fichi",altro:"Frutta fresca: mele, pere, arance, cachi"},
+    dc3:{estate:"Yogurt greco con frutti di bosco (ottimo post-workout)",altro:"Yogurt greco con noci e miele (ottimo post-workout)"},
+    dc4:{estate:"Sorbetto al limone o granita",altro:"Frutta cotta alle spezie (mele o pere, cannella)"}
+  };
+  var BEVANDE_SEASONAL={
+    bv2:{estate:"Acqua con limone e menta",altro:"Acqua e zenzero caldo"},
+    bv3:{estate:"Tè freddo non zuccherato",altro:"Tè caldo o tisana, la sera"},
+    bv4:{estate:"Caffè o orzo freddo senza zucchero",altro:"Caffè o orzo caldo senza zucchero"},
+    bv5:{estate:"Sali minerali dopo le sedute più intense col caldo",altro:"Brodo caldo nei giorni più freddi"}
+  };
+  function applySeasonalList(scope,map,childSel){
     var key=(season()==="estate")?"estate":"altro";
-    Object.keys(PREP_SEASONAL).forEach(function(id){
-      var lbl=document.querySelector('.checks .ck[data-id="'+id+'"] .lbl');
-      if(lbl) lbl.textContent=PREP_SEASONAL[id][key];
+    Object.keys(map).forEach(function(id){
+      var el=document.querySelector('[data-scope="'+scope+'"] [data-id="'+id+'"]'+(childSel||""));
+      if(el) el.textContent=map[id][key];
     });
+  }
+  function applyPrepSeason(){
+    applySeasonalList("prep",PREP_SEASONAL," .lbl");
+    applySeasonalList("dolci",DOLCI_SEASONAL,"");
+    applySeasonalList("bevande",BEVANDE_SEASONAL,"");
   }
   function renderPrep(){
     var wc=wk0().checked;
