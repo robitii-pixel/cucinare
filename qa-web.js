@@ -232,6 +232,14 @@ let brokenOpen=allIds.filter(id=>{
 });
 T("libreria: tutti i "+allIds.length+" piatti si aprono", brokenOpen.length===0, brokenOpen.join(", "));
 
+// 25. spesa: quantità sempre leggibili (bug storico: "×N giorni" al posto della quantità reale)
+click(d.getElementById("btn-shop"));
+let shopItems=[...d.querySelectorAll("#modal .shpi")];
+T("spesa: elenco generato", shopItems.length>0);
+let badQty=shopItems.filter(li=>/NaN|undefined/.test(li.querySelector(".q").textContent));
+T("spesa: nessuna quantità NaN/undefined", badQty.length===0, badQty.map(li=>li.textContent).join(" | "));
+click(d.getElementById("m-close"));
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

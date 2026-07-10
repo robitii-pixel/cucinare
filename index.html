@@ -115,7 +115,7 @@
   .tright{display:inline-flex; align-items:center; gap:8px}
   .fold{width:32px; height:32px; border-radius:50%; border:1px solid #A9E0EC; background:#fff; color:#0A4B60; font-size:.95rem; line-height:1; transition:transform .2s, background .15s}
   .fold:hover{background:#D6F3FA}
-  .day.folded .slot,.day.folded .totals,.day.folded .fuel,.day.folded .selrow{display:none}
+  .day.folded .slot,.day.folded .totals,.day.folded .fuel,.day.folded .selrow,.day.folded .warnrow{display:none}
   .day.folded .fold{transform:rotate(-90deg)}
   .jumps{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 14px; -webkit-overflow-scrolling:touch; scrollbar-width:none}
   .jumps::-webkit-scrollbar{display:none}
@@ -690,7 +690,7 @@
     <div class="legend legend-min">
       <button class="reset" id="nav-search" title="Cerca"><svg class=ico><use href=#i-search></use></svg></button>
       <span class="appv" id="appv"></span>
-      <button class="reset" id="help-btn" title="Guida">?</button>
+      <button class="reset" id="help-btn" title="Guida" aria-label="Apri la guida">Guida</button>
       <button class="reset" id="dark-toggle" title="Modalità scura"><svg class=ico><use href=#i-moon></use></svg></button>
       <button class="reset" id="font-toggle" title="Dimensione testo">A<span style="font-size:.68em">A</span></button>
     </div>
@@ -870,7 +870,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v18";
+  var APPV="v19";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1275,7 +1275,7 @@
     }
     var dn=doneFor(day,person), sg=sgarroFor(day,person);
     h+='<span class="stat"><button class="dn'+(dn?" on":"")+'" data-dn="'+day+'|'+person+'" title="Giornata seguita">✓</button>'
-      +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Sgarro"><svg class=ico><use href=#i-plate></use></svg></button></span></div>';
+      +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Sgarro" aria-label="Segna uno sgarro"><svg class=ico><use href=#i-cheers></use></svg></button></span></div>';
     return h;
   }
   function fuelNote(day){
@@ -1853,7 +1853,8 @@
       ["Legumi",/cec[io]|lenticchie|cannellini|fagioli|hummus/i],
       ["Dispensa e frutta secca",/.*/]];
     function catOf(n){ for(var i=0;i<CATS.length;i++) if(CATS[i][1].test(n)) return CATS[i][0]; return CATS[CATS.length-1][0]; }
-    function grams(str){ var mm=/(\d+)\s*g/.exec(str||""); return mm?parseInt(mm[1],10):0; }
+    function grams(str){ var mm=/(\d+)\s*g\b/.exec(str||""); return mm?parseInt(mm[1],10):0; }
+    function numAmt(str){ var s=(str||"").trim(); var mm=/^(\d+(?:[.,]\d+)?)\s*(.*)$/.exec(s); return (mm&&mm[1])?{n:parseFloat(mm[1].replace(",",".")),unit:mm[2].trim()}:null; }
     var map={};
     DAYS.forEach(function(day,di){
       SLOTS.forEach(function(sl){
@@ -1861,16 +1862,33 @@
         var dd=dish(id); if(!dd||dd.free||!dd.ing) return;
         dd.ing.forEach(function(i){
           var k=normIng(i.n);
-          if(!map[k]) map[k]={first:di,days:{},g:0,cat:catOf(k)};
+          if(!map[k]) map[k]={first:di,days:{},g:0,n:0,unit:"",txt:"",cat:catOf(k)};
           map[k].days[day]=1;
           if(di<map[k].first) map[k].first=di;
-          if(i.r!==undefined) map[k].g+=grams(i.r)+grams(i.g);
-          else map[k].g+=2*grams(i.q);
+          if(i.r!==undefined){
+            map[k].g+=grams(i.r)+grams(i.g);
+            if(!grams(i.r)&&!grams(i.g)){
+              var ar=numAmt(i.r), ag=numAmt(i.g);
+              if(ar){ map[k].n+=ar.n; if(!map[k].unit) map[k].unit=ar.unit; }
+              if(ag){ map[k].n+=ag.n; if(!map[k].unit) map[k].unit=ag.unit; }
+              if(!ar&&!ag&&i.r) map[k].txt=i.r;
+            }
+          } else {
+            map[k].g+=2*grams(i.q);
+            if(!grams(i.q)){
+              var aq=numAmt(i.q);
+              if(aq){ map[k].n+=2*aq.n; if(!map[k].unit) map[k].unit=aq.unit; }
+              else if(i.q) map[k].txt=i.q;
+            }
+          }
         });
       });
     });
     function qty(mm){ var nd=Object.keys(mm.days).length;
-      return mm.g>0?("\u2248 "+(mm.g>=1000?(mm.g/1000).toFixed(1).replace(".",",")+" kg":mm.g+" g")):("\u00d7"+nd+(nd>1?" giorni":" giorno")); }
+      if(mm.g>0) return "\u2248 "+(mm.g>=1000?(mm.g/1000).toFixed(1).replace(".",",")+" kg":mm.g+" g");
+      if(mm.n>0){ var num=(mm.n%1===0)?mm.n:mm.n.toFixed(1).replace(".",","); return "\u00d7"+num+(mm.unit?" "+mm.unit:""); }
+      if(mm.txt) return mm.txt;
+      return "\u00d7"+nd+(nd>1?" giorni":" giorno"); }
     function trip(title,note,filter){
       var byCat={};
       Object.keys(map).forEach(function(k){ var mm=map[k]; if(!filter(mm)) return; (byCat[mm.cat]=byCat[mm.cat]||[]).push(k); });
