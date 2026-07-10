@@ -259,6 +259,22 @@ T("icone: nessun riferimento a simboli inesistenti", brokenIcons.length===0, bro
 let strayGlyphs=[...d.querySelectorAll("button")].filter(el=>/[✕✓↻↺‹›▾⌄⇄✋]/.test(el.textContent)&&!el.querySelector("svg"));
 T("icone: nessun glifo Unicode residuo nei pulsanti", strayGlyphs.length===0, strayGlyphs.map(e=>e.className+":"+e.textContent).join(" | "));
 
+// 28. base della domenica: le spunte sono per settimana, non globali (bug storico corretto)
+d.getElementById("nav-week").click();
+let prepChecks=[...d.querySelectorAll('[data-scope="prep"] .ck')];
+prepChecks.forEach(ck=>click(ck));
+T("base domenica: spunte tutte segnate", d.getElementById("prep-done").textContent===String(prepChecks.length));
+click(d.querySelector('[data-wnav="1"]'));
+T("base domenica: si azzera sulla settimana successiva", d.getElementById("prep-done").textContent==="0");
+click(d.querySelector('[data-wnav="-1"]'));
+T("base domenica: la settimana precedente ricorda le spunte", d.getElementById("prep-done").textContent===String(prepChecks.length));
+
+// 29. base della domenica: le etichette stagionali sono coerenti tra loro (o tutte estate, o tutte non-estate)
+let b5=d.querySelector('[data-scope="prep"] .ck[data-id="b5"] .lbl').textContent;
+let b8=d.querySelector('[data-scope="prep"] .ck[data-id="b8"] .lbl').textContent;
+let b5Estate=/grigliate/.test(b5), b8Estate=/anguria/.test(b8);
+T("base domenica: varianti stagionali coerenti tra loro", b5Estate===b8Estate, b5+" | "+b8);
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

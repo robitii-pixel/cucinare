@@ -879,7 +879,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v23";
+  var APPV="v24";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1352,7 +1352,7 @@
   }
   function wkey(){ return iso(curMonday); }
   function wk0(){ var k=wkey(); state.weeks[k]=state.weeks[k]||{}; var w=state.weeks[k];
-    w.plan=w.plan||{}; w.train=w.train||{}; w.sgarro=w.sgarro||{}; w.done=w.done||{}; return w; }
+    w.plan=w.plan||{}; w.train=w.train||{}; w.sgarro=w.sgarro||{}; w.done=w.done||{}; w.checked=w.checked||{}; return w; }
   function dateOf(dayIdx){ var d=new Date(curMonday); d.setDate(d.getDate()+dayIdx); return d; }
   function isToday(d){ return d.getFullYear()===TODAY.getFullYear()&&d.getMonth()===TODAY.getMonth()&&d.getDate()===TODAY.getDate(); }
   function isPast(d){ var t=new Date(TODAY.getFullYear(),TODAY.getMonth(),TODAY.getDate()); return d<t; }
@@ -1849,6 +1849,7 @@
         +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · ✓ '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgR||0)+'</span></div>'
         +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · ✓ '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgG||0)+'</span></div>';
     }
+    if(typeof renderPrep==="function") renderPrep();
   }
 
   function libDefaults(){
@@ -2076,20 +2077,39 @@
   });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&overlay.classList.contains("on")) closeModal(); });
 
-  function updateProgress(){
-    var items=document.querySelectorAll('.ck'); var done=0;
-    items.forEach(function(i){ if(i.classList.contains("done")) done++; });
-    document.getElementById("prep-done").textContent=done; document.getElementById("prep-tot").textContent=items.length;
+  var PREP_SEASONAL={
+    b5:{estate:"Verdure grigliate (zucchine, melanzane, peperoni)",altro:"Verdure al forno (zucca, carote, cavolfiore)"},
+    b6:{estate:"Una caponata",altro:"Una giardiniera in salamoia (Bottega)"},
+    b7:{estate:"Un pesto (basilico o rucola)",altro:"Un pesto di rucola o cavolo nero"},
+    b8:{estate:"Pomodori, cetrioli, insalata, anguria",altro:"Agrumi, finocchi, cavolo cappuccio"}
+  };
+  function applyPrepSeason(){
+    var key=(season()==="estate")?"estate":"altro";
+    Object.keys(PREP_SEASONAL).forEach(function(id){
+      var lbl=document.querySelector('.checks .ck[data-id="'+id+'"] .lbl');
+      if(lbl) lbl.textContent=PREP_SEASONAL[id][key];
+    });
   }
+  function renderPrep(){
+    var wc=wk0().checked;
+    var items=document.querySelectorAll(".checks .ck"); var done=0;
+    items.forEach(function(ck){
+      var id=ck.dataset.id, on=!!wc[id];
+      ck.classList.toggle("done",on); ck.setAttribute("aria-checked",on?"true":"false");
+      if(on) done++;
+    });
+    var pd=document.getElementById("prep-done"), pt=document.getElementById("prep-tot");
+    if(pd) pd.textContent=done; if(pt) pt.textContent=items.length;
+  }
+  applyPrepSeason();
   document.querySelectorAll(".checks .ck").forEach(function(ck){
     ck.setAttribute("tabindex","0"); ck.setAttribute("role","checkbox");
     var id=ck.dataset.id;
-    if(state.checked[id]){ ck.classList.add("done"); ck.setAttribute("aria-checked","true"); } else ck.setAttribute("aria-checked","false");
-    function toggle(){ var on=ck.classList.toggle("done"); ck.setAttribute("aria-checked",on?"true":"false"); state.checked[id]=on; save(state); updateProgress(); }
+    function toggle(){ var wc=wk0().checked; wc[id]=!wc[id]; save(state); renderPrep(); }
     ck.addEventListener("click",toggle);
     ck.addEventListener("keydown",function(e){ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggle(); } });
   });
-  updateProgress();
+  renderPrep();
 
   document.getElementById("font-toggle").addEventListener("click",function(){
     state.ui.font=((state.ui.font||0)+1)%3; save(state); applyFont();
