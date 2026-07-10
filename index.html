@@ -387,6 +387,11 @@
   .h-btns{display:flex; gap:10px; flex-wrap:wrap}
   .h-mini{background:var(--paper-2); border-radius:12px; padding:11px 15px; font-size:.9rem; margin-bottom:12px}
   html.dark .h-mini{background:#12333B}
+  .h-tk{font-size:.88rem; margin:2px 0 12px; color:var(--text)}
+  .h-tknew{font-size:.68rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; background:#FBF4DC; border:1px solid #EAD9A8; color:#7A5A0B; border-radius:999px; padding:2px 8px}
+  html.dark .h-tknew{background:#3A3110; border-color:#5c4d1a; color:#F0C24B}
+  .h-tkok{font-size:.68rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--herb-deep)}
+  html.dark .h-tkok{color:#5FD1A0}
   .h-links{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
   .tmr{border:1px solid var(--aqua-line); background:var(--aqua); color:var(--ink); border-radius:999px; padding:3px 10px; font-size:.76rem; font-weight:800; margin-left:6px; min-height:30px}
   html.dark .tmr{background:#123038; border-color:#245560; color:#7FD8E8}
@@ -467,11 +472,11 @@
   details.libgroup[open] .lg-ch{transform:rotate(180deg)}
   details.libgroup .cards{padding:4px 0 18px}
   details.libgroup .icn{width:24px; height:24px; flex:none}
-  #fab-home{position:fixed; right:14px; bottom:calc(76px + env(safe-area-inset-bottom)); z-index:130;
+  #fab-home{position:fixed; right:14px; bottom:calc(76px + env(safe-area-inset-bottom)); z-index:200; transform:translateZ(0);
     width:52px; height:52px; border-radius:50%; border:none; background:var(--ink); color:#fff;
     box-shadow:0 8px 24px rgba(10,90,115,.38); display:flex; align-items:center; justify-content:center; cursor:pointer}
   #fab-home .ico{width:1.5rem; height:1.5rem; stroke-width:2}
-  #fab-home:active{transform:scale(.94)}
+  #fab-home:active{transform:translateZ(0) scale(.94)}
   @media(min-width:721px){ #fab-home{bottom:22px} }
   @media print{ #fab-home{display:none !important} }
   @media print{
@@ -673,11 +678,12 @@
       <button class="qn" id="nav-bottega"><span class="qi"><svg class=ico><use href=#i-flame></use></svg></span><span class="qt">Bottega</span></button>
       <button class="qn" id="nav-ric"><span class="qi"><svg class=ico><use href=#i-book></use></svg></span><span class="qt">Ricettario</span></button>
       <button class="qn" id="nav-print" title="Stampa la settimana"><span class="qi"><svg class=ico><use href=#i-print></use></svg></span><span class="qt">Stampa</span></button>
-      <button class="qn" id="nav-search"><span class="qi"><svg class=ico><use href=#i-search></use></svg></span><span class="qt">Cerca</span></button>
+      <button class="qn" id="nav-prof"><span class="qi"><svg class=ico><use href=#i-user></use></svg></span><span class="qt">Profilo</span></button>
       <span class="qsearch"><input type="search" id="q" placeholder="Cerca piatti e tecniche…" autocomplete="off"><span class="qn-n" id="q-n"></span></span>
     </nav>
     <div class="legend legend-min">
       <button class="reset" id="top-home" title="Torna a Oggi" style="color:var(--ink); border-color:var(--ink)"><svg class=ico><use href=#i-home></use></svg></button>
+      <button class="reset" id="nav-search" title="Cerca"><svg class=ico><use href=#i-search></use></svg></button>
       <span class="appv" id="appv"></span>
       <button class="reset" id="help-btn" title="Guida">?</button>
       <button class="reset" id="dark-toggle" title="Modalità scura"><svg class=ico><use href=#i-moon></use></svg></button>
@@ -859,7 +865,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v14";
+  var APPV="v16";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1335,7 +1341,13 @@
   function renderCoach(){
     var wn=isoWeekNum(TODAY);
     var habit=HABITS[wn%HABITS.length];
-    var tw=nextStage()||TKS[wn%TKS.length];
+    var tw=null, twCtx=false;
+    var cid0=planToday("cena"), cdd0=cid0&&BY_ID[cid0];
+    if(cdd0&&!cdd0.free){
+      var ctks=(DISH2TK[cid0]||[]).map(function(t){return TKBY[t];}).filter(function(t){return t&&state.tk[t.id]!=="mia";});
+      if(ctks.length){ tw=ctks[0]; twCtx=true; }
+    }
+    if(!tw) tw=nextStage()||TKS[wn%TKS.length];
     var twDone=!!state.tk[tw.id];
     /* cene vegetali pianificate questa settimana (obiettivo 2) */
     var wkK=iso(mondayOf(TODAY)); var w=state.weeks[wkK]||{plan:{}};
@@ -1349,7 +1361,7 @@
       +'<div class="c-line">'+coachTrainLine("g","Gigi")+'</div>'
       +'<div class="c-grid">'
       +'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">Roberto '+sr+(sr===1?" giorno":" giorni")+' \u00b7 Gigi '+sg+(sg===1?" giorno":" giorni")+'</span><span class="c-s">giornate seguite di fila \u2014 la spunta \u2713 la sera le fa crescere</span></div>'
-      +'<div class="c-cell'+(twDone?' okc':'')+'"><span class="c-k">Percorso · prossima tappa</span><span class="c-v">'+(twDone?"\u2713 ":"")+'<button class="c-link" data-tk="'+tw.id+'">'+tw.name+'</button></span><span class="c-s">'+(twDone?"conquistata \u2014 la prossima arriva luned\u00ec":"il percorso va in ordine: dalle Fondamenta alle Alchimie, una a settimana")+'</span></div>'
+      +'<div class="c-cell'+(twDone?' okc':'')+'"><span class="c-k">Percorso · prossima tappa</span><span class="c-v">'+(twDone?"\u2713 ":"")+'<button class="c-link" data-tk="'+tw.id+'">'+tw.name+'</button></span><span class="c-s">'+(twDone?"conquistata \u2014 la prossima arriva luned\u00ec":(twCtx?"\u00e8 dentro la cena di stasera: si impara cucinando":"il percorso va in ordine: dalle Fondamenta alle Alchimie, una a settimana"))+'</span></div>'
       +'<div class="c-cell'+(vgCount>=2?' okc':'')+'"><span class="c-k">Cene vegetali <svg class=ico><use href=#i-leaf></use></svg></span><span class="c-v">'+vgCount+' su 2 questa settimana</span><span class="c-s">'+(vgCount>=2?"obiettivo raggiunto \u2014 il microbiota ringrazia":"ne manca "+(2-vgCount<=1?"una":"ancora qualcuna")+": <button class=\"c-link\" id=\"c-vg\">scegli tra i piatti verdi</button>")+'</span></div>'
       +'<div class="c-cell"><span class="c-k">Abitudine della settimana</span><span class="c-s" style="font-size:.86rem; color:var(--text)">'+habit+'</span></div>'
       +'</div></div>';
@@ -1386,6 +1398,12 @@
         +'<div class="h-k">Stasera in tavola</div>'
         +'<div class="h-name">'+(cdd.free?"Cena libera <svg class=ico><use href=#i-plate></use></svg>":cdd.name)+(cdd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+'</div>'
         +(cdd.free?'':'<div class="h-meta"><svg class=ico><use href=#i-clock></use></svg> '+mins(cdd)+(pline?' \u00b7 '+pline:'')+'</div>')
+        +(function(){ if(cdd.free) return '';
+            var tks=(DISH2TK[cid]||[]).map(function(t){return TKBY[t];}).filter(Boolean);
+            if(!tks.length) return '';
+            var tk=tks.filter(function(t){return state.tk[t.id]!=="mia";})[0]||tks[0];
+            var nuova=state.tk[tk.id]!=="mia";
+            return '<div class="h-tk"><svg class=ico><use href=#i-flame></use></svg> La tecnica di stasera: <button class="c-link" data-tk="'+tk.id+'">'+tk.name+'</button>'+(nuova?' <span class="h-tknew">da imparare</span>':' <span class="h-tkok">gi\u00e0 vostra</span>')+'</div>'; })()
         +(cdd.free?'':'<div class="h-btns"><button class="cta" data-openslot="'+cid+'|'+dk+'|cena">Iniziamo <svg class=ico><use href=#i-flame></use></svg></button>'
         +'<button class="toolbtn" id="h-week">Cambia o vedi il giorno</button></div>')
         +'</div>';
@@ -2192,7 +2210,7 @@
   var TKRANKS=[[0,"Apprendista"],[4,"Garzone di bottega"],[8,"Cuoco di casa"],[14,"Artigiano del gusto"],[18,"Gran Maestro"]];
   var DISH2TK={p1:["tosta","manteca"],p6:["manteca","zaff"],p13:["manteca"],p8:["legumi"],p9:["legumi"],p3:["palato"],
                d1:["mise","uovo"],d2:["palato"],d3:["agrodolce","bruciato"],d4:["salamoia","emulsioni"],d5:["emulsioni"],
-               d7:["soffritto"],d10:["umami","legumi"],p7:["uovo"],p5:["uovo"],d6:["glassa"],d12:["fari"],d13:["fari","parmveg"],p14:["parmveg","tosta"],s16:["legumi"],s17:["anacardi"],s18:["cremapast"],s19:["aquafaba"],s20:["tosta"],p15:["tosta","umami"],p16:["tosta"],p17:["soffritto","legumi"],p18:["anacardi","legumi"],d17:["legumi","parmveg"],d18:["tosta"],d19:["legumi"],d21:["palato"]};
+               d7:["soffritto"],d10:["umami","legumi"],p7:["uovo"],p5:["uovo"],d6:["glassa"],d12:["fari"],d13:["fari","parmveg"],p14:["parmveg","tosta"],s16:["legumi"],s17:["anacardi"],s18:["cremapast"],s19:["aquafaba"],s20:["tosta"],p15:["tosta","umami"],p16:["tosta"],p17:["soffritto","legumi"],p18:["anacardi","legumi"],d17:["legumi","parmveg"],d18:["tosta"],d19:["legumi"],d21:["palato"],c3:["uovo","palato"],c5:["uovo","mise"],c6:["uovo","soffritto"],c8:["ricotta"],c9:["ricotta"],c10:["uovo"],c11:["tosta"],c12:["legumi","tosta"],d8:["uovo","emulsioni"],d9:["ricotta","tosta"],d11:["uovo"],p2:["legumi","palato"],p4:["manteca"],p10:["uovo","bruciato"],p11:["emulsioni","manteca"],p12:["uovo","mise"],s5:["uovo"],s11:["palato"],s13:["legumi"],s14:["salamoia"],s15:["salamoia","marinatura"]};
   state.tk=state.tk||{}; state.tknote=state.tknote||{};
 
   function tkRank(n){ var r=TKRANKS[0][1]; TKRANKS.forEach(function(x){ if(n>=x[0]) r=x[1]; }); return r; }
@@ -2339,6 +2357,11 @@
   document.getElementById("nav-shop").addEventListener("click",buildShopping);
   document.getElementById("nav-bottega").addEventListener("click",function(){ setView("bottega"); });
   document.getElementById("nav-ric").addEventListener("click",function(){ setView("ric"); });
+  document.getElementById("nav-prof").addEventListener("click",function(){
+    setView("week");
+    var pb=document.getElementById("prof-box");
+    if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); }
+  });
   setView(state.ui.view||"home",true); if((state.ui.view||"home")==="home") renderHome();
   var qEl=document.getElementById("q"), qN=document.getElementById("q-n"), qT=null;
   function doSearch(){
@@ -2650,7 +2673,14 @@
 
   /* PWA: attiva solo quando l'app è pubblicata (http/https), mai da file locale */
   if(location.protocol.indexOf("http")===0 && "serviceWorker" in navigator){
-    try{ navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){}
+    try{
+      navigator.serviceWorker.register("sw.js").catch(function(){});
+      var reloaded=false;
+      navigator.serviceWorker.addEventListener("controllerchange",function(){
+        if(reloaded) return; reloaded=true;
+        location.reload();
+      });
+    }catch(e){}
   }
   /* barra di navigazione: su mobile esce dall'intestazione (backdrop-filter
      rompe position:fixed dei discendenti su Safari) e diventa figlia del body */
