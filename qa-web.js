@@ -247,6 +247,18 @@ T("sync: casella presente in Profili", !!syncBody);
 T("sync: nessun crash senza Firebase", syncBody && syncBody.innerHTML.length>0);
 T("sync: messaggio di indisponibilità mostrato", syncBody && /non è disponibile/.test(syncBody.textContent));
 
+// 27. coerenza icone: zero glifi Unicode residui (regola del progetto), niente <use> rotte
+let allUses=[...d.querySelectorAll("use")];
+let symbolIds=new Set([...d.querySelectorAll("symbol[id]")].map(s=>s.id));
+let brokenIcons=allUses.filter(u=>{
+  let href=u.getAttribute("href")||"";
+  let id=href.replace("#","");
+  return id && !symbolIds.has(id);
+});
+T("icone: nessun riferimento a simboli inesistenti", brokenIcons.length===0, brokenIcons.map(u=>u.getAttribute("href")).join(", "));
+let strayGlyphs=[...d.querySelectorAll("button")].filter(el=>/[✕✓↻↺‹›▾⌄⇄✋]/.test(el.textContent)&&!el.querySelector("svg"));
+T("icone: nessun glifo Unicode residuo nei pulsanti", strayGlyphs.length===0, strayGlyphs.map(e=>e.className+":"+e.textContent).join(" | "));
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

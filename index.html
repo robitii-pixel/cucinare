@@ -613,6 +613,9 @@
   .vgb .ico,.c-cell .ico{vertical-align:-0.15em}
   h2 .ico,h3 .ico{width:1em; height:1em}
   .toolbtn .ico,.reset .ico{width:1.05em; height:1.05em}
+  .m-close .ico,.vbtn.no .ico{transform:rotate(45deg)}
+  .wnav[data-wnav="-1"] .ico{transform:rotate(90deg)}
+  .wnav[data-wnav="1"] .ico{transform:rotate(-90deg)}
 </style>
 </head>
 <body>
@@ -663,6 +666,9 @@
 <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 21 19.5H3Z"/><path d="M12 10v4M12 16.6v.2"/></symbol>
 <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9.6 3.5h4.8M10.6 3.5v5.2L4.8 18.6a2 2 0 0 0 1.8 2.9h10.8a2 2 0 0 0 1.8-2.9L13.4 8.7V3.5"/><path d="M7.6 14.5h8.8"/></symbol>
 <symbol id="i-bowl" viewBox="0 0 24 24"><path d="M3.6 11.5h16.8a8.4 8.4 0 0 1-16.8 0Z"/><path d="M9.3 20h5.4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="i-swap" viewBox="0 0 24 24"><path d="M3 8h15M13 4l5 4-5 4"/><path d="M21 16H6M11 12l-5 4 5 4"/></symbol>
 </svg>
 
 
@@ -754,7 +760,7 @@
     <span class="goal g"><span class="dot" style="background:var(--melon)"></span><span id="leg-g">Gigi</span></span>
     <span class="water"><svg class=ico><use href=#i-drop></use></svg> 2,5 L · sale con l'allenamento</span>
     <button class="reset" id="gen-week"><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</button>
-    <button class="reset" id="reset-all">↺ Ripristina</button>
+    <button class="reset" id="reset-all"><svg class=ico><use href=#i-cycle></use></svg> Ripristina</button>
   </div>
   <p class="sec-sub">Le schede seguono il calendario reale — oggi è evidenziato, e con ‹ › nel riepilogo navighi tra le settimane, ognuna con il suo piano salvato. Scegliete allenamento e orario per ciascuno; a fine giornata segnate <b>✓ seguita</b> o <b><svg class=ico><use href=#i-plate></use></svg> sgarro</b>: è così che si verifica se il programma sta funzionando.</p>
   <div class="weeksum" id="weeksum"></div>
@@ -806,7 +812,7 @@
   <div class="sec-head" style="align-items:center; gap:14px; flex-wrap:wrap"><h2>Il ricettario</h2><button class="toolbtn" id="btn-pantry" style="margin-left:auto"><svg class=ico><use href=#i-basket></use></svg> Da ciò che c’è in casa</button><button class="toolbtn" id="btn-add-dish"><svg class=ico><use href=#i-plus></use></svg> Vostro piatto</button></div>
   <p class="sec-sub">Tutti i piatti, da sfogliare e usare come alternative. Apri per la ricetta e segna il giudizio: quelli “mai più” spariscono dalle proposte di cambio.</p>
   <details class="gmenus libgroup" id="gmenu-box">
-    <summary><span class="lg-t">Menù pronti per gli ospiti</span><span class="lg-n">6 menù</span><span class="lg-ch">⌄</span></summary>
+    <summary><span class="lg-t">Menù pronti per gli ospiti</span><span class="lg-n">6 menù</span><span class="lg-ch"><svg class=ico><use href=#i-chevron></use></svg></span></summary>
     <p class="m-sub" style="margin:10px 0 10px"><svg class=ico><use href=#i-cheers></use></svg> Menù pronti per gli ospiti <span style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--muted)">· dosi ×ospiti dentro ogni ricetta</span></p>
     <div class="cards" style="margin-bottom:20px">
       <div class="card"><div class="nm">Cena d’estate con amici</div>
@@ -876,7 +882,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v20";
+  var APPV="v21";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1393,7 +1399,7 @@
       h+='<button class="selbtn when" data-when="'+day+'|'+person+'">'+(t.when==="mattina"?"<svg class=ico><use href=#i-sun></use></svg>":"<svg class=ico><use href=#i-moon></use></svg>")+'</button>';
     }
     var dn=doneFor(day,person), sg=sgarroFor(day,person);
-    h+='<span class="stat"><button class="dn'+(dn?" on":"")+'" data-dn="'+day+'|'+person+'" title="Giornata seguita">✓</button>'
+    h+='<span class="stat"><button class="dn'+(dn?" on":"")+'" data-dn="'+day+'|'+person+'" title="Giornata seguita" aria-label="Giornata seguita"><svg class=ico><use href=#i-check></use></svg></button>'
       +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Sgarro" aria-label="Segna uno sgarro"><svg class=ico><use href=#i-cheers></use></svg></button></span></div>';
     return h;
   }
@@ -1619,7 +1625,7 @@
   }
   function renderCook(){
     if(COOK.i===-1){
-      modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+      modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
         +'<div class="kicker">Modalit\u00e0 cucina \u00b7 mise en place</div><h3 id="m-title">'+COOK.title+'</h3></div>'
         +'<div class="m-body cookbody">'
         +'<div class="ck-step" style="font-size:1.05rem">Tutto sul banco prima di accendere \u2014 spunta e via:</div>'
@@ -1632,7 +1638,7 @@
     var x=COOK.steps[COOK.i];
     var m=/(\d+)(?:\s*[\u2013-]\s*(\d+))?\s*min/.exec(x);
     var tbtn=""; if(m){ var v=m[2]?parseInt(m[2],10):parseInt(m[1],10); if(v>=1&&v<=180) tbtn='<button class="ck-tmr" data-tmr="'+v+'"><svg class=ico><use href=#i-clock></use></svg> Avvia '+v+' minuti</button>'; }
-    modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Modalit\u00e0 cucina \u00b7 passo '+(COOK.i+1)+' di '+COOK.steps.length+'</div>'
       +'<h3 id="m-title">'+COOK.title+'</h3></div>'
       +'<div class="m-body cookbody">'
@@ -1728,7 +1734,7 @@
       .sort(function(a,b){return tkd[a]<tkd[b]?1:-1;}).slice(0,4)
       .map(function(id){ var t=TKBY[id]; return t?'<li>'+t.name+' <small style="color:var(--muted)">\u00b7 '+tkd[id].split("-").reverse().join("/")+'</small></li>':''; }).join("");
     var mia=Object.keys(state.tk).filter(function(x){return state.tk[x]==="mia";}).length;
-    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Il quadro lungo</div><h3 id="m-title">I vostri progressi</h3>'
       +'<div class="time">Il peso, l\u2019aderenza, la scuola: la direzione conta pi\u00f9 del giorno</div></div><div class="m-body">'
       +'<p class="m-sub">Peso \u00b7 Roberto</p>'+spark(state.whist.r,"#F0B429")+trendNote("r")
@@ -1754,7 +1760,7 @@
       html+='<article class="day'+(today?' today':'')+'" id="day-'+day+'" data-day="'+day+'"><div class="day-head"><div class="top">'
           +'<span class="name">'+DAY_LABEL[day]+' <span class="dnum">'+fmtShort(dt)+'</span></span>'
           +'<span class="tright">'+(today?'<span class="todaytag">Oggi</span>':'')
-          +'<button class="fold" data-fold="'+day+'" aria-label="Apri o chiudi il giorno">▾</button></span></div>'
+          +'<button class="fold" data-fold="'+day+'" aria-label="Apri o chiudi il giorno"><svg class=ico><use href=#i-chevron></use></svg></button></span></div>'
           +selBtns(day,"r")+selBtns(day,"g")
           +'<div class="fuel">'+fuelNote(day)+'</div></div>';
       /* pre/post maps per person */
@@ -1780,7 +1786,7 @@
             +(slow?'<span class="tempo"><svg class=ico><use href=#i-clock></use></svg> con calma</span>':'')+(dd.vg?'<span class="vgb"><svg class=ico><use href=#i-leaf></use></svg></span>':'')
             +(dd.free?'':'<span class="macro"><b>'+dd.pr+'/'+dd.pg+'g</b> prot · '+dd.kr+'/'+dd.kg+' kcal</span>')
             +(v?'<span class="verdict '+v+'">'+VLABEL[v]+'</span>':'')
-            +'<button class="swap" data-open="'+day+'|'+slot+'">⇄</button>'
+            +'<button class="swap" data-open="'+day+'|'+slot+'"><svg class=ico><use href=#i-swap></use></svg></button>'
             +'</div></div></div>';
       });
       var tR=targetFor(day,"r"), tG=targetFor(day,"g");
@@ -1828,12 +1834,12 @@
     var sEl=document.getElementById("weeksum");
     if(sEl){
       var end=dateOf(6);
-      sEl.innerHTML='<div class="ws-nav"><button class="wnav" data-wnav="-1" aria-label="Settimana precedente">‹</button>'
+      sEl.innerHTML='<div class="ws-nav"><button class="wnav" data-wnav="-1" aria-label="Settimana precedente"><svg class=ico><use href=#i-chevron></use></svg></button>'
         +'<div class="ws-t">Settimana '+fmtShort(curMonday)+' – '+fmtShort(end)+' '+end.getFullYear()+' <span style="font-weight:400;font-size:.78rem;opacity:.75">· '+Object.keys(state.weeks||{}).length+' settimane in archivio</span>'
         +(iso(mondayOf(TODAY))===wkey()?' <span class="ws-cur">· corrente</span>':'')
         +'<div class="ws-note">media giornaliera · le serate libere non sono contate</div>'
         +'<div class="ws-note" style="margin-top:5px">giornate seguite: R '+(wk.dnR||0)+' · G '+(wk.dnG||0)+(((wk.sgR||0)+(wk.sgG||0))?' · sgarri: '+((wk.sgR||0)+(wk.sgG||0)):'')+' · cene <svg class=ico><use href=#i-leaf></use></svg>: '+vgDinners()+'/2</div></div>'
-        +'<button class="wnav" data-wnav="1" aria-label="Settimana successiva">›</button></div>'
+        +'<button class="wnav" data-wnav="1" aria-label="Settimana successiva"><svg class=ico><use href=#i-chevron></use></svg></button></div>'
         +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · ✓ '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgR||0)+'</span></div>'
         +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · ✓ '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgG||0)+'</span></div>';
     }
@@ -1852,7 +1858,7 @@
     ["colazione","spuntino","pranzo","cena"].forEach(function(t){
       var tgt=smartSlot(); if(tgt==="merenda") tgt="cena";
       var openNow=(t===tgt);
-      html+='<details class="libgroup" data-grp="'+t+'"'+(openNow?' open':'')+'><summary><span class="icn">'+ICONS[t]+'</span><span class="lg-t">'+titles[t]+'</span><span class="lg-n">'+LIB[t].length+' piatti</span><span class="lg-ch">⌄</span></summary><div class="cards">';
+      html+='<details class="libgroup" data-grp="'+t+'"'+(openNow?' open':'')+'><summary><span class="icn">'+ICONS[t]+'</span><span class="lg-t">'+titles[t]+'</span><span class="lg-n">'+LIB[t].length+' piatti</span><span class="lg-ch"><svg class=ico><use href=#i-chevron></use></svg></span></summary><div class="cards">';
       LIB[t].forEach(function(dd){
         var v=state.verdict[dd.id];
         var mins=parseInt(((dd.time||"").match(/\d+/)||[0])[0],10)||0; var slow=(mins>=25);
@@ -1890,7 +1896,7 @@
     var dd=dish(id); if(!dd) return;
     var v=state.verdict[id];
     var kk={colazione:"Colazione",spuntino:"Spuntino",pranzo:"Pranzo",cena:"Cena"}[dd.type]||"Serata libera";
-    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">✕</button>'
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">'+kk+'</div><h3 id="m-title">'+dd.name+'</h3><div class="time"><svg class=ico><use href=#i-clock></use></svg> '+dd.time+'</div></div><div class="m-body">';
     html+='<p class="m-desc">'+dd.desc+'</p>';
     if(dd.custom){ html+='<button class="toolbtn" id="del-dish" style="margin-bottom:14px"><svg class=ico><use href=#i-trash></use></svg> Elimina questo piatto</button>'; }
@@ -1922,9 +1928,9 @@
     html+='<div class="notelbl2">Le vostre note sul piatto</div>'
       +'<textarea class="notew" id="dnote">'+((state.dnote[id]||"").replace(/</g,"&lt;"))+'</textarea>';
     html+='<div class="verdict-row">'
-      +'<button class="vbtn ok'+(v==="ok"?' on':'')+'" data-v="ok">✓ Buono</button>'
-      +'<button class="vbtn wait'+(v==="wait"?' on':'')+'" data-v="wait">↻ Un\'altra volta</button>'
-      +'<button class="vbtn no'+(v==="no"?' on':'')+'" data-v="no">✕ Mai più</button></div>';
+      +'<button class="vbtn ok'+(v==="ok"?' on':'')+'" data-v="ok"><svg class=ico><use href=#i-check></use></svg> Buono</button>'
+      +'<button class="vbtn wait'+(v==="wait"?' on':'')+'" data-v="wait"><svg class=ico><use href=#i-cycle></use></svg> Un\'altra volta</button>'
+      +'<button class="vbtn no'+(v==="no"?' on':'')+'" data-v="no"><svg class=ico><use href=#i-plus></use></svg> Mai più</button></div>';
 
     if(day && slot){
       var pn=poolName(slot);
@@ -2021,7 +2027,7 @@
       if(!out) return "";
       return '<p class="m-sub" style="margin-top:18px">'+title+'</p><p style="font-size:.82rem;color:var(--muted);margin:-6px 0 8px">'+note+'</p>'+out;
     }
-    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Settimana '+fmtShort(curMonday)+' \u2013 '+fmtShort(dateOf(6))+'</div><h3 id="m-title">La spesa, al momento giusto</h3>'
       +'<div class="time">Ordinata per banco del mercato, quantit\u00e0 gi\u00e0 sommate per voi due</div></div><div class="m-body">'
       +trip("<svg class=ico><use href=#i-cart></use></svg> Spesa 1 \u00b7 weekend","Copre luned\u00ec\u2013mercoled\u00ec, insieme alla base della domenica.",function(mm){return mm.first<=2;})
@@ -2396,7 +2402,7 @@
   function openTk(id){
     curTk=id; var t=TKBY[id]; if(!t) return;
     var st=state.tk[id];
-    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Bottega \u00b7 Livello '+t.lv+' \u00b7 '+TKLV[t.lv].t+'</div><h3 id="m-title">'+t.name+'</h3><div class="time"><svg class=ico><use href=#i-clock></use></svg> '+t.time+'</div></div><div class="m-body">'
       +'<div class="why"><h5>Perch\u00e9 funziona</h5><p>'+t.why+'</p></div>'
       +(t.kit?'<p class="m-sub">Cosa vi serve</p><ul class="kit">'+t.kit.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul>':'')
@@ -2410,7 +2416,7 @@
       +'<span class="mchip r">Roberto '+t.meal.kr+' kcal \u00b7 '+t.meal.pr+' g</span>'
       +'<span class="mchip g">Gigi '+t.meal.kg+' kcal \u00b7 '+t.meal.pg+' g</span></div></div>'
       +'<div style="margin:0 0 12px"><button class="toolbtn primaryish" data-cookmode="'+t.id+'"><svg class=ico><use href=#i-hat></use></svg> Modalit\u00e0 cucina</button></div>'
-      +'<div class="strow"><button class="stb prova'+(st==="prova"?' on':'')+'" data-tkst="prova">\u270B Provata</button>'
+      +'<div class="strow"><button class="stb prova'+(st==="prova"?' on':'')+'" data-tkst="prova"><svg class=ico><use href=#i-check></use></svg> Provata</button>'
       +'<button class="stb mia'+(st==="mia"?' on':'')+'" data-tkst="mia"><svg class=ico><use href=#i-medal></use></svg> Mia!</button></div>'
       +'<div style="font-size:.78rem;color:var(--muted);margin:6px 0 6px;font-weight:600">Le vostre note</div>'
       +'<textarea class="notew" id="tknote">'+(state.tknote[id]||"")+'</textarea></div>';
@@ -2607,7 +2613,7 @@
     });
   }
   function openAddDish(){
-    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Il vostro ricettario</div><h3 id="m-title">Aggiungi un piatto</h3>'
       +'<div class="time">Compare nel ricettario e tra le alternative, con i vostri numeri</div></div><div class="m-body">'
       +'<div class="addf">'
@@ -2669,7 +2675,7 @@
     var saved=state.pantry||"";
     var pslot=state.pslot||smartSlot();
     var chips=PANTRY_CHIPS.map(function(c){ return '<button class="fchip pchipx" data-pc="'+c+'">'+c+'</button>'; }).join("");
-    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">L\u2019approccio inverso</div><h3 id="m-title">Da ci\u00f2 che c\u2019\u00e8 in casa</h3>'
       +'<div class="time">Scrivi (o tocca) quello che avete: ti dico cosa ci si cucina</div></div><div class="m-body">'
       +'<textarea class="notew" id="pantry-in" placeholder="Es. pomodori, ceci, pane raffermo, basilico\u2026" style="min-height:60px">'+saved.replace(/</g,"&lt;")+'</textarea>'
@@ -2799,7 +2805,7 @@
 
   /* ---------- guida ---------- */
   function openHelp(){
-    modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi">\u2715</button>'
+    modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">La nostra cucina</div><h3 id="m-title">Come funziona</h3>'
       +'<div class="time">La guida rapida, sempre qui sotto il punto interrogativo</div></div><div class="m-body helpb">'
       +'<h5><svg class=ico><use href=#i-home></use></svg> Oggi</h5><p>La schermata di casa: la cena di stasera con \u201cIniziamo\u201d, il prossimo pasto, il coach con la serie <svg class=ico><use href=#i-flame></use></svg>, la tappa del percorso e l\u2019abitudine della settimana.</p>'
