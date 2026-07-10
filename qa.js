@@ -240,6 +240,13 @@ let badQty=shopItems.filter(li=>/NaN|undefined/.test(li.querySelector(".q").text
 T("spesa: nessuna quantità NaN/undefined", badQty.length===0, badQty.map(li=>li.textContent).join(" | "));
 click(d.getElementById("m-close"));
 
+// 26. sincronizzazione: senza Firebase disponibile (come in questo ambiente di test),
+// l'app deve degradare in modo pulito, senza errori e con un messaggio chiaro
+let syncBody=d.getElementById("sync-body");
+T("sync: casella presente in Profili", !!syncBody);
+T("sync: nessun crash senza Firebase", syncBody && syncBody.innerHTML.length>0);
+T("sync: messaggio di indisponibilità mostrato", syncBody && /non è disponibile/.test(syncBody.textContent));
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

@@ -6,17 +6,31 @@ comportamentale, dispensa, lista spesa, progressi. Pubblicata su GitHub Pages co
 Tutta la comunicazione col proprietario è **in italiano**.
 
 ## Architettura (non negoziabile senza consenso esplicito)
-- **Un solo file HTML per build**: CSS e JS inline, vanilla JS, zero dipendenze esterne, offline-first.
-  Non spacchettare in moduli: la portabilità del file unico è un requisito del proprietario
-  (soglia di ripensamento dichiarata: ~400 KB; oggi ~260 KB).
+- **Un solo file HTML per build**: CSS e JS inline, vanilla JS, offline-first per tutto ciò che
+  non è la sincronizzazione. Non spacchettare in moduli: la portabilità del file unico è un
+  requisito del proprietario (soglia di ripensamento dichiarata: ~400 KB; oggi ~260 KB).
 - **Due build sincronizzate**:
   - `la-nostra-cucina.html` = build personale (PERSONAL=true, profili precompilati con dati reali).
   - `index.html` = build web pubblicabile, **generata SOLO da `build.py`** (mai a mano):
     PERSONAL=false, zero dati personali. `build.py` contiene assert che bloccano fughe di dati.
 - Dati utente in `localStorage`, chiave `settimana_veg_v2`. I piani vivono in
   `state.weeks[isoLunedì].{plan,train,sgarro,done}` — MAI in `state.plan` diretto (bug storico).
-- PWA: `sw.js` con strategia **rete-prima per la pagina** (gli aggiornamenti devono arrivare
-  subito), cache-first per icone/manifest. Non tornare mai a cache-first per index.html.
+- PWA: `sw.js` con strategia **rete-prima per la pagina, ignorando la cache del browser**
+  (`cache:"no-store"`, con limite di attesa 2,5s e fallback sull'ultima versione salvata),
+  cache-first per icone/manifest. Non tornare mai a cache-first per index.html.
+- **Sincronizzazione tra i due telefoni (dal v20)**: unica dipendenza esterna consentita nel
+  progetto, aggiunta con consenso esplicito del proprietario. Firebase Realtime Database
+  (progetto `cucina-vegetariana`, SDK compat via CDN gstatic). Nessun account/password:
+  un "codice famiglia" casuale (≥20 caratteri) generato in `genFamCode()`, salvato in
+  `localStorage` sotto `cucina_fam_code` (fuori da `state`, non viene sincronizzato), fa da
+  path e da controllo d'accesso nelle regole del database. Last-write-wins su `state._ts`
+  (timestamp stampato ad ogni `save()`). La variabile `fbApplyingRemote` è cruciale: mentre è
+  vera, `save()` diventa un no-op completo (niente `_ts`, niente localStorage, niente push) —
+  senza, i salvataggi collaterali innescati dal solo ridisegno (es. `renderLibrary→doSearch→
+  setView`) rientrerebbero in un eco che sovrascrive modifiche concorrenti sull'altro telefono
+  (bug reale trovato e corretto in fase di test, vedi commit v20). Regole del database da
+  pubblicare via Console: sotto `households/$hid`, lettura/scrittura consentite solo se
+  `$hid.length >= 20`.
 
 ## Regole ferree di modifica (nate da errori reali di questo progetto)
 1. **Ogni sostituzione di testo nel file va verificata con assert sull'anchor**: tre bug storici
@@ -54,5 +68,6 @@ nascita e pesi: **NON committarla in un repo pubblico**. Tenerla solo locale (è
 ## Backlog concordato
 - Rotazione stagionale autunnale (settembre 2026): meccanismo `sea:` già pronto, servono ricette.
 - Assistente contestuale (richiede rete: ora che l'app è online è possibile; discutere prima).
-- Sync tra dispositivi = backend: rimandato; il ponte è esporta/importa.
+- Sync tra dispositivi: fatto dal v20 (Firebase Realtime Database, vedi sezione Architettura).
+  Esporta/importa resta comunque disponibile come backup manuale.
 - Modalità trasferta attiva per il viaggio in Francia 25/7–8/8 (promemoria automatico in Home).

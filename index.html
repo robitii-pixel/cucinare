@@ -739,6 +739,10 @@
       <button class="toolbtn" id="btn-trip"></button>
       <input type="file" id="import-file" accept=".json,application/json" style="display:none">
     </div>
+    <div class="note-box" id="sync-box" style="margin-top:14px">
+      <p style="margin:0 0 8px"><b><svg class=ico><use href=#i-cycle></use></svg> Sincronizza i due telefoni</b></p>
+      <div id="sync-body"></div>
+    </div>
     <p class="prof-note">Calcolo dichiarato: metabolismo basale con <b>Mifflin–St Jeor</b>, fabbisogno con fattore 1,40 (vita quotidiana sedentaria — corsa, forza e volley vengono <b>già aggiunti giorno per giorno</b> dalle schede, quindi qui non si contano due volte). Obiettivo: ricomposizione −5%, definizione −15%, mantenimento 0, massa +8%. Proteine: 1,8 g/kg (ricomposizione e massa), 2,0 (definizione), 1,6 (mantenimento) — calcolate sul <b>peso di riferimento</b> (BMI 25) se il peso attuale lo supera, con tetto pratico a 135 g: oltre, da vegetariani senza integratori, la dieta si snaturerebbe — e per la ricomposizione non serve. Finché i campi sono vuoti restano i valori di base concordati. Le stime restano stime: bilancia e specchio a 3–4 settimane sono i veri giudici. <b>Nota:</b> tutti i valori di kcal e proteine sono <b>stime indicative</b>, utili per orientarsi — non sostituiscono una valutazione nutrizionale professionale, e la bilancia a 3–4 settimane resta il giudice vero. <b>Da collega:</b> se la settimana diventa prevalentemente vegetale, la B12 va integrata sempre (non è opinabile), e meritano attenzione ferro, iodio e omega-3 (semi di lino, noci).</p>
   </details>
 </section>
@@ -866,20 +870,127 @@
 
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="m-title"><div class="modal" id="modal"></div></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v19";
+  var APPV="v20";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
-  function save(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }
+  var fbApplyingRemote=false;
+  function save(o){
+    if(fbApplyingRemote) return;
+    o._ts=Date.now();
+    try{ localStorage.setItem(KEY, JSON.stringify(o)); }
     catch(e){ mem=o;
-      if(!warnedQuota&&typeof toast==="function"){ warnedQuota=true; toast("<svg class=ico><use href=#i-warn></use></svg> Memoria del browser piena: esporta un backup dai Profili",6000); } } }
+      if(!warnedQuota&&typeof toast==="function"){ warnedQuota=true; toast("<svg class=ico><use href=#i-warn></use></svg> Memoria del browser piena: esporta un backup dai Profili",6000); } }
+    fbPush();
+  }
+  /* ---------- sincronizzazione tra telefoni (Firebase Realtime Database) ---------- */
+  var FB_CONFIG={apiKey:"AIzaSyDhZpypCYF58c_AnrAHo4gza0KnRvFCZos",authDomain:"cucina-vegetariana.firebaseapp.com",databaseURL:"https://cucina-vegetariana-default-rtdb.europe-west1.firebasedatabase.app/",projectId:"cucina-vegetariana",storageBucket:"cucina-vegetariana.firebasestorage.app",messagingSenderId:"802934332460",appId:"1:802934332460:web:43a866e671a0e80d738589"};
+  var FAM_KEY="cucina_fam_code";
+  var fbDb=null, fbPushTimer=null;
+  function famCode(){ try{ return localStorage.getItem(FAM_KEY)||""; }catch(e){ return ""; } }
+  function setFamCode(c){ try{ if(c) localStorage.setItem(FAM_KEY,c); else localStorage.removeItem(FAM_KEY); }catch(e){} }
+  function genFamCode(){
+    var a=new Uint8Array(16);
+    if(window.crypto&&crypto.getRandomValues) crypto.getRandomValues(a); else for(var i=0;i<16;i++) a[i]=Math.floor(Math.random()*256);
+    return Array.from(a).map(function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+  }
+  function fbInit(){
+    if(fbDb||typeof firebase==="undefined") return;
+    try{ firebase.initializeApp(FB_CONFIG); fbDb=firebase.database(); }catch(e){ fbDb=null; }
+  }
+  function ensureDefaults(st){
+    st.plan=st.plan||{}; st.verdict=st.verdict||{}; st.checked=st.checked||{};
+    st.shop=st.shop||{}; st.fav=st.fav||{}; st.cooked=st.cooked||{}; st.dnote=st.dnote||{}; st.whist=st.whist||{r:[],g:[]}; st.custom=st.custom||[];
+    st.ui=st.ui||{}; st.prof=st.prof||{r:{},g:{}}; st.weeks=st.weeks||{};
+    st.tk=st.tk||{}; st.tknote=st.tknote||{};
+    return st;
+  }
+  function fbPush(){
+    if(!fbDb||!famCode()) return;
+    clearTimeout(fbPushTimer);
+    fbPushTimer=setTimeout(function(){
+      try{ fbDb.ref("households/"+famCode()+"/state").set(JSON.parse(JSON.stringify(state))).catch(function(){}); }catch(e){}
+    },900);
+  }
+  function fbListen(){
+    if(!fbDb||!famCode()) return;
+    fbDb.ref("households/"+famCode()+"/state").on("value",function(snap){
+      var remote=snap.val();
+      if(!remote||!remote._ts||remote._ts<=(state._ts||0)) return;
+      state=ensureDefaults(remote);
+      try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
+      fbApplyingRemote=true; try{ renderAll(); } finally { fbApplyingRemote=false; }
+      if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> Aggiornato dall'altro telefono",2500);
+    });
+  }
+  function renderAll(){
+    if(typeof applyFont==="function") applyFont();
+    refreshProfileFields(); renderWeek(); renderLibrary(); renderBottega();
+    var h=document.getElementById("home");
+    if(h&&h.style.display!=="none") renderHome();
+  }
+  function shareFamCode(){
+    var code=famCode(); if(!code) return;
+    var url=location.origin+location.pathname+"?fam="+code;
+    if(navigator.share){ navigator.share({title:"Collega La nostra cucina",text:"Apri questo link sull'altro telefono per collegarlo:",url:url}).catch(function(){}); }
+    else if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ alert("Collegamento copiato: incollalo in un messaggio per l'altro telefono."); }); }
+    else { prompt("Copia questo collegamento per l'altro telefono:",url); }
+  }
+  function startFamSync(){
+    if(!fbDb) return;
+    var code=genFamCode(); setFamCode(code);
+    save(state); fbListen(); renderSync();
+    if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> Telefono collegato",2500);
+    shareFamCode();
+  }
+  function joinFamSync(code){
+    if(!fbDb) return;
+    setFamCode(code);
+    fbDb.ref("households/"+code+"/state").get().then(function(snap){
+      var remote=snap.val();
+      if(remote&&remote._ts){
+        state=ensureDefaults(remote); try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
+        fbApplyingRemote=true; try{ renderAll(); } finally { fbApplyingRemote=false; }
+      } else { save(state); }
+      fbListen(); renderSync();
+      if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> Telefono collegato",2500);
+    }).catch(function(){ alert("Non riesco a collegarmi ora: controllate la connessione e riprovate."); });
+  }
+  function renderSync(){
+    var box=document.getElementById("sync-body"); if(!box) return;
+    var code=famCode();
+    if(!fbDb){ box.innerHTML='<p style="font-size:.85rem;color:var(--muted);margin:0">La sincronizzazione non è disponibile ora (serve internet la prima volta).</p>'; return; }
+    if(code){
+      box.innerHTML='<p style="font-size:.85rem;color:var(--herb-deep);margin:0 0 10px"><svg class=ico><use href=#i-cycle></use></svg> Collegato — i dati si aggiornano da soli sull’altro telefono.</p>'
+        +'<button class="toolbtn" id="sync-share"><svg class=ico><use href=#i-up></use></svg> Condividi il collegamento</button>'
+        +'<button class="toolbtn" id="sync-off" style="margin-top:8px">Scollega questo telefono</button>';
+      document.getElementById("sync-share").addEventListener("click",shareFamCode);
+      document.getElementById("sync-off").addEventListener("click",function(){
+        if(!confirm("Scollegare questo telefono? I dati restano qui, ma non si aggiorneranno più insieme all'altro telefono.")) return;
+        try{ if(fbDb) fbDb.ref("households/"+code+"/state").off(); }catch(e){}
+        setFamCode(""); renderSync();
+      });
+    } else {
+      box.innerHTML='<p style="font-size:.85rem;color:var(--muted);margin:0 0 10px">Collegate questo e l’altro telefono per vedere sempre gli stessi dati, senza esportare/importare a mano.</p>'
+        +'<button class="toolbtn" id="sync-start"><svg class=ico><use href=#i-cycle></use></svg> Collega i telefoni</button>'
+        +'<div style="margin-top:12px"><span style="font-size:.85rem;color:var(--muted)">Avete già un codice dall’altro telefono?</span>'
+        +'<div class="mvrow" style="margin-top:6px"><input type="text" id="sync-code-in" placeholder="incolla qui il codice"><button class="toolbtn" id="sync-join">Collega</button></div></div>';
+      document.getElementById("sync-start").addEventListener("click",startFamSync);
+      document.getElementById("sync-join").addEventListener("click",function(){
+        var v=(document.getElementById("sync-code-in").value||"").trim();
+        if(v.length<20){ alert("Il codice non sembra completo: copialo per intero dall'altro telefono."); return; }
+        joinFamSync(v);
+      });
+    }
+  }
   var state=load();
-  state.plan=state.plan||{}; state.verdict=state.verdict||{}; state.checked=state.checked||{};
-  state.shop=state.shop||{}; state.fav=state.fav||{}; state.cooked=state.cooked||{}; state.dnote=state.dnote||{}; state.whist=state.whist||{r:[],g:[]}; state.custom=state.custom||[];
+  ensureDefaults(state);
   /* dimensione testo: 0 normale · 1 grande · 2 extra */
   state.ui=state.ui||{};
   var FONTL=["A","A+","A++"];
@@ -1173,13 +1284,21 @@
       if(leg) leg.textContent=BASE[k].name+" · base "+BASE[k].k.toLocaleString("it-IT")+" kcal · "+BASE[k].p+" g";
     });
   }
-  function bindProfile(){
-    [["r","age"],["r","h"],["r","w"],["r","goal"],["g","age"],["g","h"],["g","w"],["g","goal"]].forEach(function(f){
+  var PROF_FIELDS=[["r","age"],["r","h"],["r","w"],["r","goal"],["g","age"],["g","h"],["g","w"],["g","goal"]];
+  function refreshProfileFields(){
+    PROF_FIELDS.forEach(function(f){
       var el=document.getElementById("p"+f[0]+"-"+(f[1]==="age"?"age":f[1]==="goal"?"goal":f[1]));
       if(!el) return;
       var pr=state.prof[f[0]];
       if(f[1]==="goal"){ el.value=pr.goal||"ricomp"; }
       else if(pr[f[1]]){ el.value=pr[f[1]]; }
+    });
+    applyProfile();
+  }
+  function bindProfile(){
+    PROF_FIELDS.forEach(function(f){
+      var el=document.getElementById("p"+f[0]+"-"+(f[1]==="age"?"age":f[1]==="goal"?"goal":f[1]));
+      if(!el) return;
       el.addEventListener("input",function(){
         var v=(f[1]==="goal")?el.value:parseFloat(el.value)||null;
         state.prof[f[0]][f[1]]=v;
@@ -1190,7 +1309,7 @@
         applyProfile(); renderWeek();
       });
     });
-    applyProfile();
+    refreshProfileFields();
   }
   var DAY_LABEL={lun:"Lunedì",mar:"Martedì",mer:"Mercoledì",gio:"Giovedì",ven:"Venerdì",sab:"Sabato",dom:"Domenica"};
   var DEFAULT_TRAIN={
@@ -2732,6 +2851,16 @@
   });
   bindProfile(); renderWeek(); renderLibrary(); libDefaults(); renderBottega();
   if(window.__doSearch) window.__doSearch();
+  fbInit();
+  (function(){
+    var famParam=null;
+    try{ famParam=new URL(location.href).searchParams.get("fam"); }catch(e){}
+    if(famParam&&famParam.length>=20&&famParam!==famCode()){
+      try{ history.replaceState(null,"",location.pathname); }catch(e){}
+      joinFamSync(famParam);
+    } else if(famCode()){ fbListen(); }
+    renderSync();
+  })();
 })();
 </script>
 </body>
