@@ -293,6 +293,20 @@ let pantryCta=d.getElementById("h-pantry-cta");
 T("Home: il pulsante pantry apre il modale giusto", !!pantryCta);
 if(pantryCta){ click(pantryCta);
   T("Home: il modale pantry si apre dal pulsante principale", /ciò che c.è in casa/i.test(d.getElementById("m-title").textContent));
+
+  // 32. i chip "da ciò che c'è in casa" sono generati dalle ricette vere, non da una lista scritta a mano
+  let chips=[...d.querySelectorAll(".pchipx")].map(c=>c.textContent);
+  T("pantry: chip generati in quantità ampia (non più solo 27 scelti a mano)", chips.length>=40, "trovati: "+chips.length);
+  T("pantry: tempeh incluso tra i chip (nuova ricetta)", chips.includes("tempeh"));
+  T("pantry: nessun chip 'acqua' spurio", !chips.includes("acqua"));
+
+  // 33. cercando un ingrediente di una ricetta nuova, la si trova (nello slot giusto)
+  click(d.querySelector('[data-ps="cena"]'));
+  let pin=d.getElementById("pantry-in");
+  pin.value="tempeh"; pin.dispatchEvent(new w.Event("input",{bubbles:true}));
+  click(d.getElementById("pantry-go"));
+  T("pantry: cercando 'tempeh' per cena trova la ricetta nuova", /Tempeh glassato/.test(d.getElementById("pantry-out").textContent));
+
   click(d.getElementById("m-close"));
 }
 

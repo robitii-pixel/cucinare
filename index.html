@@ -884,7 +884,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v26";
+  var APPV="v27";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1167,7 +1167,10 @@
         left:"la pasta e fagioli di domani è migliore di quella di stasera: un mestolo d’acqua per allentarla.",steps:["Soffritto, pomodoro e rosmarino; metà fagioli frullati con la loro acqua, metà interi.","Cuoci la pasta DENTRO la zuppa, mescolando: l’amido lega tutto.","Riposo 5 minuti: la pasta e fagioli si mangia tiepida, con olio a crudo e la pioggia di mandorle."]},
       {id:"p18",sea:"estate",fam:"insalata",pm:"legumi",vg:1,name:"Insalata di farro, ceci croccanti e verdure crude",time:"15 min (farro pronto)",desc:"Croccante tre volte: farro, ceci tostati, verdure. La schiscetta perfetta.",kr:625,kg:540,pr:29,pg:27,
         ing:[{n:"Farro cotto",r:"180 g",g:"150 g"},{n:"Ceci croccanti",r:"100 g",g:"100 g"},{n:"Pomodorini, cetriolo, sedano",q:"q.b."},{n:"Crema di anacardi alle erbe (Bottega)",q:"2 cucchiai"},{n:"Limone e menta",q:"q.b."}],
-        steps:["Farro freddo con verdure a dadini e citronette al limone.","Ceci croccanti all’ultimo (altrimenti ammorbidiscono).","Cucchiaiate di crema di anacardi qua e là: le “isole” cremose fanno il piatto."]}
+        steps:["Farro freddo con verdure a dadini e citronette al limone.","Ceci croccanti all’ultimo (altrimenti ammorbidiscono).","Cucchiaiate di crema di anacardi qua e là: le “isole” cremose fanno il piatto."]},
+      {id:"p19",fam:"insalata",pm:"legumi",vg:1,name:"Insalata di farro con tempeh croccante",time:"18 min",desc:"Il tempeh a cubetti, rosolato bene: la parte croccante che fa dimenticare che è un’insalata di legumi.",kr:610,kg:535,pr:29,pg:27,
+        ing:[{n:"Farro cotto",r:"90 g",g:"75 g"},{n:"Tempeh",r:"80 g",g:"70 g"},{n:"Pomodorini e rucola",q:"q.b."},{n:"Salsa di soia",q:"1 cucchiaio"},{n:"Limone e olio",q:"q.b."}],
+        steps:["Taglia il tempeh a cubetti, rosolalo 4–5 minuti finché croccante, ultimo minuto con un filo di soia.","Componi farro, pomodorini, rucola.","Tempeh sopra, limone e olio a crudo."]}
     ],
     cena:[
       {id:"d1",fam:"frittata",pm:"uova",name:"Frittata di zucchine e menta con pane",time:"15 min",desc:"Con insalata di pomodori: cena d'estate.",kr:565,kg:470,pr:37,pg:35,
@@ -1229,7 +1232,10 @@
         left:"i burger crudi si congelano già formati: la cena d’emergenza pronta in 8 minuti.",steps:["Schiaccia le lenticchie con forchetta (non frullare: la grana è il carattere), pangrattato e spezie.","Forma 2 burger, riposo 10 minuti in frigo (si compattano).","Rosola 3–4 minuti per lato in padella oliata ben calda, senza toccarli: la crosticina è tutto.","Nel pane con crema, pomodoro e insalata."]},
       {id:"d21",sea:"estate",gst:1,fam:"zuppa",pm:"legumi",vg:1,name:"Pappa al pomodoro fredda con cannellini",time:"20 min + freddo",desc:"L’estate in ciotola: pomodoro maturo, pane raffermo, basilico e legumi.",kr:580,kg:500,pr:28,pg:26,
         ing:[{n:"Pomodori maturi",q:"500 g"},{n:"Pane raffermo",r:"70 g",g:"55 g"},{n:"Cannellini",r:"180 g",g:"180 g"},{n:"Basilico abbondante, aglio, olio",q:"q.b."}],
-        left:"il giorno dopo, ancora più fredda e riposata, è al suo massimo. Aggiungi basilico fresco.",steps:["Pomodori scottati 1 minuto, pelati e frullati grossolanamente con basilico.","Pane a pezzi dentro, 15 minuti a insaporire; cannellini conditi sopra.","Fredda è meglio: preparala al mattino, la sera è perfetta."]}
+        left:"il giorno dopo, ancora più fredda e riposata, è al suo massimo. Aggiungi basilico fresco.",steps:["Pomodori scottati 1 minuto, pelati e frullati grossolanamente con basilico.","Pane a pezzi dentro, 15 minuti a insaporire; cannellini conditi sopra.","Fredda è meglio: preparala al mattino, la sera è perfetta."]},
+      {id:"d22",fam:"asian",pm:"legumi",vg:1,name:"Tempeh glassato con riso e verdure saltate",time:"25 min",desc:"La stessa laccatura dolce-salata delle melanzane della Bottega, sul tempeh: croccante fuori, succoso dentro.",kr:560,kg:490,pr:29,pg:26,
+        ing:[{n:"Tempeh",r:"100 g",g:"90 g"},{n:"Riso integrale cotto",r:"70 g",g:"60 g"},{n:"Broccoli e carote",q:"200 g"},{n:"Salsa di soia",q:"3 cucchiai"},{n:"Miele",q:"1 cucchiaio"},{n:"Sesamo tostato",q:"q.b."}],
+        steps:["Taglia il tempeh a fette, rosolalo in padella calda 3–4 minuti per lato finché dorato.","Sciogli soia e miele in un padellino, riduci 2–3 minuti (la tecnica della glassatura della Bottega); versala sul tempeh caldo 60–90 secondi finché lucido.","Servi col riso e le verdure saltate a parte; sesamo sopra."]}
     ]
   };
   var SPECIAL={
@@ -2423,7 +2429,7 @@
             3:{t:"Alchimie",sub:"Progetti da weekend, quando ci si pu\u00f2 dedicare.",cls:"l3"}};
   var TKSTL={prova:"Provata",mia:"Mia!"};
   var TKRANKS=[[0,"Apprendista"],[4,"Garzone di bottega"],[8,"Cuoco di casa"],[14,"Artigiano del gusto"],[18,"Gran Maestro"]];
-  var DISH2TK={p1:["tosta","manteca"],p6:["manteca","zaff"],p13:["manteca","confit"],p8:["legumi"],p9:["legumi"],p3:["palato"],
+  var DISH2TK={p1:["tosta","manteca"],p6:["manteca","zaff"],p13:["manteca","confit"],p8:["legumi"],p9:["legumi"],p3:["palato"],p19:["legumi"],d22:["glassa","legumi"],
                d1:["mise","uovo"],d2:["palato"],d3:["agrodolce","bruciato"],d4:["salamoia","emulsioni"],d5:["emulsioni"],
                d7:["soffritto"],d10:["umami","legumi"],p7:["uovo"],p5:["uovo"],d12:["fari"],d13:["fari","parmveg"],p14:["parmveg","tosta"],s16:["legumi"],s17:["anacardi"],s18:["cremapast"],s19:["aquafaba"],s20:["tosta"],p15:["tosta","umami"],p16:["tosta"],p17:["soffritto","legumi"],p18:["anacardi","legumi"],d17:["legumi","parmveg"],d18:["tosta"],d19:["legumi"],d21:["palato"],c3:["uovo","palato"],c5:["uovo","mise"],c6:["uovo","soffritto"],c8:["ricotta"],c9:["ricotta"],c10:["uovo"],c11:["tosta"],c12:["legumi","tosta"],d8:["uovo","emulsioni"],d9:["confit","tosta"],d11:["uovo"],p2:["legumi","palato"],p4:["manteca"],p10:["uovo","bruciato"],p11:["emulsioni","manteca"],p12:["uovo","mise"],s5:["uovo"],s11:["palato"],s13:["legumi"],s14:["salamoia"],s15:["salamoia","marinatura"]};
   state.tk=state.tk||{}; state.tknote=state.tknote||{};
@@ -2718,7 +2724,25 @@
   document.getElementById("btn-add-dish").addEventListener("click",openAddDish);
 
   /* ---------- da ciò che c'è in casa ---------- */
-  var PANTRY_CHIPS=["pomodori","zucchine","melanzane","peperoni","patate","insalata","uova","ricotta","pecorino","yogurt","ceci","lenticchie","cannellini","lupini","hummus","farina di ceci","pane","pasta","fregola","riso","farro","cous cous","avena","limone","banana","anacardi","mandorle"];
+  function computePantryChips(){
+    var freq={};
+    ["colazione","spuntino","pranzo","cena"].forEach(function(t){
+      LIB[t].forEach(function(dd){
+        if(!dd.ing) return;
+        dd.ing.forEach(function(i){
+          var raw=normIng(i.n).toLowerCase();
+          if(/rinforzo|consiglio|da evitare|da dividere|attenzione|bere|acqua$/.test(raw)) return;
+          raw.split(/\s*(?:,| o )\s*/).forEach(function(tok){
+            tok=tok.trim();
+            if(!tok||tok.length<4||/^acqua$/.test(tok)) return;
+            freq[tok]=(freq[tok]||0)+1;
+          });
+        });
+      });
+    });
+    return Object.keys(freq).sort(function(a,b){ return freq[b]-freq[a]||a.localeCompare(b,"it"); }).slice(0,60);
+  }
+  var PANTRY_CHIPS=computePantryChips();
   function normTok(x){ return x.toLowerCase().trim(); }
   function pantryMatch(dd,toks){
     if(!dd.ing) return {have:0,tot:0,miss:[]};
