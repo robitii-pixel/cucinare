@@ -577,7 +577,6 @@
     .qn{flex:1 1 0; min-width:0; padding:7px 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; box-shadow:none; border:none; background:transparent; min-height:50px}
     .qn .qi{font-size:1.15rem; line-height:1}
     .qn .qt{font-size:.6rem; font-weight:700; letter-spacing:.01em; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-    #nav-print{display:none}
     .qn:hover{background:transparent}
     .qsearch{position:fixed; left:12px; right:12px; bottom:calc(64px + env(safe-area-inset-bottom)); z-index:69; display:none; background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:10px 12px; box-shadow:0 10px 34px rgba(10,90,115,.25)}
     .qsearch.open{display:flex}
@@ -627,7 +626,6 @@
 <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c-2.8 3.6-5.5 5.8-5.5 9.6a5.5 5.5 0 0 0 11 0C17.5 8.8 14.8 6.6 12 3Z"/><path d="M10.3 13.6a2 2 0 0 0 3.4 1.5"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M4.5 5.5a2 2 0 0 1 2-2H20v16H6.5a2 2 0 0 0-2 2Z"/><path d="M4.5 5.5V21.5M8.5 7.5h8"/></symbol>
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.2"/><path d="m16 16 5 5"/></symbol>
-<symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8"/><rect x="4" y="8" width="16" height="8.5" rx="2"/><path d="M7 15.5h10v5H7Z"/></symbol>
 <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"/><path d="M15.6 8.4 13.2 13.2 8.4 15.6 10.8 10.8Z"/></symbol>
 <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C5 9.5 12 4.2 20 4.2 20 13 14 19 5 19Z"/><path d="M5 19c2.8-4.8 5.8-7.8 9.8-9.8"/></symbol>
 <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20C6.2 15.2 3.6 12.2 3.6 8.9A4.4 4.4 0 0 1 12 6.4a4.4 4.4 0 0 1 8.4 2.5c0 3.3-2.6 6.3-8.4 11.1Z"/></symbol>
@@ -689,7 +687,6 @@
       <button class="qn" id="nav-shop"><span class="qi"><svg class=ico><use href=#i-cart></use></svg></span><span class="qt">Spesa</span></button>
       <button class="qn" id="nav-bottega"><span class="qi"><svg class=ico><use href=#i-flame></use></svg></span><span class="qt">Bottega</span></button>
       <button class="qn" id="nav-ric"><span class="qi"><svg class=ico><use href=#i-book></use></svg></span><span class="qt">Ricettario</span></button>
-      <button class="qn" id="nav-print" title="Stampa la settimana"><span class="qi"><svg class=ico><use href=#i-print></use></svg></span><span class="qt">Stampa</span></button>
       <button class="qn" id="nav-prof"><span class="qi"><svg class=ico><use href=#i-user></use></svg></span><span class="qt">Profilo</span></button>
       <span class="qsearch"><input type="search" id="q" placeholder="Cerca piatti e tecniche…" autocomplete="off"><span class="qn-n" id="q-n"></span></span>
     </nav>
@@ -882,7 +879,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v22";
+  var APPV="v23";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -2594,7 +2591,6 @@
   function tripBtn(){ document.getElementById("btn-trip").innerHTML=state.trip?"<svg class=ico><use href=#i-plane></use></svg> Trasferta ATTIVA \u2014 tocca per chiudere":"<svg class=ico><use href=#i-plane></use></svg> Attiva modalit\u00e0 trasferta"; }
   document.getElementById("btn-trip").addEventListener("click",function(){ state.trip=state.trip?0:1; save(state); tripBtn(); renderWeek(); });
   tripBtn();
-  document.getElementById("nav-print").addEventListener("click",function(){ window.print(); });
   window.__fil="all";
   document.getElementById("fchips").addEventListener("click",function(e){
     var f=e.target.closest(".fchip"); if(!f) return;
@@ -2819,10 +2815,11 @@
       +'<div class="time">La guida rapida, sempre qui sotto il punto interrogativo</div></div><div class="m-body helpb">'
       +'<h5><svg class=ico><use href=#i-home></use></svg> Oggi</h5><p>La schermata di casa: la cena di stasera con \u201cIniziamo\u201d, il prossimo pasto, il coach con la serie <svg class=ico><use href=#i-flame></use></svg>, la tappa del percorso e l\u2019abitudine della settimana.</p>'
       +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Il piano completo. Tocca un piatto per la ricetta; \u21C4 per cambiarlo; in fondo al giorno segna allenamenti, \u201cseguita \u2713\u201d e sgarri. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> genera la settimana nuova con variet\u00e0 (preferiti e cene vegetali favoriti, i \u201cmai pi\u00f9\u201d esclusi).</p>'
-      +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal piano: weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
+      +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal <b>piano della settimana</b> (non da quanto avete davvero mangiato): weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
       +'<h5><svg class=ico><use href=#i-flame></use></svg> La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'
       +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Tutti i piatti con filtri (<svg class=ico><use href=#i-heartf></use></svg> <svg class=ico><use href=#i-leaf></use></svg> <svg class=ico><use href=#i-clock></use></svg> <svg class=ico><use href=#i-cheers></use></svg>), i men\u00f9 per gli ospiti, \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d (scrivi gli ingredienti, ti dice cosa cucinarci e se sta nel budget del pasto) e \u201c<svg class=ico><use href=#i-plus></use></svg> Vostro piatto\u201d.</p>'
-      +'<h5><svg class=ico><use href=#i-user></use></svg> Profili</h5><p>In Settimana, in alto: obiettivi calcolati sui vostri dati, andamento peso, <b>esporta/importa</b> per il backup (fatelo ogni tanto: ve lo ricorda da solo) e la modalit\u00e0 <svg class=ico><use href=#i-plane></use></svg> trasferta per le vacanze.</p>'
+      +'<h5><svg class=ico><use href=#i-cycle></use></svg> I due telefoni insieme</h5><p>In Profili, \u201cSincronizza i due telefoni\u201d: collegate i telefoni una volta sola (un codice, generato l\u00ec) e da allora i dati restano allineati da soli, senza fare nulla. <b>Esporta/importa</b> resta come rete di sicurezza in pi\u00f9 \u2014 un file scaricato sul telefono, utile se doveste mai perdere l\u2019accesso alla sincronizzazione.</p>'
+      +'<h5><svg class=ico><use href=#i-user></use></svg> Profili</h5><p>In Settimana, in alto: obiettivi calcolati sui vostri dati, andamento peso, ed \u00e8 dove si trovano sincronizzazione, esporta/importa e la modalit\u00e0 <svg class=ico><use href=#i-plane></use></svg> trasferta per le vacanze.</p>'
       +'<p class="note-box" style="margin-top:14px">Un consiglio solo: segnate \u201cseguita \u2713\u201d la sera e \u201cCucinato oggi\u201d nelle ricette \u2014 sono trenta secondi, e danno vita a serie, diario e coach. I numeri di kcal e proteine sono stime indicative, non prescrizioni.</p>'
       +'</div>';
     overlay.classList.add("on"); document.body.style.overflow="hidden";
