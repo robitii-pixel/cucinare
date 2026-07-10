@@ -415,6 +415,11 @@
   html.dark .pnum{background:#152A30; border-color:#2A454C}
   html.dark .pstep.done .pnum{background:#3A3110; color:#F0C24B}
   .primaryish{background:var(--ink); color:#fff !important; border-color:var(--ink)}
+  .cta{background:var(--ink); color:#fff; border:none; border-radius:999px; padding:14px 24px; font-size:1rem; font-weight:700; display:inline-flex; align-items:center; gap:8px; min-height:48px; box-shadow:var(--shadow); cursor:pointer; transition:.15s}
+  .cta:hover{filter:brightness(1.08)}
+  .cta:active{transform:scale(.98)}
+  .h-card-pantry{border-left-color:var(--herb)}
+  html.dark .h-card-pantry{border-left-color:var(--herb)}
   .cookbody{display:flex; flex-direction:column; min-height:52vh}
   .ck-step{font-size:1.35rem; line-height:1.55; font-family:Georgia,serif; flex:1}
   .ck-say{align-self:flex-start; border:1px solid var(--line); background:#fff; border-radius:999px; padding:10px 16px; font-weight:700; color:var(--text); margin:14px 0; min-height:44px}
@@ -879,7 +884,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v25";
+  var APPV="v26";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1533,9 +1538,15 @@
     function mins(dd){ return dd&&dd.time?dd.time:""; }
     var html='<div class="h-greet">'+greet+' <svg class=ico><use href=#i-sun></use></svg></div>'
       +'<div class="h-date">'+DAY_LABEL[dk]+' '+fmtShort(TODAY)+'</div>';
+    html+='<div class="h-card h-card-pantry">'
+      +'<div class="h-k">Si parte da qui</div>'
+      +'<div class="h-name">Cosa avete in casa?</div>'
+      +'<div class="h-meta">Scrivete gli ingredienti: l\u2019app trova i piatti giusti per il pasto di adesso, dentro i vostri numeri.</div>'
+      +'<div class="h-btns"><button class="cta" id="h-pantry-cta"><svg class=ico><use href=#i-basket></use></svg> Cosa cucino</button></div>'
+      +'</div>';
     if(cdd){
       html+='<div class="h-card">'
-        +'<div class="h-k">Stasera in tavola</div>'
+        +'<div class="h-k">Oppure, gi\u00e0 in programma</div>'
         +'<div class="h-name">'+(cdd.free?"Cena libera <svg class=ico><use href=#i-plate></use></svg>":cdd.name)+(cdd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+'</div>'
         +(cdd.free?'':'<div class="h-meta"><svg class=ico><use href=#i-clock></use></svg> '+mins(cdd)+(pline?' \u00b7 '+pline:'')+'</div>')
         +(function(){ if(cdd.free) return '';
@@ -1544,7 +1555,7 @@
             var tk=tks.filter(function(t){return state.tk[t.id]!=="mia";})[0]||tks[0];
             var nuova=state.tk[tk.id]!=="mia";
             return '<div class="h-tk"><svg class=ico><use href=#i-flame></use></svg> La tecnica di stasera: <button class="c-link" data-tk="'+tk.id+'">'+tk.name+'</button>'+(nuova?' <span class="h-tknew">da imparare</span>':' <span class="h-tkok">gi\u00e0 vostra</span>')+'</div>'; })()
-        +(cdd.free?'':'<div class="h-btns"><button class="cta" data-openslot="'+cid+'|'+dk+'|cena">Iniziamo <svg class=ico><use href=#i-flame></use></svg></button>'
+        +(cdd.free?'':'<div class="h-btns"><button class="toolbtn primaryish" data-openslot="'+cid+'|'+dk+'|cena">Iniziamo <svg class=ico><use href=#i-flame></use></svg></button>'
         +'<button class="toolbtn" id="h-week">Cambia o vedi il giorno</button></div>')
         +'</div>';
     }
@@ -1563,12 +1574,11 @@
     }
     html+=renderCoach();
     html+='<div class="h-links"><button class="toolbtn" id="h-shop"><svg class=ico><use href=#i-cart></use></svg> La spesa</button>'
-      +'<button class="toolbtn" id="h-pantry"><svg class=ico><use href=#i-basket></use></svg> Da ci\u00f2 che c\u2019\u00e8</button>'
       +'<button class="toolbtn" id="h-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button><button class="toolbtn" id="h-prof"><svg class=ico><use href=#i-user></use></svg> Profili</button></div>';
     var hb=document.getElementById("home-body"); if(hb) hb.innerHTML=html;
     var hw=document.getElementById("h-week"); if(hw) hw.addEventListener("click",function(){ setView("week",true); goToday(); });
     var hs=document.getElementById("h-shop"); if(hs) hs.addEventListener("click",buildShopping);
-    var hp=document.getElementById("h-pantry"); if(hp) hp.addEventListener("click",openPantry);
+    var hpc=document.getElementById("h-pantry-cta"); if(hpc) hpc.addEventListener("click",openPantry);
     var ht=document.getElementById("h-trip");
     if(ht) ht.addEventListener("click",function(){ state.trip=1; save(state); renderHome(); renderWeek(); toast("<svg class=ico><use href=#i-plane></use></svg> Buon viaggio. Ci rivediamo a tavola al ritorno.",4500); });
     var hf2=document.getElementById("h-prof2");
@@ -2078,27 +2088,41 @@
   document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&overlay.classList.contains("on")) closeModal(); });
 
   var PREP_SEASONAL={
-    b5:{estate:"Verdure grigliate (zucchine, melanzane, peperoni)",altro:"Verdure al forno (zucca, carote, cavolfiore)"},
-    b6:{estate:"Una caponata",altro:"Una giardiniera in salamoia (Bottega)"},
-    b7:{estate:"Un pesto (basilico o rucola)",altro:"Un pesto di rucola o cavolo nero"},
-    b8:{estate:"Pomodori, cetrioli, insalata, anguria",altro:"Agrumi, finocchi, cavolo cappuccio"}
+    b5:{estate:["Verdure grigliate (zucchine, melanzane, peperoni)","Verdure grigliate (zucchine, peperoni, cipolle rosse)","Verdure grigliate (melanzane, zucchine, pomodori)"],
+        altro:["Verdure al forno (zucca, carote, cavolfiore)","Verdure al forno (porri, carote, topinambur)","Verdure al forno (zucca, cipolle, barbabietola)"]},
+    b6:{estate:["Una caponata","Una panzanella pronta da condire","Un'insalata di farro fredda"],
+        altro:["Una giardiniera in salamoia (Bottega)","Una crema di zucca o cavolfiore","Uno stufato di verdure invernali"]},
+    b7:{estate:["Un pesto (basilico o rucola)","Un pesto di pomodori secchi (Bottega)","Un pesto di mandorle e basilico"],
+        altro:["Un pesto di rucola o cavolo nero","Una crema di anacardi (Bottega)","Un pesto di noci e prezzemolo"]},
+    b8:{estate:["Pomodori, cetrioli, insalata, anguria","Pomodori, melone, insalata mista","Pomodori, peperoni, cetrioli"],
+        altro:["Agrumi, finocchi, cavolo cappuccio","Mele, sedano, radicchio","Arance, finocchi, olive"]}
   };
   var DOLCI_SEASONAL={
-    dc1:{estate:"Frutta fresca: anguria, melone, pesche, fichi",altro:"Frutta fresca: mele, pere, arance, cachi"},
-    dc3:{estate:"Yogurt greco con frutti di bosco (ottimo post-workout)",altro:"Yogurt greco con noci e miele (ottimo post-workout)"},
-    dc4:{estate:"Sorbetto al limone o granita",altro:"Frutta cotta alle spezie (mele o pere, cannella)"}
+    dc1:{estate:["Frutta fresca: anguria, melone, pesche, fichi","Frutta fresca: albicocche, susine, ciliegie","Frutta fresca: pesche, fichi, uva"],
+         altro:["Frutta fresca: mele, pere, arance, cachi","Frutta fresca: mandarini, kiwi, uva","Frutta fresca: mele, cachi, melagrana"]},
+    dc3:{estate:["Yogurt greco con frutti di bosco (ottimo post-workout)","Yogurt greco con pesche a pezzi (ottimo post-workout)","Yogurt greco con albicocche (ottimo post-workout)"],
+         altro:["Yogurt greco con noci e miele (ottimo post-workout)","Yogurt greco con mela grattugiata e cannella (ottimo post-workout)","Yogurt greco con melagrana (ottimo post-workout)"]},
+    dc4:{estate:["Sorbetto al limone o granita","Macedonia con menta fresca","Ghiacciolo di frutta fatto in casa"],
+         altro:["Frutta cotta alle spezie (mele o pere, cannella)","Composta di frutta secca e agrumi","Mele al forno con cannella e noci"]}
   };
   var BEVANDE_SEASONAL={
-    bv2:{estate:"Acqua con limone e menta",altro:"Acqua e zenzero caldo"},
-    bv3:{estate:"Tè freddo non zuccherato",altro:"Tè caldo o tisana, la sera"},
-    bv4:{estate:"Caffè o orzo freddo senza zucchero",altro:"Caffè o orzo caldo senza zucchero"},
-    bv5:{estate:"Sali minerali dopo le sedute più intense col caldo",altro:"Brodo caldo nei giorni più freddi"}
+    bv2:{estate:["Acqua con limone e menta","Acqua e cetriolo","Acqua e frutti di bosco"],
+         altro:["Acqua e zenzero caldo","Acqua e scorza d'arancia","Acqua e cannella"]},
+    bv3:{estate:["Tè freddo non zuccherato","Infuso freddo alla menta","Tè verde freddo"],
+         altro:["Tè caldo o tisana, la sera","Tisana alla camomilla, la sera","Tè verde caldo"]},
+    bv4:{estate:["Caffè o orzo freddo senza zucchero","Caffè shakerato senza zucchero","Orzo freddo con ghiaccio"],
+         altro:["Caffè o orzo caldo senza zucchero","Cappuccino d'orzo senza zucchero","Caffè d'orzo con latte di mandorla"]},
+    bv5:{estate:["Sali minerali dopo le sedute più intense col caldo","Acqua e un pizzico di sale dopo le sedute più intense","Bevanda isotonica fatta in casa (acqua, sale, miele, limone)"],
+         altro:["Brodo caldo nei giorni più freddi","Tisana allo zenzero dopo l'allenamento","Tè caldo con miele dopo l'allenamento"]}
   };
   function applySeasonalList(scope,map,childSel){
     var key=(season()==="estate")?"estate":"altro";
+    var wn=isoWeekNum(TODAY);
     Object.keys(map).forEach(function(id){
+      var arr=map[id][key];
+      var txt=Array.isArray(arr)?arr[wn%arr.length]:arr;
       var el=document.querySelector('[data-scope="'+scope+'"] [data-id="'+id+'"]'+(childSel||""));
-      if(el) el.textContent=map[id][key];
+      if(el) el.textContent=txt;
     });
   }
   function applyPrepSeason(){
@@ -2717,7 +2741,7 @@
     var pslot=state.pslot||smartSlot();
     var chips=PANTRY_CHIPS.map(function(c){ return '<button class="fchip pchipx" data-pc="'+c+'">'+c+'</button>'; }).join("");
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
-      +'<div class="kicker">L\u2019approccio inverso</div><h3 id="m-title">Da ci\u00f2 che c\u2019\u00e8 in casa</h3>'
+      +'<div class="kicker">Si parte da qui</div><h3 id="m-title">Da ci\u00f2 che c\u2019\u00e8 in casa</h3>'
       +'<div class="time">Scrivi (o tocca) quello che avete: ti dico cosa ci si cucina</div></div><div class="m-body">'
       +'<textarea class="notew" id="pantry-in" placeholder="Es. pomodori, ceci, pane raffermo, basilico\u2026" style="min-height:60px">'+saved.replace(/</g,"&lt;")+'</textarea>'
       +'<div class="fchips" style="margin:10px 0 12px">'+chips+'</div>'
@@ -2849,7 +2873,7 @@
     modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">La nostra cucina</div><h3 id="m-title">Come funziona</h3>'
       +'<div class="time">La guida rapida, sempre qui sotto il punto interrogativo</div></div><div class="m-body helpb">'
-      +'<h5><svg class=ico><use href=#i-home></use></svg> Oggi</h5><p>La schermata di casa: la cena di stasera con \u201cIniziamo\u201d, il prossimo pasto, il coach con la serie <svg class=ico><use href=#i-flame></use></svg>, la tappa del percorso e l\u2019abitudine della settimana.</p>'
+      +'<h5><svg class=ico><use href=#i-home></use></svg> Oggi</h5><p>La schermata di casa parte da \u201cCosa avete in casa?\u201d: scrivete gli ingredienti e trovate i piatti giusti per il pasto di adesso. Il piano gi\u00e0 pronto resta subito sotto, come alternativa. Poi il prossimo pasto, il coach con la serie <svg class=ico><use href=#i-flame></use></svg>, la tappa del percorso e l\u2019abitudine della settimana.</p>'
       +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Il piano completo. Tocca un piatto per la ricetta; \u21C4 per cambiarlo; in fondo al giorno segna allenamenti, \u201cseguita \u2713\u201d e sgarri. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> genera la settimana nuova con variet\u00e0 (preferiti e cene vegetali favoriti, i \u201cmai pi\u00f9\u201d esclusi).</p>'
       +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal <b>piano della settimana</b> (non da quanto avete davvero mangiato): weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
       +'<h5><svg class=ico><use href=#i-flame></use></svg> La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'

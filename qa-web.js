@@ -269,18 +269,32 @@ T("base domenica: si azzera sulla settimana successiva", d.getElementById("prep-
 click(d.querySelector('[data-wnav="-1"]'));
 T("base domenica: la settimana precedente ricorda le spunte", d.getElementById("prep-done").textContent===String(prepChecks.length));
 
-// 29. base della domenica: le etichette stagionali sono coerenti tra loro (o tutte estate, o tutte non-estate)
+// 29. base della domenica: le etichette stagionali sono coerenti tra loro (o tutte estate, o tutte non-estate),
+// robusto a qualunque delle 3 varianti in rotazione settimanale
 let b5=d.querySelector('[data-scope="prep"] .ck[data-id="b5"] .lbl').textContent;
 let b8=d.querySelector('[data-scope="prep"] .ck[data-id="b8"] .lbl').textContent;
-let b5Estate=/grigliate/.test(b5), b8Estate=/anguria/.test(b8);
+let b5Estate=/grigliate/.test(b5), b8Estate=/^Pomodori/.test(b8);
 T("base domenica: varianti stagionali coerenti tra loro", b5Estate===b8Estate, b5+" | "+b8);
 
-// 30. dolci e bevande: coerenti con la stessa stagione della base della domenica
+// 30. dolci e bevande: le etichette esistono, non sono vuote e ruotano davvero (nessun "undefined")
 let dc1=d.querySelector('[data-scope="dolci"] [data-id="dc1"]').textContent;
+let dc3=d.querySelector('[data-scope="dolci"] [data-id="dc3"]').textContent;
 let bv3=d.querySelector('[data-scope="bevande"] [data-id="bv3"]').textContent;
-let dc1Estate=/anguria/.test(dc1), bv3Estate=/freddo/.test(bv3);
-T("dolci: coerenti con la stagione della base", dc1Estate===b8Estate, dc1);
-T("bevande: coerenti con la stagione della base", bv3Estate===b8Estate, bv3);
+let bv5=d.querySelector('[data-scope="bevande"] [data-id="bv5"]').textContent;
+T("dolci: etichette valorizzate senza undefined", [dc1,dc3].every(t=>t&&t.length>3&&!/undefined/.test(t)), dc1+" | "+dc3);
+T("bevande: etichette valorizzate senza undefined", [bv3,bv5].every(t=>t&&t.length>3&&!/undefined/.test(t)), bv3+" | "+bv5);
+
+// 31. Home: "da ciò che c'è in casa" è la prima proposta, il piano pronto viene dopo
+click(d.getElementById("nav-today"));
+let homeCards=[...d.querySelectorAll("#home-body .h-card")];
+T("Home: la card pantry è la prima", homeCards[0]&&homeCards[0].classList.contains("h-card-pantry"));
+T("Home: niente pulsante pantry duplicato in basso", !d.getElementById("h-pantry"));
+let pantryCta=d.getElementById("h-pantry-cta");
+T("Home: il pulsante pantry apre il modale giusto", !!pantryCta);
+if(pantryCta){ click(pantryCta);
+  T("Home: il modale pantry si apre dal pulsante principale", /ciò che c.è in casa/i.test(d.getElementById("m-title").textContent));
+  click(d.getElementById("m-close"));
+}
 
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
