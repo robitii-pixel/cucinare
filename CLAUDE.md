@@ -70,4 +70,7 @@ nascita e pesi: **NON committarla in un repo pubblico**. Tenerla solo locale (è
 - Assistente contestuale (richiede rete: ora che l'app è online è possibile; discutere prima).
 - Sync tra dispositivi: fatto dal v20 (Firebase Realtime Database, vedi sezione Architettura).
   Esporta/importa resta comunque disponibile come backup manuale.
-- Modalità trasferta attiva per il viaggio in Francia 25/7–8/8 (promemoria automatico in Home).
+- Modalità trasferta per il viaggio in Francia 25/7–8/8: fatto (promemoria automatico in Home,
+  vedi `renderHome()`, controllo su `tISO>="2026-07-24"&&tISO<="2026-08-08"`).
+- Estendere `varietyWarnings()` al marcatore proteico (`pm`) anche tra giorni diversi della
+  settimana, non solo nello stesso giorno (oggi il controllo è solo intra-giorno).
