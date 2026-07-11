@@ -823,22 +823,22 @@
     <div class="cards" style="margin-bottom:20px">
       <div class="card"><div class="nm">Cena d’estate con amici</div>
         <div class="ds"><button class="c-link" data-openlib="d3">Caponata</button> con carasau · <button class="c-link" data-openlib="p14">Malloreddus al pesto rosso</button> · <button class="c-link" data-openlib="s18">Crema e fragole</button></div>
-        <div class="meta"><span class="time">≈ 950 kcal a persona · quasi tutto si prepara prima</span></div></div>
+        <div class="meta"><span class="time">≈ 1.350 kcal a persona · quasi tutto si prepara prima</span></div></div>
       <div class="card"><div class="nm">Cena romantica</div>
         <div class="ds"><button class="c-link" data-openlib="d12">Farifrittata alle zucchine</button> in versione mignon · <button class="c-link" data-openlib="d6">Zucchine ripiene di ricotta ed erbe</button> · <button class="c-link" data-openlib="s19">Mousse al cacao</button></div>
-        <div class="meta"><span class="time">≈ 850 kcal · la mousse si fa il pomeriggio</span></div></div>
+        <div class="meta"><span class="time">≈ 1.300 kcal · la mousse si fa il pomeriggio</span></div></div>
       <div class="card"><div class="nm">Pranzo della domenica</div>
         <div class="ds"><button class="c-link" data-openlib="s15">Primo sale marinato</button> e giardiniera · <button class="c-link" data-openlib="p13">Pasta con ricotta e pomodoro</button> o i vostri malloreddus a mano · <button class="c-link" data-openlib="s20">Biscotti banana e avena</button></div>
-        <div class="meta"><span class="time">≈ 1.000 kcal · il pranzo lungo, fatto in due</span></div></div>
+        <div class="meta"><span class="time">≈ 1.050 kcal · il pranzo lungo, fatto in due</span></div></div>
       <div class="card"><div class="nm">Onnivori scettici</div>
         <div class="ds">Per chi dice “senza carne non è cena”: <button class="c-link" data-openlib="d2">Parmigiana</button> · <button class="c-link" data-openlib="d19">Burger di lenticchie</button> · <button class="c-link" data-openlib="s19">Mousse al cacao</button></div>
-        <div class="meta"><span class="time">≈ 1.100 kcal · nessuno chiederà dov’è la carne</span></div></div>
+        <div class="meta"><span class="time">≈ 1.400 kcal · nessuno chiederà dov’è la carne</span></div></div>
       <div class="card"><div class="nm">Amici sportivi</div>
         <div class="ds">Proteine vere e recupero: <button class="c-link" data-openlib="p15">Fregola verdure e ceci</button> · <button class="c-link" data-openlib="p17">Pasta e fagioli</button> · <button class="c-link" data-openlib="s18">Crema e fragole</button></div>
-        <div class="meta"><span class="time">≈ 1.000 kcal · ≈65 g di proteine a testa</span></div></div>
-      <div class="card"><div class="nm">Cena leggera, improvvisata</div>
+        <div class="meta"><span class="time">≈ 1.500 kcal · ≈68 g di proteine a testa</span></div></div>
+      <div class="card"><div class="nm">Cena veloce, improvvisata</div>
         <div class="ds">Ospiti dell’ultimo minuto: <button class="c-link" data-openlib="d21">Pappa al pomodoro fredda</button> · <button class="c-link" data-openlib="d13">Panelle</button> · <button class="c-link" data-openlib="s16">Ceci croccanti</button></div>
-        <div class="meta"><span class="time">≈ 750 kcal · mezz’ora, quasi tutto dalla dispensa</span></div></div>
+        <div class="meta"><span class="time">≈ 1.350 kcal · mezz’ora, quasi tutto dalla dispensa</span></div></div>
     </div>
   </details>
   <div class="fchips" id="fchips">
@@ -888,7 +888,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v30";
+  var APPV="v31";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1095,10 +1095,10 @@
       {id:"s14",vg:1,pm:"legumi",name:"Lupini in salamoia",time:"1 min",desc:"Lo spuntino mediterraneo per eccellenza: proteici, sazianti, da spizzicare.",kr:130,kg:125,pr:14,pg:14,
         ing:[{n:"Lupini sgocciolati",r:"120 g",g:"120 g"},{n:"Limone e pepe",q:"facoltativi"}],
         steps:["Sciacquali bene e spizzica, con una spruzzata di limone se piace."]},
-      {id:"s15",pm:"formaggio",name:"Primo sale con pomodorini",time:"2 min",desc:"Fresco e delicato, con pomodorini e origano.",kr:190,kg:175,pr:13,pg:13,
+      {id:"s15",gst:1,pm:"formaggio",name:"Primo sale con pomodorini",time:"2 min",desc:"Fresco e delicato, con pomodorini e origano.",kr:190,kg:175,pr:13,pg:13,
         ing:[{n:"Primo sale",r:"70 g",g:"70 g"},{n:"Pomodorini",q:"6"},{n:"Origano e olio",q:"q.b."}],
         steps:["Primo sale a cubetti, pomodorini a metà, origano, olio e via."]},
-      {id:"s16",pm:"legumi",vg:1,name:"Ceci croccanti al forno",time:"25 min (in scorta)",desc:"Tostati con paprica e rosmarino: lo sgranocchio proteico da tenere in barattolo.",kr:190,kg:170,pr:10,pg:9,
+      {id:"s16",gst:1,pm:"legumi",vg:1,name:"Ceci croccanti al forno",time:"25 min (in scorta)",desc:"Tostati con paprica e rosmarino: lo sgranocchio proteico da tenere in barattolo.",kr:190,kg:170,pr:10,pg:9,
         ing:[{n:"Ceci cotti",r:"120 g",g:"110 g"},{n:"Olio, paprica, rosmarino",q:"q.b."}],
         steps:["Ceci asciugati bene, olio e spezie, forno 200° per 22–25 minuti scuotendo a metà.","Croccanti fuori, morbidi al cuore. In barattolo, 4 giorni."]},
       {id:"s17",pm:"frutta secca",vg:1,name:"Pane con crema di anacardi alle erbe",time:"3 min",desc:"La crema della Bottega, spalmata: sa di formaggio fresco alle erbe.",kr:220,kg:190,pr:8,pg:7,
@@ -1110,7 +1110,7 @@
       {id:"s19",gst:1,pm:"dolce",vg:1,name:"Mousse al cacao di aquafaba",time:"10 min + 1 ora",desc:"Due ingredienti, nessuno indovina il segreto.",kr:190,kg:170,pr:4,pg:4,
         ing:[{n:"Aquafaba montata (Bottega)",q:"da 3 cucchiai"},{n:"Cioccolato fondente ≥70%",r:"25 g",g:"22 g"}],
         steps:["Cioccolato fuso e intiepidito, incorporato all’aquafaba montata con movimenti dal basso.","Un’ora in frigo in coppette: mousse vera."]},
-      {id:"s20",pm:"dolce",vg:1,name:"Biscotti morbidi banana e avena",time:"20 min",desc:"Tre ingredienti, zero zuccheri aggiunti: i biscotti della domenica.",kr:210,kg:180,pr:6,pg:5,
+      {id:"s20",gst:1,pm:"dolce",vg:1,name:"Biscotti morbidi banana e avena",time:"20 min",desc:"Tre ingredienti, zero zuccheri aggiunti: i biscotti della domenica.",kr:210,kg:180,pr:6,pg:5,
         ing:[{n:"Banana matura schiacciata",q:"1"},{n:"Avena",r:"50 g",g:"40 g"},{n:"Nocciole tritate e cannella",q:"2 cucchiai"}],
         steps:["Impasta tutto, forma 5–6 mucchietti su carta forno.","180° per 14–16 minuti: dorati ai bordi, morbidi al centro."]},
       {id:"s21",gst:1,pm:"dolce",vg:1,name:"Pesche o fichi in agrodolce con crema di anacardi",time:"10 min",desc:"La tecnica della caponata spostata sul dolce: frutta lucida e la crema che la rincorre.",kr:230,kg:200,pr:5,pg:5,
@@ -1154,19 +1154,19 @@
       {id:"p12",fam:"insalata",pm:"uova",name:"Insalata di riso integrale, uova e piselli",time:"12 min",desc:"Fresca, colorata, da preparare prima.",kr:635,kg:560,pr:35,pg:33,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Riso integrale cotto",r:"90 g",g:"75 g"},{n:"Uova sode",r:"2",g:"2"},{n:"Piselli e pomodorini",q:"q.b."},{n:"Pecorino",q:"20 g"}],
         steps:["Unisci riso, piselli e pomodorini.","Aggiungi uova a spicchi e pecorino.","Olio, limone e basilico."]},
-      {id:"p13",fam:"pasta",pm:"ricotta",name:"Pasta integrale con ricotta e pomodorini confit",time:"15 min (col confit già pronto)",desc:"Cremosa senza panna, con la dolcezza caramellata del confit al posto del solito sugo.",kr:655,kg:570,pr:32,pg:30,
+      {id:"p13",gst:1,fam:"pasta",pm:"ricotta",name:"Pasta integrale con ricotta e pomodorini confit",time:"15 min (col confit già pronto)",desc:"Cremosa senza panna, con la dolcezza caramellata del confit al posto del solito sugo.",kr:655,kg:570,pr:32,pg:30,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Pasta integrale",r:"90 g",g:"75 g"},{n:"Ricotta",r:"120 g",g:"120 g"},{n:"Pomodorini confit (Bottega)",q:"150 g"},{n:"Basilico",q:"q.b."}],
         steps:["Scalda i pomodorini confit con un cucchiaio del loro olio.","Stempera la ricotta con un po' d'acqua di cottura.","Manteca la pasta con confit e ricotta; basilico."]},
       {id:"p14",gst:1,fam:"pasta",pm:"legumi",vg:1,name:"Malloreddus al pesto rosso di anacardi e ceci croccanti",time:"20 min",desc:"Pesto di pomodori secchi e anacardi, ceci tostati sopra: vegetale, e non lo dice.",kr:640,kg:555,pr:30,pg:28,
         ing:[{n:"Malloreddus",r:"90 g",g:"75 g"},{n:"Pomodori secchi",q:"6"},{n:"Anacardi",r:"30 g",g:"30 g"},{n:"Ceci croccanti",r:"80 g",g:"80 g"},{n:"Lievito alimentare",q:"2 cucchiai"},{n:"Basilico e olio",q:"q.b."}],
         left:"il pesto rosso avanzato: 4 giorni in frigo coperto d’olio — su pane, fregola o dentro la farifrittata.",steps:["Frulla pomodori secchi (ammollati 10 minuti), anacardi, basilico, olio e un mestolino d’acqua di cottura: pesto rosso cremoso.","Cuoci i malloreddus e mantecali col pesto fuori dal fuoco.","Sopra: ceci croccanti e lievito in scaglie — il “formaggio” che non c’è."]},
-      {id:"p15",fam:"pasta",pm:"legumi",vg:1,name:"Fregola con verdure al forno e ceci",time:"15 min (con la base)",desc:"La domenica che lavora per te: verdure già pronte, ceci, fregola tostata.",kr:640,kg:555,pr:31,pg:29,
+      {id:"p15",gst:1,fam:"pasta",pm:"legumi",vg:1,name:"Fregola con verdure al forno e ceci",time:"15 min (con la base)",desc:"La domenica che lavora per te: verdure già pronte, ceci, fregola tostata.",kr:640,kg:555,pr:31,pg:29,
         ing:[{n:"Fregola",r:"90 g",g:"75 g"},{n:"Verdure al forno della base (zucchine, peperoni, melanzane)",q:"abbondanti"},{n:"Ceci",r:"180 g",g:"180 g"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Limone e basilico",q:"q.b."}],
         steps:["Fregola tostata e risottata (nel brodo delle croste, se c’è).","Verdure e ceci dentro negli ultimi 3 minuti.","Limone, basilico, parmigiano di mandorle."]},
       {id:"p16",sea:"estate",fam:"cereali",pm:"legumi",vg:1,name:"Cous cous alle verdure con ceci e mandorle",time:"20 min",desc:"Sette verdure non servono: bastano quelle che ci sono, fatte bene.",kr:635,kg:550,pr:29,pg:27,
         ing:[{n:"Cous cous",r:"85 g",g:"70 g"},{n:"Verdure di stagione (zucchine, peperoni, carote)",q:"300 g"},{n:"Ceci",r:"170 g",g:"170 g"},{n:"Mandorle tostate",r:"15 g",g:"15 g"},{n:"Limone, menta, cumino",q:"q.b."}],
         steps:["Verdure a dadini rosolate vivaci con cumino.","Cous cous idratato con acqua bollente salata e un filo d’olio, sgranato con la forchetta.","Tutto insieme con ceci, mandorle, menta e limone. Buono anche freddo domani."]},
-      {id:"p17",sea:"inverno",fam:"pasta",pm:"legumi",vg:1,name:"Pasta e fagioli, la nostra",time:"30 min",desc:"Metà fagioli frullati, metà interi: cremosa senza un grammo di panna.",kr:655,kg:565,pr:32,pg:30,
+      {id:"p17",gst:1,sea:"inverno",fam:"pasta",pm:"legumi",vg:1,name:"Pasta e fagioli, la nostra",time:"30 min",desc:"Metà fagioli frullati, metà interi: cremosa senza un grammo di panna.",kr:655,kg:565,pr:32,pg:30,
         ing:[{n:"Pasta corta",r:"80 g",g:"65 g"},{n:"Borlotti o cannellini",r:"220 g",g:"220 g"},{n:"Il vostro soffritto (Bottega)",q:"1 base"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Rosmarino e pomodoro",q:"2 cucchiai di passata"}],
         left:"la pasta e fagioli di domani è migliore di quella di stasera: un mestolo d’acqua per allentarla.",steps:["Soffritto, pomodoro e rosmarino; metà fagioli frullati con la loro acqua, metà interi.","Cuoci la pasta DENTRO la zuppa, mescolando: l’amido lega tutto.","Riposo 5 minuti: la pasta e fagioli si mangia tiepida, con olio a crudo e la pioggia di mandorle."]},
       {id:"p18",sea:"estate",fam:"insalata",pm:"legumi",vg:1,name:"Insalata di farro, ceci croccanti e verdure crude",time:"15 min (farro pronto)",desc:"Croccante tre volte: farro, ceci tostati, verdure. La schiscetta perfetta.",kr:625,kg:540,pr:29,pg:27,
@@ -1192,7 +1192,7 @@
       {id:"d5",fam:"insalata",pm:"formaggio",name:"Insalata di fave, pecorino e uova",time:"15 min",desc:"Il classico sardo, leggero e saporito.",kr:545,kg:450,pr:35,pg:33,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Fave",q:"150 g"},{n:"Pecorino sardo",r:"40 g",g:"40 g"},{n:"Uova sode",r:"2",g:"2"},{n:"Misticanza e menta",q:"q.b."}],
         steps:["Sguscia le fave (crude se tenere, o sbollentate 3 minuti).","Componi con misticanza, fave, pecorino e menta.","Uovo a spicchi, olio e limone."]},
-      {id:"d6",fam:"forno",pm:"ricotta",name:"Zucchine ripiene di ricotta ed erbe",time:"35 min",desc:"Al forno, filanti e profumate.",kr:535,kg:480,pr:32,pg:30,
+      {id:"d6",gst:1,fam:"forno",pm:"ricotta",name:"Zucchine ripiene di ricotta ed erbe",time:"35 min",desc:"Al forno, filanti e profumate.",kr:535,kg:480,pr:32,pg:30,
         ing:[{n:"Grana o pecorino a scaglie",r:"30 g",g:"30 g"},{n:"Zucchine",q:"2 grandi"},{n:"Ricotta",q:"150 g"},{n:"Pecorino",q:"30 g"},{n:"Uovo",q:"1"}],
         steps:["Svuota le zucchine e scotta le barchette 3 minuti.","Riempi con ricotta, pecorino, uovo, erbe e polpa.","Forno 190° per 20 minuti."]},
       {id:"d7",fam:"sugo",pm:"ricotta",name:"Polpette di ricotta al sugo",time:"30 min",desc:"Morbide, proteiche, piacciono a tutti.",kr:585,kg:510,pr:36,pg:34,
@@ -1213,7 +1213,7 @@
       {id:"d12",gst:1,fam:"frittata",pm:"legumi",vg:1,name:"Farifrittata di zucchine e menta con lupini",time:"20 min",desc:"La frittata senza uova che l’Italia fa da secoli: farina di ceci, come la farinata.",kr:580,kg:500,pr:32,pg:30,
         ing:[{n:"Farina di ceci",r:"90 g",g:"75 g"},{n:"Acqua",q:"1,5 volte il peso della farina"},{n:"Zucchine",q:"2"},{n:"Lupini sgocciolati",r:"100 g",g:"100 g"},{n:"Menta, olio, sale",q:"q.b."},{n:"Pane",r:"40 g",g:"30 g"}],
         left:"la farifrittata fredda, a cubetti, è l’aperitivo o la schiscetta di domani. 2 giorni in frigo.",steps:["Sbatti farina di ceci, acqua e sale: pastella liscia, riposo 15 minuti (perde l’amaro del crudo).","Zucchine a rondelle rosolate in padella antiaderente oliata.","Versa la pastella sulle zucchine, fiamma media coperta 6–7 minuti; gira e finisci 3 minuti: soda fuori, cremosa dentro.","Menta fresca sopra; lupini e pane accanto completano le proteine."]},
-      {id:"d13",fam:"forno",pm:"legumi",vg:1,name:"Panelle al forno con caponata",time:"35 min",desc:"La friggitoria palermitana, alleggerita: panelle di ceci al forno e la vostra caponata.",kr:590,kg:520,pr:27,pg:26,
+      {id:"d13",gst:1,fam:"forno",pm:"legumi",vg:1,name:"Panelle al forno con caponata",time:"35 min",desc:"La friggitoria palermitana, alleggerita: panelle di ceci al forno e la vostra caponata.",kr:590,kg:520,pr:27,pg:26,
         ing:[{n:"Farina di ceci",r:"100 g",g:"85 g"},{n:"Acqua",q:"3 volte il peso della farina"},{n:"Caponata",q:"abbondante"},{n:"Rinforzo: parmigiano di mandorle (Bottega)",q:"2 cucchiai"},{n:"Limone e prezzemolo",q:"q.b."}],
         steps:["Cuoci farina di ceci e acqua salata mescolando 8–10 minuti finché densissima; stendi su teglia unta a 1 cm e fai freddare.","Taglia a losanghe, olio in superficie, forno 220° per 18–20 minuti girando a metà: dorate e croccanti.","Limone sopra, caponata accanto, parmigiano di mandorle a pioggia."]},
       {id:"d14",fam:"fuori",name:"Cena fuori — pizzeria",time:"—",desc:"Stima onesta per restare in rotta: margherita o ortolana, niente fritti d’ingresso.",kr:950,kg:850,pr:35,pg:33,
@@ -1231,7 +1231,7 @@
       {id:"d18",gst:1,fam:"forno",pm:"cereali",vg:1,name:"Peperoni ripieni di riso, capperi e olive",time:"45 min",desc:"Il classico del sud, con lupini accanto per completare le proteine.",kr:570,kg:495,pr:26,pg:24,
         ing:[{n:"Peperoni",q:"2 grandi"},{n:"Riso",r:"80 g",g:"65 g"},{n:"Capperi, olive, pomodorini",q:"q.b."},{n:"Lupini sgocciolati",r:"100 g",g:"100 g"},{n:"Pangrattato tostato (Bottega)",q:"2 cucchiai"}],
         left:"i peperoni ripieni freddi il giorno dopo sono un pranzo completo da portare.",steps:["Riso a metà cottura condito con capperi, olive, pomodorini e basilico.","Riempi i peperoni, pangrattato sopra, olio.","Forno 190° per 30–35 minuti: peperone morbido, crosticina dorata. Lupini a parte."]},
-      {id:"d19",fam:"burger",pm:"legumi",vg:1,name:"Burger di lenticchie con pane e insalata",time:"25 min",desc:"Schiacciati bene, rosolati meglio: il burger di casa che non finge di essere carne.",kr:590,kg:510,pr:30,pg:28,
+      {id:"d19",gst:1,fam:"burger",pm:"legumi",vg:1,name:"Burger di lenticchie con pane e insalata",time:"25 min",desc:"Schiacciati bene, rosolati meglio: il burger di casa che non finge di essere carne.",kr:590,kg:510,pr:30,pg:28,
         ing:[{n:"Lenticchie cotte",r:"200 g",g:"200 g"},{n:"Pangrattato",q:"3 cucchiai"},{n:"Pane",r:"70 g",g:"55 g"},{n:"Pomodoro e insalata",q:"q.b."},{n:"Crema di anacardi o hummus",q:"2 cucchiai"},{n:"Cumino o paprica",q:"a piacere"}],
         left:"i burger crudi si congelano già formati: la cena d’emergenza pronta in 8 minuti.",steps:["Schiaccia le lenticchie con forchetta (non frullare: la grana è il carattere), pangrattato e spezie.","Forma 2 burger, riposo 10 minuti in frigo (si compattano).","Rosola 3–4 minuti per lato in padella oliata ben calda, senza toccarli: la crosticina è tutto.","Nel pane con crema, pomodoro e insalata."]},
       {id:"d21",sea:"estate",gst:1,fam:"zuppa",pm:"legumi",vg:1,name:"Pappa al pomodoro fredda con cannellini",time:"20 min + freddo",desc:"L’estate in ciotola: pomodoro maturo, pane raffermo, basilico e legumi.",kr:580,kg:500,pr:28,pg:26,
@@ -1947,6 +1947,10 @@
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">'+kk+'</div><h3 id="m-title">'+dd.name+'</h3><div class="time"><svg class=ico><use href=#i-clock></use></svg> '+dd.time+'</div></div><div class="m-body">';
     html+='<p class="m-desc">'+dd.desc+'</p>';
+    html+='<div class="verdict-row">'
+      +'<button class="vbtn ok'+(v==="ok"?' on':'')+'" data-v="ok"><svg class=ico><use href=#i-check></use></svg> Buono</button>'
+      +'<button class="vbtn wait'+(v==="wait"?' on':'')+'" data-v="wait"><svg class=ico><use href=#i-cycle></use></svg> Un\'altra volta</button>'
+      +'<button class="vbtn no'+(v==="no"?' on':'')+'" data-v="no"><svg class=ico><use href=#i-plus></use></svg> Mai più</button></div>';
     if(dd.custom){ html+='<button class="toolbtn" id="del-dish" style="margin-bottom:14px"><svg class=ico><use href=#i-trash></use></svg> Elimina questo piatto</button>'; }
         var ckd=state.cooked[id]||[];
     html+='<div class="cookrow"><button class="toolbtn primaryish" data-cookmode="'+id+'"><svg class=ico><use href=#i-hat></use></svg> Modalit\u00e0 cucina</button><button class="toolbtn" data-cook="'+id+'"><svg class=ico><use href=#i-pan></use></svg> Cucinato oggi</button>'
@@ -1975,10 +1979,6 @@
     }
     html+='<div class="notelbl2">Le vostre note sul piatto</div>'
       +'<textarea class="notew" id="dnote">'+((state.dnote[id]||"").replace(/</g,"&lt;"))+'</textarea>';
-    html+='<div class="verdict-row">'
-      +'<button class="vbtn ok'+(v==="ok"?' on':'')+'" data-v="ok"><svg class=ico><use href=#i-check></use></svg> Buono</button>'
-      +'<button class="vbtn wait'+(v==="wait"?' on':'')+'" data-v="wait"><svg class=ico><use href=#i-cycle></use></svg> Un\'altra volta</button>'
-      +'<button class="vbtn no'+(v==="no"?' on':'')+'" data-v="no"><svg class=ico><use href=#i-plus></use></svg> Mai più</button></div>';
 
     if(day && slot){
       var pn=poolName(slot);
@@ -2452,7 +2452,7 @@
   meal:{n:"Panna cotta di mandorla con pesche",d:"La vostra panna cotta all’agar con frutta di stagione: il dolcino della domenica, dentro i numeri.",slot:"Merenda",kr:200,kg:175,pr:4,pg:4}}
 ];
   var TKBY={}; TKS.forEach(function(t){TKBY[t.id]=t;});
-  var CURRICULUM=["tosta","mise","palato","uovo","emulsioni","soffritto","manteca","zaff","salamoia","confit","agrodolce","legumi","marinatura","bruciato","glassa","fari","parmveg","umami","ricotta","anacardi","cremapast","agar","limoni","aquafaba","focaccia","mallo"];
+  var CURRICULUM=["tosta","mise","palato","uovo","emulsioni","soffritto","manteca","zaff","parmveg","salamoia","confit","agrodolce","legumi","marinatura","bruciato","glassa","fari","umami","ricotta","anacardi","cremapast","agar","limoni","aquafaba","focaccia","mallo"];
   function nextStage(){ for(var i=0;i<CURRICULUM.length;i++){ var t=TKBY[CURRICULUM[i]]; if(t&&state.tk[t.id]!=="mia") return t; } return null; }
   var TKLV={1:{t:"Fondamenta",sub:"I gesti quotidiani, perfetti per le sere veloci.",cls:"l1"},
             2:{t:"Trasformazioni",sub:"Tempo, acidit\u00e0, fuoco vivo \u2014 e qualche viaggio.",cls:"l2"},

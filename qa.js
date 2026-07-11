@@ -170,7 +170,7 @@ click(d.getElementById("nav-ric"));
 click(d.querySelector('#library [data-openlib="d2"]'));
 let mb=d.querySelector(".m-body").innerHTML;
 T("ricetta: ingredienti prima del diario", mb.indexOf("Ingredienti")<mb.indexOf("diario del piatto"));
-T("ricetta: preparazione prima dei giudizi", mb.indexOf("Preparazione")<mb.indexOf("verdict-row")||mb.indexOf("Preparazione")<mb.indexOf("Buono"));
+T("ricetta: giudizio subito dopo la descrizione, prima di ingredienti e preparazione", mb.indexOf("verdict-row")<mb.indexOf("Ingredienti")&&mb.indexOf("verdict-row")<mb.indexOf("Preparazione"));
 T("ricetta: passi con evidenziazioni", /class="hl"/.test(mb));
 T("ricetta: dosi colorate", /class="qr"/.test(mb));
 T("ricetta: avanzi presenti (d2)", /Se ne avanza/.test(mb));
@@ -360,6 +360,23 @@ if(dnBtn){
   } else { T("seguita: spunta tolta senza errori", true); }
   click(dnBtn); // ripristina lo stato originale
 } else { T("seguita: pulsante non trovato in questo scenario", false); }
+
+// 37. percorso Bottega: le tecniche di Livello 1 vengono tutte prima di quelle di Livello 2/3
+// (bug storico: "parmveg" era 17ª, dopo 8 tecniche più avanzate)
+click(d.getElementById("nav-bottega"));
+let stepTitles=[...d.querySelectorAll("#tk-path .pstep")].map(s=>s.getAttribute("title"));
+let parmvegPos=stepTitles.findIndex(t=>/parmigiano di mandorle/i.test(t));
+T("Bottega: 'Il parmigiano di mandorle' è tra le prime 9 tecniche (Livello 1)", parmvegPos>=0&&parmvegPos<9, "posizione trovata: "+parmvegPos);
+
+// 38. menù ospiti: tutti i piatti citati compaiono nel filtro "Ospiti"
+click(d.getElementById("nav-ric"));
+let gstIds=["d3","p14","s18","d12","d6","s19","s15","p13","s20","d2","d19","p15","p17","d21","d13","s16"];
+click(d.querySelector('[data-f="gst"]'));
+if(w.__doSearch) w.__doSearch();
+let visibleCards=[...d.querySelectorAll("#library .card")].filter(c=>c.style.display!=="none").map(c=>c.getAttribute("data-openlib"));
+let missingFromGst=gstIds.filter(id=>!visibleCards.includes(id));
+T("menù ospiti: tutti i piatti citati hanno il tag Ospiti", missingFromGst.length===0, missingFromGst.join(", "));
+click(d.querySelector('[data-f="gst"]'));
 
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
