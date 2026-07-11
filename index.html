@@ -888,7 +888,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v32";
+  var APPV="v33";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -2713,6 +2713,30 @@
       LIB[d.type].push(d); BY_ID[d.id]=d;
     });
   }
+  var INGKCAL={
+    "farina di ceci":{k:387,p:22},"ceci":{k:164,p:8.9},"lenticchie":{k:116,p:9},"cannellini":{k:127,p:8.7},
+    "fagioli":{k:127,p:8.7},"fagiolini":{k:31,p:1.8},"lupini":{k:127,p:15.6},"hummus":{k:166,p:8},
+    "farro":{k:127,p:4.8},"cous cous":{k:112,p:3.8},"riso":{k:123,p:2.7},"fregola":{k:158,p:5.8},
+    "pasta":{k:158,p:5.8},"avena":{k:379,p:13.5},"pane":{k:265,p:9},"pangrattato":{k:395,p:13},
+    "uova":{k:155,p:13},"uovo":{k:155,p:13},"ricotta":{k:146,p:8.8},"pecorino":{k:387,p:26},
+    "parmigiano":{k:392,p:35},"grana":{k:392,p:35},"yogurt greco":{k:97,p:9},"yogurt":{k:61,p:3.5},
+    "primo sale":{k:270,p:20},"tempeh":{k:193,p:19},"tofu":{k:76,p:8},
+    "mandorle":{k:579,p:21},"anacardi":{k:553,p:18},"noci":{k:654,p:15},"nocciole":{k:628,p:15},
+    "pistacchi":{k:562,p:20},"semi":{k:550,p:20},
+    "zucchine":{k:17,p:1.2},"melanzane":{k:25,p:1},"peperoni":{k:31,p:1},"pomodori":{k:18,p:0.9},
+    "pomodorini":{k:18,p:0.9},"patate":{k:77,p:2},"carote":{k:35,p:0.9},"broccoli":{k:34,p:2.8},
+    "spinaci":{k:23,p:2.9},"bietole":{k:19,p:1.8},"cavolo":{k:25,p:1.3},"zucca":{k:26,p:1},
+    "banana":{k:89,p:1.1},"mela":{k:52,p:0.3},"pera":{k:57,p:0.4},"pesca":{k:39,p:0.9},
+    "arancia":{k:47,p:0.9},"fichi":{k:74,p:0.8},"frutti di bosco":{k:43,p:0.7},"melograno":{k:83,p:1.7},
+    "olio":{k:884,p:0},"miele":{k:304,p:0.3},"cioccolato fondente":{k:546,p:7.8},"cacao":{k:228,p:19.6}
+  };
+  function parseGrams(str){ var m=/(\d+(?:[.,]\d+)?)\s*g\b/i.exec(str||""); return m?parseFloat(m[1].replace(",",".")):null; }
+  function matchIngKcal(name){
+    var n=(name||"").toLowerCase().trim();
+    var keys=Object.keys(INGKCAL).sort(function(a,b){ return b.length-a.length; });
+    for(var i=0;i<keys.length;i++){ if(n.indexOf(keys[i])>=0) return INGKCAL[keys[i]]; }
+    return null;
+  }
   function openAddDish(){
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Il vostro ricettario</div><h3 id="m-title">Aggiungi un piatto</h3>'
@@ -2722,13 +2746,37 @@
       +'<label>Momento<select id="ad-type"><option value="colazione">Colazione</option><option value="spuntino">Spuntino/merenda</option><option value="pranzo">Pranzo</option><option value="cena" selected>Cena</option></select></label>'
       +'<div class="addrow"><label>Minuti<input id="ad-time" type="number" inputmode="numeric" placeholder="25"></label>'
       +'<label>Vegetale <svg class=ico><use href=#i-leaf></use></svg><select id="ad-vg"><option value="0">No</option><option value="1">S\u00ec</option></select></label></div>'
-      +'<div class="addrow"><label>kcal Roberto<input id="ad-kr" type="number" inputmode="numeric"></label><label>kcal Gigi<input id="ad-kg" type="number" inputmode="numeric"></label></div>'
+      +'<label>Ingredienti \u2014 uno per riga: nome | dose tua | dose Gigi (o una dose sola). Scrivi le dosi in grammi (\u201c150 g\u201d) se vuoi che il calcolo qui sotto funzioni.<textarea id="ad-ing" placeholder="Melanzane | 300 g | 300 g&#10;Grana | 30 g | 22 g&#10;Basilico | q.b."></textarea></label>'
+      +'<button class="toolbtn" id="ad-calc" style="font-size:.9rem"><svg class=ico><use href=#i-wand></use></svg> Calcola dai tuoi ingredienti</button>'
+      +'<p class="notew-hint" id="ad-calc-note" style="font-size:.8rem;color:var(--muted);margin:6px 0 0"></p>'
+      +'<div class="addrow" style="margin-top:10px"><label>kcal Roberto<input id="ad-kr" type="number" inputmode="numeric"></label><label>kcal Gigi<input id="ad-kg" type="number" inputmode="numeric"></label></div>'
       +'<div class="addrow"><label>Proteine R (g)<input id="ad-pr" type="number" inputmode="numeric"></label><label>Proteine G (g)<input id="ad-pg" type="number" inputmode="numeric"></label></div>'
-      +'<label>Ingredienti \u2014 uno per riga: nome | dose tua | dose Gigi (o una dose sola)<textarea id="ad-ing" placeholder="Melanzane | 300 g | 300 g&#10;Grana | 30 g | 22 g&#10;Basilico | q.b."></textarea></label>'
       +'<label>Passi \u2014 uno per riga<textarea id="ad-steps" placeholder="Friggi le melanzane\u2026&#10;Componi gli strati\u2026"></textarea></label>'
       +'<button class="toolbtn" id="ad-save" style="font-size:.95rem">\u2713 Salva il piatto</button>'
       +'</div></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
+    document.getElementById("ad-calc").addEventListener("click",function(){
+      var lines=(document.getElementById("ad-ing").value||"").split("\n");
+      var kr=0,kg=0,pr=0,pg=0,known=0,unknown=[];
+      lines.forEach(function(l){
+        var p=l.split("|").map(function(x){return x.trim();}).filter(Boolean);
+        if(!p.length) return;
+        var info=matchIngKcal(p[0]);
+        if(!info){ unknown.push(p[0]); return; }
+        known++;
+        var gR=p.length>=2?parseGrams(p[1]):null, gG=p.length>=3?parseGrams(p[2]):(p.length===2?parseGrams(p[1]):null);
+        if(gR!=null){ kr+=info.k*gR/100; pr+=info.p*gR/100; }
+        if(gG!=null){ kg+=info.k*gG/100; pg+=info.p*gG/100; }
+      });
+      document.getElementById("ad-kr").value=Math.round(kr);
+      document.getElementById("ad-kg").value=Math.round(kg);
+      document.getElementById("ad-pr").value=Math.round(pr);
+      document.getElementById("ad-pg").value=Math.round(pg);
+      var note=document.getElementById("ad-calc-note");
+      if(!known){ note.textContent="Nessun ingrediente riconosciuto: prova nomi pi\u00f9 semplici (\"ceci\", \"riso\", \"pecorino\"\u2026) con la dose in grammi."; }
+      else if(unknown.length){ note.textContent="Calcolato da "+known+" ingredienti riconosciuti. Da aggiungere a mano: "+unknown.join(", ")+". Resta comunque una stima: correggetela pure."; }
+      else { note.textContent="Stima calcolata da tutti gli ingredienti scritti \u2014 resta una stima, correggetela se serve."; }
+    });
     document.getElementById("ad-save").addEventListener("click",function(){
       var name=(document.getElementById("ad-name").value||"").trim();
       if(!name){ alert("Serve almeno il nome."); return; }

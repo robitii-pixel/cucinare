@@ -381,6 +381,19 @@ let missingFromGst=gstIds.filter(id=>!visibleCards.includes(id));
 T("menù ospiti: tutti i piatti citati hanno il tag Ospiti", missingFromGst.length===0, missingFromGst.join(", "));
 click(d.querySelector('[data-f="gst"]'));
 
+// 39. "Vostro piatto": il calcolo assistito riconosce gli ingredienti comuni e somma le dosi
+click(d.getElementById("btn-add-dish"));
+let adIng=d.getElementById("ad-ing");
+adIng.value="Ceci | 150 g | 130 g\nRiso | 60 g | 50 g\nSalsa segreta | q.b.";
+adIng.dispatchEvent(new w.Event("input",{bubbles:true}));
+click(d.getElementById("ad-calc"));
+T("vostro piatto: calcolo assistito somma kcal riconosciute", d.getElementById("ad-kr").value==="320"&&d.getElementById("ad-kg").value==="275", "kr="+d.getElementById("ad-kr").value+" kg="+d.getElementById("ad-kg").value);
+T("vostro piatto: segnala l'ingrediente non riconosciuto", /Salsa segreta/.test(d.getElementById("ad-calc-note").textContent));
+let krField=d.getElementById("ad-kr");
+krField.value="999"; krField.dispatchEvent(new w.Event("input",{bubbles:true}));
+T("vostro piatto: i campi restano modificabili a mano dopo il calcolo", d.getElementById("ad-kr").value==="999");
+click(d.getElementById("m-close"));
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);
