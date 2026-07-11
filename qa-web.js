@@ -348,6 +348,19 @@ if(nextCard&&nextCard.hasAttribute("data-openslot")){
   click(d.getElementById("m-close"));
 }
 
+// 36. spuntare "seguita" mostra un tocco di conferma (prima non dava nessun segnale)
+click(d.getElementById("nav-week"));
+let dnBtn=d.querySelector('.dn[data-dn$="|r"]');
+if(dnBtn){
+  let wasOn=dnBtn.classList.contains("on");
+  click(dnBtn);
+  let toastEl=d.getElementById("toastchip");
+  if(!wasOn){
+    T("seguita: tocco di conferma mostrato quando si spunta", toastEl&&toastEl.classList.contains("on")&&toastEl.textContent.trim().length>0, toastEl&&toastEl.textContent);
+  } else { T("seguita: spunta tolta senza errori", true); }
+  click(dnBtn); // ripristina lo stato originale
+} else { T("seguita: pulsante non trovato in questo scenario", false); }
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);
