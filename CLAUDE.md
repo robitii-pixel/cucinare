@@ -31,6 +31,12 @@ Tutta la comunicazione col proprietario è **in italiano**.
   (bug reale trovato e corretto in fase di test, vedi commit v20). Regole del database da
   pubblicare via Console: sotto `households/$hid`, lettura/scrittura consentite solo se
   `$hid.length >= 20`.
+- **Feedback in-app (dal v35)**: pulsante "Invia un feedback" in Profili → scrive su un nodo
+  separato `feedback/` dello stesso database Firebase (nessuna dipendenza nuova), non
+  collegato al path `households/$hid`: serve quindi una regola propria pubblicata via Console
+  (scrittura aperta, lettura chiusa — coerente con l'assenza di account/password nel resto del
+  progetto). Roberto legge le voci dalla Console Firebase (che bypassa le regole per il
+  proprietario del progetto), non via email.
 
 ## Regole ferree di modifica (nate da errori reali di questo progetto)
 1. **Ogni sostituzione di testo nel file va verificata con assert sull'anchor**: tre bug storici

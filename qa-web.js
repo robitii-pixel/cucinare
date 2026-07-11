@@ -405,6 +405,18 @@ click(d.getElementById("m-close"));
   click(d.getElementById("m-close"));
 });
 
+// 41. feedback: voto, messaggi di validazione, invio senza connessione gestito
+click(d.getElementById("nav-week"));
+click(d.getElementById("btn-feedback"));
+T("feedback: modulo aperto", d.getElementById("m-title") && /Invia un feedback/.test(d.getElementById("m-title").textContent));
+click(d.getElementById("fd-send"));
+T("feedback: chiede di scrivere qualcosa se il modulo è vuoto", /Scrivi almeno qualcosa/.test(d.getElementById("fd-note").textContent));
+click(d.querySelector('#fd-voto [data-v="5"]'));
+T("feedback: il voto scelto resta evidenziato", d.querySelector('#fd-voto [data-v="5"]').classList.contains("on"));
+click(d.getElementById("fd-send"));
+T("feedback: senza Firebase disponibile (ambiente di test) avvisa e non perde i dati", /connessione/.test(d.getElementById("fd-note").textContent));
+click(d.getElementById("m-close"));
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

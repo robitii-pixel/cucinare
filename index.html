@@ -676,6 +676,7 @@
 <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
 <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
 <symbol id="i-swap" viewBox="0 0 24 24"><path d="M3 8h15M13 4l5 4-5 4"/><path d="M21 16H6M11 12l-5 4 5 4"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="3.2" y="5.5" width="17.6" height="13" rx="2"/><path d="M4 7l8 6.2L20 7"/></symbol>
 </svg>
 
 
@@ -749,6 +750,7 @@
       <button class="toolbtn" id="btn-import"><svg class=ico><use href=#i-up></use></svg> Importa</button>
       <button class="toolbtn" id="btn-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button>
       <button class="toolbtn" id="btn-trip"></button>
+      <button class="toolbtn" id="btn-feedback"><svg class=ico><use href=#i-mail></use></svg> Invia un feedback</button>
       <input type="file" id="import-file" accept=".json,application/json" style="display:none">
     </div>
     <div class="note-box" id="sync-box" style="margin-top:14px">
@@ -888,7 +890,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v34";
+  var APPV="v35";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -2699,6 +2701,53 @@
   function tripBtn(){ document.getElementById("btn-trip").innerHTML=state.trip?"<svg class=ico><use href=#i-plane></use></svg> Trasferta ATTIVA \u2014 tocca per chiudere":"<svg class=ico><use href=#i-plane></use></svg> Attiva modalit\u00e0 trasferta"; }
   document.getElementById("btn-trip").addEventListener("click",function(){ state.trip=state.trip?0:1; save(state); tripBtn(); renderWeek(); });
   tripBtn();
+
+  /* ---------- feedback ---------- */
+  function openFeedback(){
+    var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
+      +'<div class="kicker">La nostra cucina</div><h3 id="m-title">Invia un feedback</h3>'
+      +'<div class="time">Arriva a Roberto insieme a versione e dispositivo, che si aggiungono da soli</div></div><div class="m-body">'
+      +'<div class="addf">'
+      +'<label>Chi sei?<select id="fd-chi"><option value="">Preferisco non dirlo</option><option value="Roberto">Roberto</option><option value="Gigi">Gigi</option></select></label>'
+      +'<label>Quanto ti sta piacendo l’app in questo periodo?<div class="fchips" id="fd-voto">'
+      +[1,2,3,4,5].map(function(n){ return '<button type="button" class="fchip" data-v="'+n+'">'+n+'</button>'; }).join("")
+      +'</div></label>'
+      +'<label>Cosa ti è piaciuto<textarea id="fd-piaciuto" placeholder="Es. la spesa calcolata da sola, il coach…"></textarea></label>'
+      +'<label>Cosa non ha funzionato<textarea id="fd-problema" placeholder="Es. un calcolo sbagliato, una schermata poco chiara…"></textarea></label>'
+      +'<label>Un suggerimento, se ne hai uno<textarea id="fd-sugg"></textarea></label>'
+      +'<button class="toolbtn" id="fd-send" style="font-size:.95rem">✓ Invia il feedback</button>'
+      +'<p class="notew-hint" id="fd-note" style="font-size:.8rem;color:var(--muted);margin:6px 0 0"></p>'
+      +'</div></div>';
+    modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
+    var voto=0;
+    document.getElementById("fd-voto").addEventListener("click",function(e){
+      var b=e.target.closest(".fchip"); if(!b) return;
+      voto=parseInt(b.getAttribute("data-v"),10);
+      document.querySelectorAll("#fd-voto .fchip").forEach(function(x){ x.classList.toggle("on",x===b); });
+    });
+    document.getElementById("fd-send").addEventListener("click",function(){
+      var piaciuto=(document.getElementById("fd-piaciuto").value||"").trim();
+      var problema=(document.getElementById("fd-problema").value||"").trim();
+      var sugg=(document.getElementById("fd-sugg").value||"").trim();
+      var note=document.getElementById("fd-note");
+      if(!voto&&!piaciuto&&!problema&&!sugg){ note.textContent="Scrivi almeno qualcosa, o dai un voto."; return; }
+      if(!fbDb){ note.textContent="Serve una connessione a internet per inviare il feedback: riprova più tardi."; return; }
+      var btn=document.getElementById("fd-send");
+      btn.disabled=true; note.textContent="Invio in corso…";
+      fbDb.ref("feedback").push({
+        chi:document.getElementById("fd-chi").value||"",
+        voto:voto||0, piaciuto:piaciuto, problema:problema, suggerimento:sugg,
+        versione:APPV, dispositivo:navigator.userAgent,
+        quando:new Date().toISOString()
+      }).then(function(){
+        modal.querySelector(".m-body").innerHTML='<p class="note-box">Grazie, arrivato. — Puoi chiudere quando vuoi.</p>';
+      }).catch(function(){
+        btn.disabled=false; note.textContent="Non è arrivato: controlla la connessione e riprova.";
+      });
+    });
+    document.getElementById("m-close").focus();
+  }
+  document.getElementById("btn-feedback").addEventListener("click",openFeedback);
   window.__fil="all";
   document.getElementById("fchips").addEventListener("click",function(e){
     var f=e.target.closest(".fchip"); if(!f) return;
