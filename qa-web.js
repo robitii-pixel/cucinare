@@ -296,9 +296,12 @@ if(pantryCta){ click(pantryCta);
 
   // 32. i chip "da ciò che c'è in casa" sono generati dalle ricette vere, non da una lista scritta a mano
   let chips=[...d.querySelectorAll(".pchipx")].map(c=>c.textContent);
-  T("pantry: chip generati in quantità ampia (non più solo 27 scelti a mano)", chips.length>=40, "trovati: "+chips.length);
+  T("pantry: chip generati in quantità ampia (non più solo 27 scelti a mano, e non più tagliati a 60)", chips.length>=100, "trovati: "+chips.length);
   T("pantry: tempeh incluso tra i chip (nuova ricetta)", chips.includes("tempeh"));
+  T("pantry: ingredienti comuni ma poco frequenti inclusi (patate, fagiolini)", chips.includes("patate")&&chips.includes("fagiolini"));
   T("pantry: nessun chip 'acqua' spurio", !chips.includes("acqua"));
+  T("pantry: nessun residuo non-ingrediente ('da limitare', 'il vostro ...')", !chips.some(c=>/da limitare|^il vostro/.test(c)));
+  T("pantry: chip in ordine alfabetico", JSON.stringify(chips)===JSON.stringify([...chips].sort((a,b)=>a.localeCompare(b,"it"))));
 
   // 33. cercando un ingrediente di una ricetta nuova, la si trova (nello slot giusto)
   click(d.querySelector('[data-ps="cena"]'));

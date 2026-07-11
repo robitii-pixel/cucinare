@@ -888,7 +888,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v31";
+  var APPV="v32";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -2761,8 +2761,8 @@
         if(!dd.ing) return;
         dd.ing.forEach(function(i){
           var raw=normIng(i.n).toLowerCase();
-          if(/rinforzo|consiglio|da evitare|da dividere|attenzione|bere|acqua$/.test(raw)) return;
-          raw.split(/\s*(?:,| o )\s*/).forEach(function(tok){
+          if(/rinforzo|consiglio|da evitare|da dividere|da limitare|attenzione|bere|acqua$|^il vostro/.test(raw)) return;
+          raw.split(/\s*(?:,| o | e )\s*/).forEach(function(tok){
             tok=tok.trim();
             if(!tok||tok.length<4||/^acqua$/.test(tok)) return;
             freq[tok]=(freq[tok]||0)+1;
@@ -2770,7 +2770,7 @@
         });
       });
     });
-    return Object.keys(freq).sort(function(a,b){ return freq[b]-freq[a]||a.localeCompare(b,"it"); }).slice(0,60);
+    return Object.keys(freq).sort(function(a,b){ return a.localeCompare(b,"it"); });
   }
   var PANTRY_CHIPS=computePantryChips();
   function normTok(x){ return x.toLowerCase().trim(); }
