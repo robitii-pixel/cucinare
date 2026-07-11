@@ -315,6 +315,39 @@ if(pantryCta){ click(pantryCta);
   T("chiusura modale: toccando l'icona il modale si chiude davvero", !d.getElementById("overlay").classList.contains("on"));
 }
 
+// 35. Home: le card "già in programma" e "prossimo pasto" sono interamente cliccabili,
+// senza rompere i link interni (tecnica, cambia giorno) — condizionale: dipende dal piatto del giorno
+click(d.getElementById("nav-today"));
+let plannedCard=d.querySelector(".h-card-planned");
+if(plannedCard&&plannedCard.hasAttribute("data-openslot")){
+  let nameArea=plannedCard.querySelector(".h-name");
+  click(nameArea);
+  T("Home: toccare l'area della card 'già in programma' apre la ricetta", d.getElementById("m-title")&&d.getElementById("m-title").textContent.length>0);
+  click(d.getElementById("m-close"));
+
+  let tkLink=plannedCard.querySelector("[data-tk]");
+  if(tkLink){
+    let recipeName=plannedCard.querySelector(".h-name").textContent;
+    click(tkLink);
+    T("Home: 'la tecnica di stasera' apre la tecnica, non la ricetta", d.getElementById("m-title")&&d.getElementById("m-title").textContent!==recipeName&&!/errore/i.test(d.getElementById("m-title").textContent));
+    click(d.getElementById("m-close"));
+  }
+
+  let hweek=d.getElementById("h-week");
+  if(hweek){
+    click(hweek);
+    T("Home: 'Cambia o vedi il giorno' porta alla settimana senza aprire un modale", d.getElementById("settimana").style.display!=="none"&&!d.getElementById("overlay").classList.contains("on"));
+    click(d.getElementById("nav-today"));
+  }
+} else { T("Home: card 'già in programma' senza piatto assegnato (lecito, cena libera oggi)", true); }
+
+let nextCard=d.querySelector(".h-card-next");
+if(nextCard&&nextCard.hasAttribute("data-openslot")){
+  click(nextCard);
+  T("Home: toccare la card 'prossimo pasto' apre il piatto giusto", d.getElementById("m-title")&&d.getElementById("m-title").textContent.length>0);
+  click(d.getElementById("m-close"));
+}
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

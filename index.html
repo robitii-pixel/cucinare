@@ -420,6 +420,10 @@
   .cta:active{transform:scale(.98)}
   .h-card-pantry{border-left-color:var(--herb)}
   html.dark .h-card-pantry{border-left-color:var(--herb)}
+  .h-card[data-openslot]{cursor:pointer; transition:transform .15s, box-shadow .15s}
+  .h-card[data-openslot]:active{transform:scale(.99)}
+  .h-card-next{border-left-color:var(--citrus)}
+  html.dark .h-card-next{border-left-color:var(--citrus)}
   .cookbody{display:flex; flex-direction:column; min-height:52vh}
   .ck-step{font-size:1.35rem; line-height:1.55; font-family:Georgia,serif; flex:1}
   .ck-say{align-self:flex-start; border:1px solid var(--line); background:#fff; border-radius:999px; padding:10px 16px; font-weight:700; color:var(--text); margin:14px 0; min-height:44px}
@@ -884,7 +888,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v28";
+  var APPV="v29";
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -1551,7 +1555,7 @@
       +'<div class="h-btns"><button class="cta" id="h-pantry-cta"><svg class=ico><use href=#i-basket></use></svg> Cosa cucino</button></div>'
       +'</div>';
     if(cdd){
-      html+='<div class="h-card">'
+      html+='<div class="h-card h-card-planned"'+(cdd.free?'':' data-openslot="'+cid+'|'+dk+'|cena" role="button" tabindex="0"')+'>'
         +'<div class="h-k">Oppure, gi\u00e0 in programma</div>'
         +'<div class="h-name">'+(cdd.free?"Cena libera <svg class=ico><use href=#i-plate></use></svg>":cdd.name)+(cdd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+'</div>'
         +(cdd.free?'':'<div class="h-meta"><svg class=ico><use href=#i-clock></use></svg> '+mins(cdd)+(pline?' \u00b7 '+pline:'')+'</div>')
@@ -1566,8 +1570,10 @@
         +'</div>';
     }
     if(ndd&&nslot!=="cena"){
-      html+='<div class="h-mini">Prossimo pasto \u00b7 <b>'+nlbl+'</b>: '+(ndd.free?"libero":ndd.name)
-        +(ndd&&!ndd.free?' <button class="c-link" data-openslot="'+nid+'|'+dk+'|'+nslot+'">apri</button>':'')+'</div>';
+      html+='<div class="h-card h-card-next"'+(ndd.free?'':' data-openslot="'+nid+'|'+dk+'|'+nslot+'" role="button" tabindex="0"')+'>'
+        +'<div class="h-k">Prossimo pasto \u00b7 '+nlbl+'</div>'
+        +'<div class="h-name">'+(ndd.free?"Libero":ndd.name)+(ndd.free?'':' <button class="c-link" data-openslot="'+nid+'|'+dk+'|'+nslot+'">apri</button>')+'</div>'
+        +'</div>';
     }
     if(!calcPerson(state.prof.r)||!calcPerson(state.prof.g)){
       html+='<div class="h-mini"><svg class=ico><use href=#i-user></use></svg> <b>Prima cosa da fare:</b> compilate i profili (et\u00e0, altezza, peso) \u2014 finch\u00e9 mancano, obiettivi e semafori usano valori di base. <button class="c-link" id="h-prof2">Apri i profili</button></div>';
@@ -1582,7 +1588,7 @@
     html+='<div class="h-links"><button class="toolbtn" id="h-shop"><svg class=ico><use href=#i-cart></use></svg> La spesa</button>'
       +'<button class="toolbtn" id="h-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button><button class="toolbtn" id="h-prof"><svg class=ico><use href=#i-user></use></svg> Profili</button></div>';
     var hb=document.getElementById("home-body"); if(hb) hb.innerHTML=html;
-    var hw=document.getElementById("h-week"); if(hw) hw.addEventListener("click",function(){ setView("week",true); goToday(); });
+    var hw=document.getElementById("h-week"); if(hw) hw.addEventListener("click",function(e){ e.stopPropagation(); setView("week",true); goToday(); });
     var hs=document.getElementById("h-shop"); if(hs) hs.addEventListener("click",buildShopping);
     var hpc=document.getElementById("h-pantry-cta"); if(hpc) hpc.addEventListener("click",openPantry);
     var ht=document.getElementById("h-trip");
@@ -1600,7 +1606,7 @@
       return;
     }
     var os=e.target.closest("[data-openslot]");
-    if(os){ var pp=os.getAttribute("data-openslot").split("|"); openModal(pp[0],pp[1],pp[2]); }
+    if(os&&!e.target.closest("[data-tk],#h-week")){ var pp=os.getAttribute("data-openslot").split("|"); openModal(pp[0],pp[1],pp[2]); }
   });
 
 
@@ -2092,6 +2098,11 @@
     if(pk){ var nid=pk.getAttribute("data-pick"); setPlan(ctx.day,ctx.slot,nid); renderWeek(); openModal(nid,ctx.day,ctx.slot); return; }
   });
   document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&overlay.classList.contains("on")) closeModal(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Enter"&&e.key!==" ") return;
+    var os=e.target.closest("[data-openslot][role=button]");
+    if(os&&!e.target.closest("[data-tk],#h-week,button,a")){ e.preventDefault(); var pp=os.getAttribute("data-openslot").split("|"); openModal(pp[0],pp[1],pp[2]); }
+  });
 
   var PREP_SEASONAL={
     b5:{estate:["Verdure grigliate (zucchine, melanzane, peperoni)","Verdure grigliate (zucchine, peperoni, cipolle rosse)","Verdure grigliate (melanzane, zucchine, pomodori)"],
