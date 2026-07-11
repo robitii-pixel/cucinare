@@ -394,6 +394,17 @@ krField.value="999"; krField.dispatchEvent(new w.Event("input",{bubbles:true}));
 T("vostro piatto: i campi restano modificabili a mano dopo il calcolo", d.getElementById("ad-kr").value==="999");
 click(d.getElementById("m-close"));
 
+// 40. nuove ricette invernali: si aprono correttamente, con macro per entrambi e senza NaN
+["d23","d24","p20","s22"].forEach(function(id){
+  let btn=d.querySelector('#library [data-openlib="'+id+'"]');
+  T("ricetta invernale "+id+": presente nel ricettario", !!btn);
+  if(!btn) return;
+  click(btn);
+  let boxes=[...d.querySelectorAll(".nutri .nbox .v")].map(n=>n.textContent);
+  T("ricetta invernale "+id+": macro per entrambi, nessun NaN", boxes.length===2&&boxes.every(t=>!/NaN|undefined/.test(t)), boxes.join(" | "));
+  click(d.getElementById("m-close"));
+});
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);
