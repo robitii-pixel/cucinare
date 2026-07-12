@@ -738,8 +738,9 @@
     <summary><span class="sec-mini">Profili e obiettivi</span><span class="prof-hint" id="prof-hint">tocca per impostare età, altezza, peso e obiettivo</span></summary>
     <div class="prof-grid">
       <div class="pcard r">
-        <div class="pname">Persona 1</div>
+        <div class="pname"><span id="pname-r">Persona 1</span></div>
         <div class="pfields">
+          <label>Nome<input type="text" id="pr-name" maxlength="30" autocomplete="name"></label>
           <label>Età<input type="number" inputmode="numeric" id="pr-age" min="18" max="90" placeholder="anni"></label>
           <label>Altezza<input type="number" inputmode="numeric" id="pr-h" min="140" max="210" placeholder="cm"></label>
           <label>Peso<input type="number" inputmode="decimal" id="pr-w" min="45" max="150" step="0.5" placeholder="kg"></label>
@@ -751,8 +752,9 @@
         <div class="pout" id="pr-out"></div>
       </div>
       <div class="pcard g">
-        <div class="pname">Persona 2</div>
+        <div class="pname"><span id="pname-g">Persona 2</span></div>
         <div class="pfields">
+          <label>Nome<input type="text" id="pg-name" maxlength="30" autocomplete="name"></label>
           <label>Età<input type="number" inputmode="numeric" id="pg-age" min="18" max="90" placeholder="anni"></label>
           <label>Altezza<input type="number" inputmode="numeric" id="pg-h" min="140" max="210" placeholder="cm"></label>
           <label>Peso<input type="number" inputmode="decimal" id="pg-w" min="45" max="150" step="0.5" placeholder="kg"></label>
@@ -910,7 +912,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v43";
+  var APPV="v44";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -951,8 +953,8 @@
     st.plan=st.plan||{}; st.verdict=st.verdict||{}; st.checked=st.checked||{};
     st.shop=st.shop||{}; st.fav=st.fav||{}; st.cooked=st.cooked||{}; st.dnote=st.dnote||{}; st.whist=st.whist||{r:[],g:[]}; st.custom=st.custom||[];
     st.ui=st.ui||{}; st.prof=st.prof||{r:{},g:{}}; st.prof.r=st.prof.r||{}; st.prof.g=st.prof.g||{};
-    if(!st.prof.r.name) st.prof.r.name=PERSONAL?"Persona 1":"Persona 1";
-    if(!st.prof.g.name) st.prof.g.name=PERSONAL?"Persona 2":"Persona 2";
+    if(!st.prof.r.name||(PERSONAL&&st.prof.r.name==="Persona 1")) st.prof.r.name=PERSONAL?"Persona 1":"Persona 1";
+    if(!st.prof.g.name||(PERSONAL&&st.prof.g.name==="Persona 2")) st.prof.g.name=PERSONAL?"Persona 2":"Persona 2";
     st.weeks=st.weeks||{};
     st.tk=st.tk||{}; st.tknote=st.tknote||{};
     return st;
@@ -1392,6 +1394,8 @@
   }
   function applyProfile(){
     ["r","g"].forEach(function(k){
+      BASE[k].name=(state.prof[k]&&state.prof[k].name)||(k==="r"?"Persona 1":"Persona 2");
+      var pname=document.getElementById("pname-"+k); if(pname) pname.textContent=BASE[k].name;
       var c=calcPerson(state.prof[k]);
       if(c){ BASE[k].k=c.kcal; BASE[k].p=c.prot; }
       else { BASE[k].k=BASE_DEFAULT[k].k; BASE[k].p=BASE_DEFAULT[k].p; }
@@ -1408,13 +1412,14 @@
       if(leg) leg.textContent=BASE[k].name+" · base "+BASE[k].k.toLocaleString("it-IT")+" kcal · "+BASE[k].p+" g";
     });
   }
-  var PROF_FIELDS=[["r","age"],["r","h"],["r","w"],["r","goal"],["g","age"],["g","h"],["g","w"],["g","goal"]];
+  var PROF_FIELDS=[["r","name"],["r","age"],["r","h"],["r","w"],["r","goal"],["g","name"],["g","age"],["g","h"],["g","w"],["g","goal"]];
   function refreshProfileFields(){
     PROF_FIELDS.forEach(function(f){
       var el=document.getElementById("p"+f[0]+"-"+(f[1]==="age"?"age":f[1]==="goal"?"goal":f[1]));
       if(!el) return;
       var pr=state.prof[f[0]];
       if(f[1]==="goal"){ el.value=pr.goal||"ricomp"; }
+      else if(f[1]==="name"){ el.value=pr.name||""; }
       else if(pr[f[1]]){ el.value=pr[f[1]]; }
     });
     applyProfile();
@@ -1424,7 +1429,7 @@
       var el=document.getElementById("p"+f[0]+"-"+(f[1]==="age"?"age":f[1]==="goal"?"goal":f[1]));
       if(!el) return;
       el.addEventListener("input",function(){
-        var v=(f[1]==="goal")?el.value:parseFloat(el.value)||null;
+        var v=(f[1]==="goal")?el.value:(f[1]==="name"?(el.value||"").trim():parseFloat(el.value)||null);
         state.prof[f[0]][f[1]]=v;
         if(f[1]==="w"&&v){ var hh=state.whist[f[0]]||(state.whist[f[0]]=[]);
           var tISO=iso(new Date());
@@ -3205,6 +3210,11 @@
   applyProfileNames(document);
   if(window.__doSearch) window.__doSearch();
   fbInit();
+  if(PERSONAL&&famCode()&&fbDb){
+    try{
+      fbDb.ref("households/"+famCode()+"/state").update({"prof/r/name":state.prof.r.name,"prof/g/name":state.prof.g.name,"_ts":Date.now()}).catch(function(){});
+    }catch(e){}
+  }
   (function(){
     var famParam=null;
     try{ famParam=new URL(location.href).searchParams.get("fam"); }catch(e){}

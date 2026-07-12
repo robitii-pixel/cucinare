@@ -12,8 +12,8 @@ w = w.replace('''    if(!pr.dob){ var fx=PROF_FIXED[k];
       pr.w=fx.w;
       var hh=state.whist&&state.whist[k]; if(hh&&(!hh.length||hh[hh.length-1].w!==pr.w)) hh.push({d:(new Date()).toISOString().slice(0,10),w:pr.w});
     }''', '    if(!pr.goal){ pr.goal=PROF_FIXED[k].goal; }')
-w = w.replace('<div class="pname">Roberto <span style="font-weight:400;font-size:.75rem;color:var(--muted)">\u00b7 n. 21/02/1980 \u00b7 175 cm</span></div>', '<div class="pname">Roberto</div>')
-w = w.replace('<div class="pname">Gigi <span style="font-weight:400;font-size:.75rem;color:var(--muted)">\u00b7 n. 16/04/1990 \u00b7 185 cm</span></div>', '<div class="pname">Gigi</div>')
+w = w.replace('<div class="pname"><span id="pname-r">Roberto</span> <span style="font-weight:400;font-size:.75rem;color:var(--muted)">\u00b7 n. 21/02/1980 \u00b7 175 cm</span></div>', '<div class="pname"><span id="pname-r">Roberto</span></div>')
+w = w.replace('<div class="pname"><span id="pname-g">Gigi</span> <span style="font-weight:400;font-size:.75rem;color:var(--muted)">\u00b7 n. 16/04/1990 \u00b7 185 cm</span></div>', '<div class="pname"><span id="pname-g">Gigi</span></div>')
 
 # La build pubblica usa profili neutri; la build personale conserva i nomi reali.
 assert 'Roberto' in w and 'Gigi' in w, 'nomi profili non trovati prima della neutralizzazione'
