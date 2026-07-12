@@ -890,7 +890,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v36";
+  var APPV="v37";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -1235,7 +1235,7 @@
         steps:["Cuoci farina di ceci e acqua salata mescolando 8–10 minuti finché densissima; stendi su teglia unta a 1 cm e fai freddare.","Taglia a losanghe, olio in superficie, forno 220° per 18–20 minuti girando a metà: dorate e croccanti.","Limone sopra, caponata accanto, parmigiano di mandorle a pioggia."]},
       {id:"d14",fam:"fuori",name:"Cena fuori — pizzeria",time:"—",desc:"Stima onesta per restare in rotta: margherita o ortolana, niente fritti d’ingresso.",kr:950,kg:850,pr:35,pg:33,
         ing:[{n:"Consiglio",q:"margherita o pizza alle verdure"},{n:"Da evitare",q:"antipasti fritti, 4 formaggi/salsiccia"},{n:"Bere",q:"acqua o una birra piccola"}],
-        steps:["La margherita intera vale ≈900–1000 kcal: è una cena piena, non uno sgarro — contala e goditela.","Se c’è fame vera: insalata prima, non patatine.","Dolce da dividere in due, se proprio.","La pizza è già sapida di suo (pomodoro, formaggio, cornicione): niente sale o formaggio extra al tavolo."]},
+        steps:["La margherita intera vale ≈900–1000 kcal: è una cena completa e può rientrare nel piano.","Se c’è fame vera: insalata prima, non patatine.","Dolce da dividere in due, se proprio.","La pizza è già sapida di suo (pomodoro, formaggio, cornicione): niente sale o formaggio extra al tavolo."]},
       {id:"d15",fam:"fuori",name:"Cena fuori — trattoria sarda",time:"—",desc:"Culurgiones o malloreddus + verdure: si mangia da re restando nei paraggi dei numeri.",kr:900,kg:820,pr:32,pg:30,
         ing:[{n:"Consiglio",q:"un primo + contorno di verdure"},{n:"Da dividere",q:"antipasto di formaggi o pane frattau"},{n:"Attenzione",q:"seadas: metà pasto — in due"}],
         steps:["Primo + contorno è la formula che regge (≈800–950 kcal).","Pecorino dell’antipasto: 3–4 pezzi, non il tagliere.","Un bicchiere di Cannonau ≈120 kcal: contale se ci tieni al conto.","Pecorino e pane carasau sono già sapidi di loro: non serve altro sale in tavola."]},
@@ -1458,7 +1458,7 @@
     }
     var dn=doneFor(day,person), sg=sgarroFor(day,person);
     h+='<span class="stat"><button class="dn'+(dn?" on":"")+'" data-dn="'+day+'|'+person+'" title="Giornata seguita" aria-label="Giornata seguita"><svg class=ico><use href=#i-check></use></svg></button>'
-      +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Sgarro" aria-label="Segna uno sgarro"><svg class=ico><use href=#i-cheers></use></svg></button></span></div>';
+      +'<button class="sg'+(sg?" on":"")+'" data-sg="'+day+'|'+person+'" title="Pasto fuori programma" aria-label="Segna un pasto fuori programma"><svg class=ico><use href=#i-cheers></use></svg></button></span></div>';
     return h;
   }
   function fuelNote(day){
@@ -1871,12 +1871,12 @@
         return '<div class="tt '+cls+'"><span>'+who+'</span>'
           +'<span class="vs"><i class="d '+dot(k,tk)+'"></i>'+k+'/'+tk+' kcal <i class="d '+dot(p,tp,"p")+'"></i>'+p+'/'+tp+' g'
           +(hasFree?' <span class="free">+libero</span>':'')
-          +(dn?' <span class="dntag">seguita</span>':'')+(sg?' <span class="sgtag">sgarro</span>':'')+'</span>'
+          +(dn?' <span class="dntag">seguita</span>':'')+(sg?' <span class="sgtag">pasto fuori programma</span>':'')+'</span>'
           +'<span class="ttmsg">'+(state.trip?'<svg class=ico><use href=#i-plane></use></svg> in trasferta \u2014 solo annotazione':statusTxt(k,tk,p,tp))+'</span></div>';
       }
       kr+=EXTRA.r.k; pr+=EXTRA.r.p; kg+=EXTRA.g.k; pg+=EXTRA.g.p;
       var vw=state.trip?[]:varietyWarnings(day);
-      if(vw.length) html+='<div class="warnrow"><svg class=ico><use href=#i-warn></use></svg> Varietà: '+vw.join(" · ")+' — tocca ⇄ per cambiare</div>';
+      if(vw.length) html+='<div class="warnrow"><svg class=ico><use href=#i-warn></use></svg> Varietà: '+vw.join(" · ")+'. Usa il pulsante Cambia per scegliere un altro piatto.</div>';
       html+='<div class="totals"><div class="xnote">incl. extra quotidiani (pane, frutta, olio, caffellatte): +'+EXTRA.r.k+'/+'+EXTRA.g.k+' kcal</div>'
           +ttRow("r","Roberto",dnR,sgR,kr,tR.k,pr,tR.p)
           +ttRow("g","Gigi",dnG,sgG,kg,tG.k,pg,tG.p)
@@ -1908,10 +1908,10 @@
         +'<div class="ws-t">Settimana '+fmtShort(curMonday)+' – '+fmtShort(end)+' '+end.getFullYear()+' <span style="font-weight:400;font-size:.78rem;opacity:.75">· '+Object.keys(state.weeks||{}).length+' settimane in archivio</span>'
         +(iso(mondayOf(TODAY))===wkey()?' <span class="ws-cur">· corrente</span>':'')
         +'<div class="ws-note">media giornaliera · le serate libere non sono contate</div>'
-        +'<div class="ws-note" style="margin-top:5px">giornate seguite: R '+(wk.dnR||0)+' · G '+(wk.dnG||0)+(((wk.sgR||0)+(wk.sgG||0))?' · sgarri: '+((wk.sgR||0)+(wk.sgG||0)):'')+' · cene <svg class=ico><use href=#i-leaf></use></svg>: '+vgDinners()+'/2</div></div>'
+        +'<div class="ws-note" style="margin-top:5px">giornate seguite: R '+(wk.dnR||0)+' · G '+(wk.dnG||0)+(((wk.sgR||0)+(wk.sgG||0))?' · pasti fuori programma: '+((wk.sgR||0)+(wk.sgG||0)):'')+' · cene <svg class=ico><use href=#i-leaf></use></svg>: '+vgDinners()+'/2</div></div>'
         +'<button class="wnav" data-wnav="1" aria-label="Settimana successiva"><svg class=ico><use href=#i-chevron></use></svg></button></div>'
-        +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · ✓ '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgR||0)+'</span></div>'
-        +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · ✓ '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' seguiti · <svg class=ico><use href=#i-plate></use></svg> '+(wk.sgG||0)+'</span></div>';
+        +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · giorni seguiti: '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' · pasti fuori programma: '+(wk.sgR||0)+'</span></div>'
+        +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · giorni seguiti: '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' · pasti fuori programma: '+(wk.sgG||0)+'</span></div>';
     }
     if(typeof renderPrep==="function") renderPrep();
   }
@@ -2231,7 +2231,7 @@
   applyFont();
 
   document.getElementById("reset-all").addEventListener("click",function(){
-    if(!confirm("Ripristinare la settimana visualizzata (piano proposto, allenamenti, sgarri e giudizi di giornata)?")) return;
+    if(!confirm("Ripristinare la settimana visualizzata? Verranno ripristinati il piano proposto, gli allenamenti, i pasti fuori programma e i giudizi delle giornate.")) return;
     delete state.weeks[wkey()]; save(state); renderWeek();
   });
 
@@ -2480,7 +2480,7 @@
   var TKLV={1:{t:"Fondamenta",sub:"I gesti quotidiani, perfetti per le sere veloci.",cls:"l1"},
             2:{t:"Trasformazioni",sub:"Tempo, acidit\u00e0, fuoco vivo \u2014 e qualche viaggio.",cls:"l2"},
             3:{t:"Alchimie",sub:"Progetti da weekend, quando ci si pu\u00f2 dedicare.",cls:"l3"}};
-  var TKSTL={prova:"Provata",mia:"Mia!"};
+  var TKSTL={prova:"Provata",mia:"Imparata"};
   var TKRANKS=[[0,"Apprendista"],[4,"Garzone di bottega"],[8,"Cuoco di casa"],[14,"Artigiano del gusto"],[18,"Gran Maestro"]];
   var DISH2TK={p1:["tosta","manteca"],p6:["manteca","zaff"],p13:["manteca","confit"],p8:["legumi"],p9:["legumi"],p3:["palato"],p19:["legumi"],p20:["legumi"],d22:["glassa","legumi"],d23:["legumi"],d24:["anacardi","legumi"],s22:["anacardi"],
                d1:["mise","uovo"],d2:["palato"],d3:["agrodolce","bruciato"],d4:["salamoia","emulsioni"],d5:["emulsioni"],
@@ -2542,7 +2542,7 @@
       +'<span class="mchip g">Gigi '+t.meal.kg+' kcal \u00b7 '+t.meal.pg+' g</span></div></div>'
       +'<div style="margin:0 0 12px"><button class="toolbtn primaryish" data-cookmode="'+t.id+'"><svg class=ico><use href=#i-hat></use></svg> Modalit\u00e0 cucina</button></div>'
       +'<div class="strow"><button class="stb prova'+(st==="prova"?' on':'')+'" data-tkst="prova"><svg class=ico><use href=#i-check></use></svg> Provata</button>'
-      +'<button class="stb mia'+(st==="mia"?' on':'')+'" data-tkst="mia"><svg class=ico><use href=#i-medal></use></svg> Mia!</button></div>'
+      +'<button class="stb mia'+(st==="mia"?' on':'')+'" data-tkst="mia"><svg class=ico><use href=#i-medal></use></svg> Imparata</button></div>'
       +'<div style="font-size:.78rem;color:var(--muted);margin:6px 0 6px;font-weight:600">Le vostre note</div>'
       +'<textarea class="notew" id="tknote">'+(state.tknote[id]||"")+'</textarea></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
@@ -2707,7 +2707,7 @@
       }catch(err){ alert("File non valido."); } };
     r.readAsText(f);
   });
-  function tripBtn(){ document.getElementById("btn-trip").innerHTML=state.trip?"<svg class=ico><use href=#i-plane></use></svg> Trasferta ATTIVA \u2014 tocca per chiudere":"<svg class=ico><use href=#i-plane></use></svg> Attiva modalit\u00e0 trasferta"; }
+  function tripBtn(){ document.getElementById("btn-trip").innerHTML=state.trip?"<svg class=ico><use href=#i-plane></use></svg> Disattiva modalit\u00e0 trasferta":"<svg class=ico><use href=#i-plane></use></svg> Attiva modalit\u00e0 trasferta"; }
   document.getElementById("btn-trip").addEventListener("click",function(){ state.trip=state.trip?0:1; save(state); tripBtn(); renderWeek(); });
   tripBtn();
 
@@ -3046,7 +3046,7 @@
       +'<div class="kicker">La nostra cucina</div><h3 id="m-title">Come funziona</h3>'
       +'<div class="time">La guida rapida, sempre qui sotto il punto interrogativo</div></div><div class="m-body helpb">'
       +'<h5><svg class=ico><use href=#i-home></use></svg> Oggi</h5><p>La schermata di casa parte da \u201cCosa avete in casa?\u201d: scrivete gli ingredienti e trovate i piatti giusti per il pasto di adesso. Il piano gi\u00e0 pronto resta subito sotto, come alternativa. Poi il prossimo pasto, il coach con la serie <svg class=ico><use href=#i-flame></use></svg>, la tappa del percorso e l\u2019abitudine della settimana.</p>'
-      +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Il piano completo. Tocca un piatto per la ricetta; \u21C4 per cambiarlo; in fondo al giorno segna allenamenti, \u201cseguita \u2713\u201d e sgarri. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> genera la settimana nuova con variet\u00e0 (preferiti e cene vegetali favoriti, i \u201cmai pi\u00f9\u201d esclusi).</p>'
+      +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Qui trovate il piano completo. Toccate un piatto per aprire la ricetta e usate il pulsante Cambia per sceglierne un altro. In fondo a ogni giorno potete indicare gli allenamenti, segnare la giornata come seguita o registrare un pasto fuori programma. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> crea una nuova settimana favorendo variet\u00e0, preferiti e cene vegetali ed escludendo i piatti segnati come \u201cmai pi\u00f9\u201d.</p>'
       +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal <b>piano della settimana</b> (non da quanto avete davvero mangiato): weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
       +'<h5><svg class=ico><use href=#i-flame></use></svg> La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'
       +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Qui trovate tutti i piatti, i filtri, i men\u00f9 per gli ospiti e le ricette aggiunte da voi. Con \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d potete cercare cosa cucinare usando gli ingredienti disponibili e confrontare il risultato con l\u2019obiettivo del pasto.</p>'
