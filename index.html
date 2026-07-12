@@ -910,7 +910,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v42";
+  var APPV="v43";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -950,7 +950,10 @@
   function ensureDefaults(st){
     st.plan=st.plan||{}; st.verdict=st.verdict||{}; st.checked=st.checked||{};
     st.shop=st.shop||{}; st.fav=st.fav||{}; st.cooked=st.cooked||{}; st.dnote=st.dnote||{}; st.whist=st.whist||{r:[],g:[]}; st.custom=st.custom||[];
-    st.ui=st.ui||{}; st.prof=st.prof||{r:{},g:{}}; st.weeks=st.weeks||{};
+    st.ui=st.ui||{}; st.prof=st.prof||{r:{},g:{}}; st.prof.r=st.prof.r||{}; st.prof.g=st.prof.g||{};
+    if(!st.prof.r.name) st.prof.r.name=PERSONAL?"Persona 1":"Persona 1";
+    if(!st.prof.g.name) st.prof.g.name=PERSONAL?"Persona 2":"Persona 2";
+    st.weeks=st.weeks||{};
     st.tk=st.tk||{}; st.tknote=st.tknote||{};
     return st;
   }
@@ -966,9 +969,11 @@
     fbDb.ref("households/"+famCode()+"/state").on("value",function(snap){
       var remote=snap.val();
       if(!remote||!remote._ts||remote._ts<=(state._ts||0)) return;
+      var namesMissing=!(remote.prof&&remote.prof.r&&remote.prof.r.name&&remote.prof.g&&remote.prof.g.name);
       state=ensureDefaults(remote);
       try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
       fbApplyingRemote=true; try{ renderAll(); } finally { fbApplyingRemote=false; }
+      if(PERSONAL&&namesMissing) save(state);
       if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> Aggiornato dall'altro telefono",2500);
     });
   }
@@ -977,6 +982,7 @@
     refreshProfileFields(); renderWeek(); renderLibrary(); renderBottega();
     var h=document.getElementById("home");
     if(h&&h.style.display!=="none") renderHome();
+    applyProfileNames(document);
   }
   function shareFamCode(){
     var code=famCode(); if(!code) return;
@@ -1034,6 +1040,30 @@
   }
   var state=load();
   ensureDefaults(state);
+  function applyProfileNames(root){
+    var names={"Persona 1":(state.prof.r&&state.prof.r.name)||"Persona 1","Persona 2":(state.prof.g&&state.prof.g.name)||"Persona 2"};
+    if(names["Persona 1"]==="Persona 1"&&names["Persona 2"]==="Persona 2") return;
+    var walker=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT);
+    var nodes=[],n;
+    while((n=walker.nextNode())){
+      var tag=n.parentNode&&n.parentNode.nodeName;
+      if(tag!=="SCRIPT"&&tag!=="STYLE"&&tag!=="TEXTAREA") nodes.push(n);
+    }
+    nodes.forEach(function(t){
+      var v=t.nodeValue;
+      if(v.indexOf("Persona 1")>=0) v=v.replace(/Persona 1/g,names["Persona 1"]);
+      if(v.indexOf("Persona 2")>=0) v=v.replace(/Persona 2/g,names["Persona 2"]);
+      if(v!==t.nodeValue) t.nodeValue=v;
+    });
+    if(document.title.indexOf("Persona 1")>=0||document.title.indexOf("Persona 2")>=0){
+      document.title=document.title.replace(/Persona 1/g,names["Persona 1"]).replace(/Persona 2/g,names["Persona 2"]);
+    }
+  }
+  if(window.MutationObserver){
+    new MutationObserver(function(changes){
+      changes.forEach(function(change){ Array.from(change.addedNodes||[]).forEach(function(node){ if(node.nodeType===1) applyProfileNames(node); }); });
+    }).observe(document.body,{childList:true,subtree:true});
+  }
   /* dimensione testo: 0 normale · 1 grande · 2 extra */
   state.ui=state.ui||{};
   var FONTL=["A","A+","A++"];
@@ -3172,6 +3202,7 @@
     setView("home"); renderHome(); window.scrollTo({top:0});
   });
   bindProfile(); renderWeek(); renderLibrary(); libDefaults(); renderBottega();
+  applyProfileNames(document);
   if(window.__doSearch) window.__doSearch();
   fbInit();
   (function(){
