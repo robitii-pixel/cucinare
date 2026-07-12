@@ -20,6 +20,8 @@ setTimeout(function(){
 // 1. boot & home
 T("boot: home renderizzata", d.getElementById("home-body").innerHTML.length>100);
 T("boot: sezione settimana nascosta in vista home", d.getElementById("settimana").style.display==="none");
+T("barra mobile: Home evidenziata semanticamente", d.getElementById("nav-today").getAttribute("aria-current")==="page");
+T("fab: nascosto quando si è già in Home", d.getElementById("fab-home").style.display==="none");
 T("guida: primo avvio marcato", state().seenHelp===1);
 T("guida: aperta dopo il ritardo", d.getElementById("m-title") && /Come funziona/.test(d.getElementById("m-title").textContent));
 click(d.getElementById("m-close"));
@@ -33,6 +35,8 @@ click(d.getElementById("nav-week"));
 T("nav: settimana visibile", d.getElementById("settimana").style.display!=="none");
 T("nav: home nascosta", d.getElementById("home").style.display==="none");
 click(d.getElementById("nav-ric"));
+T("barra mobile: Ricettario diventa la sezione attiva", d.getElementById("nav-ric").getAttribute("aria-current")==="page");
+T("fab: visibile fuori dalla Home", d.getElementById("fab-home").style.display!=="none");
 T("nav: ricettario visibile", d.getElementById("ricettario").style.display!=="none");
 
 // 3. filtro vegetali (bug storico)

@@ -592,19 +592,22 @@
   /* barra inferiore su iPhone */
   @media(max-width:720px){
     .quicknav{position:fixed; left:0; right:0; bottom:0; z-index:70; margin:0;
-      background:rgba(249,252,249,.92); backdrop-filter:blur(14px);
-      border-top:1px solid var(--line); padding:8px 10px calc(8px + env(safe-area-inset-bottom));
-      display:flex; justify-content:space-around; gap:6px}
-    html.dark .quicknav{background:rgba(14,26,29,.92)}
+      background:var(--paper); border-top:1px solid var(--line);
+      box-shadow:0 -8px 24px rgba(10,75,96,.11);
+      padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+      display:flex; justify-content:space-around; gap:4px; isolation:isolate}
+    html.dark .quicknav{background:#0E1A1D; box-shadow:0 -8px 24px rgba(0,0,0,.3)}
     .quicknav{flex-wrap:nowrap}
-    .qn{flex:1 1 0; min-width:0; padding:7px 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; box-shadow:none; border:none; background:transparent; min-height:50px}
+    .qn{flex:1 1 0; min-width:0; padding:6px 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; box-shadow:none; border:none; border-radius:12px; background:transparent; min-height:52px}
     .qn .qi{font-size:1.15rem; line-height:1}
-    .qn .qt{font-size:.6rem; font-weight:700; letter-spacing:.01em; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    .qn .qt{font-size:.62rem; font-weight:700; letter-spacing:.01em; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
     .qn:hover{background:transparent}
+    .qn.cur{background:var(--aqua); color:#0A4B60; box-shadow:inset 0 0 0 1px var(--aqua-line)}
+    html.dark .qn.cur{background:#17353B; color:#EAF6F8; box-shadow:inset 0 0 0 1px #2A5962}
     .qsearch{position:fixed; left:12px; right:12px; bottom:calc(64px + env(safe-area-inset-bottom)); z-index:69; display:none; background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:10px 12px; box-shadow:0 10px 34px rgba(10,90,115,.25)}
     .qsearch.open{display:flex}
-    body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
-    #totop{left:16px; right:auto; bottom:calc(84px + env(safe-area-inset-bottom))}
+    body{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+    #totop{left:16px; right:auto; bottom:calc(90px + env(safe-area-inset-bottom))}
   }
   @media(min-width:721px){ #nav-search{display:none} }
   .bkban{background:#FFF3C4; border:1px solid #F3DE8A; border-radius:14px; padding:11px 15px; font-size:.85rem; margin:10px 0 0; display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
@@ -907,7 +910,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v40";
+  var APPV="v41";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -2664,9 +2667,10 @@
       document.querySelectorAll(VIEWS[k]).forEach(function(sec){ sec.style.display=(k===v)?"":"none"; });
     });
     var hero=document.querySelector(".hero"); if(hero) hero.style.display=(v==="home")?"":"none";
-    document.querySelectorAll(".qn").forEach(function(b){ b.classList.remove("cur"); });
+    document.querySelectorAll(".qn").forEach(function(b){ b.classList.remove("cur"); b.removeAttribute("aria-current"); });
     var map={home:"nav-today",week:"nav-week",bottega:"nav-bottega",ric:"nav-ric"};
-    var cb=document.getElementById(map[v]); if(cb) cb.classList.add("cur");
+    var cb=document.getElementById(map[v]); if(cb){ cb.classList.add("cur"); cb.setAttribute("aria-current","page"); }
+    var fab=document.getElementById("fab-home"); if(fab) fab.style.display=(v==="home")?"none":"";
     if(!noscroll) window.scrollTo({top:0});
   }
   document.getElementById("nav-today").addEventListener("click",function(){ setView("home"); renderHome(); });

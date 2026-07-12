@@ -40,3 +40,7 @@ proposte che introducono tofu, edamame, chia, tahina, orzo, polenta e nuove alte
 
 **Ciclo v40 — backup su iPhone.** Il backup viene condiviso come vero file di testo, salvabile
 nell’app File, e il ripristino accetta sia il nuovo formato `.txt` sia i precedenti `.json`.
+
+**Ciclo v41 — barra inferiore.** La navigazione mobile diventa un dock pieno e aderente al bordo,
+con la sezione attiva evidenziata e senza trasparenza. Il pulsante Home flottante scompare quando
+si è già nella Home, riducendo sovrapposizioni e ridondanze.
