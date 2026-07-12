@@ -74,7 +74,7 @@ d.getElementById("pantry-in").value="pomodori, ceci, pane";
 click(d.getElementById("pantry-go"));
 let res1=d.querySelectorAll("#pantry-out .card").length;
 T("dispensa: trova piatti", res1>0, "risultati="+res1);
-T("dispensa: budget slot mostrato", /budget/.test(d.getElementById("pantry-out").innerHTML));
+T("dispensa: obiettivo del pasto mostrato", /obiettivo del pasto/.test(d.getElementById("pantry-out").innerHTML));
 // cambio slot
 let psP=d.querySelector('#pslot-row [data-ps="pranzo"]');
 click(psP);

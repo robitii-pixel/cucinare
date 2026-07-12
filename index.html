@@ -685,7 +685,7 @@
   <div class="wrap hero-inner">
     <div class="eyebrow">La settimana a tavola + la Bottega delle tecniche · vegetariana</div>
     <h1>La nostra<br><em>cucina</em></h1>
-    <p class="lede">Un posto solo per tutto: cosa mangiamo oggi e in settimana — con i giorni veloci da 15 minuti e quelli in cui ci si dedica — e le tecniche della Bottega, che alzano il gusto degli stessi piatti. Calorie e proteine restano quelle del piano.</p>
+    <p class="lede">Qui trovate il piano di oggi e dell’intera settimana, insieme alle tecniche della Bottega. Ci sono piatti pronti in 15 minuti e ricette a cui dedicare più tempo, sempre con le calorie e le proteine previste dal piano.</p>
   </div>
 </header>
 
@@ -770,7 +770,7 @@
     <button class="reset" id="gen-week"><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</button>
     <button class="reset" id="reset-all"><svg class=ico><use href=#i-cycle></use></svg> Ripristina</button>
   </div>
-  <p class="sec-sub">Le schede seguono il calendario reale — oggi è evidenziato, e con ‹ › nel riepilogo navighi tra le settimane, ognuna con il suo piano salvato. Scegliete allenamento e orario per ciascuno; a fine giornata segnate <b>✓ seguita</b> o <b><svg class=ico><use href=#i-plate></use></svg> sgarro</b>: è così che si verifica se il programma sta funzionando.</p>
+  <p class="sec-sub">Ogni settimana conserva il proprio piano e il giorno di oggi è evidenziato. Nel riepilogo potete passare da una settimana all’altra, scegliere allenamento e orario e, a fine giornata, segnare se avete seguito il piano o fatto un pasto fuori programma.</p>
   <div class="weeksum" id="weeksum"></div>
   <div class="tools"><button class="toolbtn" id="btn-shop"><svg class=ico><use href=#i-cart></use></svg> La spesa, al momento giusto</button></div>
   <div class="jumps" id="jumps"></div>
@@ -809,7 +809,7 @@
     <h2>La Bottega delle tecniche</h2>
     <button class="toolbtn" id="btn-tk-random" style="margin-left:auto"><svg class=ico><use href=#i-dice></use></svg> Stasera provo…</button>
   </div>
-  <p class="sec-sub">Le tecniche che alzano il gusto dei piatti della settimana — comprese quelle sperimentali, orientali e la via vegetale — sostituire uova, latte e formaggi, dolci compresi, restando nella nostra cucina. Ognuna finisce in un piatto vero, già in linea con la dieta. Nei giorni veloci le Fondamenta, nel weekend le Alchimie.</p>
+  <p class="sec-sub">Qui impariamo le tecniche che danno più gusto ai piatti della settimana, comprese quelle orientali, sperimentali e vegetali. Ogni tecnica si applica a una ricetta concreta, già in linea con il piano: le Fondamenta nei giorni veloci e le Alchimie quando c’è più tempo.</p>
   <div class="btprog"><span class="btrank" id="bt-rank">Apprendista</span><span class="btn-n" id="bt-progn">0/26</span>
     <div class="track"><div class="fill" id="bt-fill"></div></div><span class="btn-n" id="bt-next"></span></div>
   <div class="pathwrap" id="tk-path"></div>
@@ -890,7 +890,16 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v35";
+  var APPV="v36";
+  var COPY={
+    phoneLinked:"Telefono collegato",
+    cookStart:"Inizia",
+    cookBack:"Indietro",
+    cookNext:"Avanti",
+    cookDone:"Concludi",
+    feedbackSent:"Grazie, abbiamo ricevuto il tuo feedback.",
+    feedbackError:"Non siamo riusciti a inviare il feedback. Controlla la connessione e riprova."
+  };
   var KEY="settimana_veg_v2", mem={};
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return mem; } }
   var warnedQuota=false;
@@ -960,7 +969,7 @@
     if(!fbDb) return;
     var code=genFamCode(); setFamCode(code);
     save(state); fbListen(); renderSync();
-    if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> Telefono collegato",2500);
+    if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> "+COPY.phoneLinked,2500);
     shareFamCode();
   }
   function joinFamSync(code){
@@ -973,7 +982,7 @@
         fbApplyingRemote=true; try{ renderAll(); } finally { fbApplyingRemote=false; }
       } else { save(state); }
       fbListen(); renderSync();
-      if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> Telefono collegato",2500);
+      if(typeof toast==="function") toast("<svg class=ico><use href=#i-cycle></use></svg> "+COPY.phoneLinked,2500);
     }).catch(function(){ alert("Non riesco a collegarmi ora: controllate la connessione e riprovate."); });
   }
   function renderSync(){
@@ -1547,10 +1556,10 @@
       +(state.trip
         ?'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">in pausa</span><span class="c-s"><svg class=ico><use href=#i-plane></use></svg> in trasferta \u2014 la serie non si tocca, riprende al ritorno</span></div>'
         :'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">Roberto '+sr+(sr===1?" giorno":" giorni")+' \u00b7 Gigi '+sg+(sg===1?" giorno":" giorni")+'</span><span class="c-s">giornate seguite di fila \u2014 la spunta \u2713 la sera le fa crescere</span></div>')
-      +'<div class="c-cell'+(twDone?' okc':'')+'"><span class="c-k">Percorso · prossima tappa</span><span class="c-v">'+(twDone?"\u2713 ":"")+'<button class="c-link" data-tk="'+tw.id+'">'+tw.name+'</button></span><span class="c-s">'+(twDone?"conquistata \u2014 la prossima arriva luned\u00ec":(twCtx?"\u00e8 dentro la cena di stasera: si impara cucinando":"il percorso va in ordine: dalle Fondamenta alle Alchimie, una a settimana"))+'</span></div>'
+      +'<div class="c-cell'+(twDone?' okc':'')+'"><span class="c-k">Percorso · prossima tappa</span><span class="c-v">'+(twDone?"\u2713 ":"")+'<button class="c-link" data-tk="'+tw.id+'">'+tw.name+'</button></span><span class="c-s">'+(twDone?"Completata. La prossima tecnica sar\u00e0 disponibile luned\u00ec.":(twCtx?"La trovate nella cena di stasera, cos\u00ec potete impararla cucinando.":"Il percorso procede dalle Fondamenta alle Alchimie, una tecnica alla settimana."))+'</span></div>'
       +(state.trip
         ?'<div class="c-cell"><span class="c-k">Cene vegetali <svg class=ico><use href=#i-leaf></use></svg></span><span class="c-v">in pausa</span><span class="c-s"><svg class=ico><use href=#i-plane></use></svg> in trasferta \u2014 l\'obiettivo non conta, si riparte al ritorno</span></div>'
-        :'<div class="c-cell'+(vgCount>=2?' okc':'')+'"><span class="c-k">Cene vegetali <svg class=ico><use href=#i-leaf></use></svg></span><span class="c-v">'+vgCount+' su 2 questa settimana</span><span class="c-s">'+(vgCount>=2?"obiettivo raggiunto \u2014 il microbiota ringrazia":"ne manca "+(2-vgCount<=1?"una":"ancora qualcuna")+": <button class=\"c-link\" id=\"c-vg\">scegli tra i piatti verdi</button>")+'</span></div>')
+        :'<div class="c-cell'+(vgCount>=2?' okc':'')+'"><span class="c-k">Cene vegetali <svg class=ico><use href=#i-leaf></use></svg></span><span class="c-v">'+vgCount+' su 2 questa settimana</span><span class="c-s">'+(vgCount>=2?"Avete raggiunto l\u2019obiettivo settimanale.":"Per completare l\u2019obiettivo, <button class=\"c-link\" id=\"c-vg\">scegliete "+(2-vgCount<=1?"un\u2019altra cena vegetale":"altre cene vegetali")+"</button>.")+'</span></div>')
       +'<div class="c-cell"><span class="c-k">Abitudine della settimana</span><span class="c-s" style="font-size:.86rem; color:var(--text)">'+habit+'</span></div>'
       +'</div></div>';
     return html;
@@ -1584,7 +1593,7 @@
     html+='<div class="h-card h-card-pantry">'
       +'<div class="h-k">Si parte da qui</div>'
       +'<div class="h-name">Cosa avete in casa?</div>'
-      +'<div class="h-meta">Scrivete gli ingredienti: l\u2019app trova i piatti giusti per il pasto di adesso, dentro i vostri numeri.</div>'
+      +'<div class="h-meta">Scrivete gli ingredienti che avete: troverete i piatti adatti a questo momento della giornata e ai vostri obiettivi.</div>'
       +'<div class="h-btns"><button class="cta" id="h-pantry-cta"><svg class=ico><use href=#i-basket></use></svg> Cosa cucino</button></div>'
       +'</div>';
     if(cdd){
@@ -1609,7 +1618,7 @@
         +'</div>';
     }
     if(!calcPerson(state.prof.r)||!calcPerson(state.prof.g)){
-      html+='<div class="h-mini"><svg class=ico><use href=#i-user></use></svg> <b>Prima cosa da fare:</b> compilate i profili (et\u00e0, altezza, peso) \u2014 finch\u00e9 mancano, obiettivi e semafori usano valori di base. <button class="c-link" id="h-prof2">Apri i profili</button></div>';
+      html+='<div class="h-mini"><svg class=ico><use href=#i-user></use></svg> Per calcolare obiettivi pi\u00f9 adatti a voi, completate i profili con et\u00e0, altezza e peso. Finch\u00e9 questi dati mancano, l\u2019app usa i valori di base. <button class="c-link" id="h-prof2">Apri i profili</button></div>';
     }
     if(PERSONAL&&!state.trip){
       var tISO=iso(TODAY);
@@ -1654,7 +1663,7 @@
     function tick(){ var left=Math.max(0,end-Date.now());
       var mm=Math.floor(left/60000), ss=Math.floor(left%60000/1000);
       chip.innerHTML="<svg class=ico><use href=#i-clock></use></svg> "+mm+":"+(ss<10?"0":"")+ss+(label?" \u00b7 "+label:"");
-      if(left<=0){ clearInterval(tmrInt); chip.innerHTML="<svg class=ico><use href=#i-timer></use></svg> Pronto! (tocca per chiudere)"; chip.classList.add("done");
+      if(left<=0){ clearInterval(tmrInt); chip.innerHTML="<svg class=ico><use href=#i-timer></use></svg> Tempo terminato. Tocca per chiudere."; chip.classList.add("done");
         if(navigator.vibrate) navigator.vibrate([300,120,300]); }
     }
     chip.classList.remove("done"); tick(); tmrInt=setInterval(tick,500);
@@ -1689,10 +1698,10 @@
       modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
         +'<div class="kicker">Modalit\u00e0 cucina \u00b7 mise en place</div><h3 id="m-title">'+COOK.title+'</h3></div>'
         +'<div class="m-body cookbody">'
-        +'<div class="ck-step" style="font-size:1.05rem">Tutto sul banco prima di accendere \u2014 spunta e via:</div>'
+        +'<div class="ck-step" style="font-size:1.05rem">Preparate tutto sul piano di lavoro prima di iniziare. Spuntate gli ingredienti man mano che sono pronti.</div>'
         +'<ul class="ck-mise">'+COOK.pre.map(function(i){ var q=(i.q!==undefined?i.q:(i.r+" / "+i.g));
             return '<li><label><input type="checkbox"><span>'+i.n+' <small>'+q+'</small></span></label></li>'; }).join("")+'</ul>'
-        +'<div class="ck-nav"><button class="ck-btn primary" id="ck-next">Si comincia \u2192</button></div></div>';
+        +'<div class="ck-nav"><button class="ck-btn primary" id="ck-next">'+COPY.cookStart+'</button></div></div>';
       document.getElementById("ck-next").addEventListener("click",function(){ COOK.i=0; renderCook(); });
       return;
     }
@@ -1707,8 +1716,8 @@
       +(tbtn?'<div style="margin:14px 0">'+tbtn+'</div>':'')
       +'<button class="ck-say" id="ck-say"><svg class=ico><use href=#i-speaker></use></svg> Leggi ad alta voce</button>'
       +'<div class="ck-nav">'
-      +'<button class="ck-btn" id="ck-prev"'+((COOK.i===0&&!COOK.pre)?' disabled':'')+'>\u2190 Indietro</button>'
-      +'<button class="ck-btn primary" id="ck-next">'+(COOK.i===COOK.steps.length-1?"Finito \u2713":"Avanti \u2192")+'</button>'
+      +'<button class="ck-btn" id="ck-prev"'+((COOK.i===0&&!COOK.pre)?' disabled':'')+'>'+COPY.cookBack+'</button>'
+      +'<button class="ck-btn primary" id="ck-next">'+(COOK.i===COOK.steps.length-1?COPY.cookDone:COPY.cookNext)+'</button>'
       +'</div></div>';
     document.getElementById("ck-say").addEventListener("click",function(){ speak(x); });
     document.getElementById("ck-prev").addEventListener("click",function(){ if(COOK.i>0){COOK.i--; renderCook();} else if(COOK.pre){ COOK.i=-1; renderCook(); } });
@@ -2740,9 +2749,9 @@
         versione:APPV, dispositivo:navigator.userAgent,
         quando:new Date().toISOString()
       }).then(function(){
-        modal.querySelector(".m-body").innerHTML='<p class="note-box">Grazie, arrivato. — Puoi chiudere quando vuoi.</p>';
+        modal.querySelector(".m-body").innerHTML='<p class="note-box">'+COPY.feedbackSent+'</p>';
       }).catch(function(){
-        btn.disabled=false; note.textContent="Non è arrivato: controlla la connessione e riprova.";
+        btn.disabled=false; note.textContent=COPY.feedbackError;
       });
     });
     document.getElementById("m-close").focus();
@@ -2905,7 +2914,7 @@
     var chips=PANTRY_CHIPS.map(function(c){ return '<button class="fchip pchipx" data-pc="'+c+'">'+c+'</button>'; }).join("");
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Si parte da qui</div><h3 id="m-title">Da ci\u00f2 che c\u2019\u00e8 in casa</h3>'
-      +'<div class="time">Scrivi (o tocca) quello che avete: ti dico cosa ci si cucina</div></div><div class="m-body">'
+      +'<div class="time">Scrivete o selezionate gli ingredienti che avete e cercate i piatti possibili.</div></div><div class="m-body">'
       +'<textarea class="notew" id="pantry-in" placeholder="Es. pomodori, ceci, pane raffermo, basilico\u2026" style="min-height:60px">'+saved.replace(/</g,"&lt;")+'</textarea>'
       +'<div class="fchips" style="margin:10px 0 12px">'+chips+'</div>'
       +'<div class="fchips" id="pslot-row" style="margin:0 0 12px">'+SLOTS.map(function(sl){return '<button class="fchip'+(sl[0]===pslot?' on':'')+'" data-ps="'+sl[0]+'">'+sl[1]+'</button>';}).join("")+'</div>'
@@ -2932,12 +2941,12 @@
       });
       res.sort(function(a,b){ return b.score-a.score; });
       res=res.slice(0,12);
-      if(!res.length){ out.innerHTML='<div class="note-box">Nessun piatto combacia: prova con nomi pi\u00f9 semplici (\u201cpomodori\u201d, \u201cceci\u201d).</div>'; return; }
+      if(!res.length){ out.innerHTML='<div class="note-box">Non abbiamo trovato piatti con questi ingredienti. Provate a usare nomi pi\u00f9 semplici, come \u201cpomodori\u201d o \u201cceci\u201d.</div>'; return; }
       var slotLbl=SLOTS.filter(function(x){return x[0]===pslot;})[0][1];
-      out.innerHTML='<p class="m-sub">Per '+slotLbl.toLowerCase()+' \u00b7 budget \u2248'+goalR+'/'+goalG+' kcal ('+res.length+' piatti)</p>'+res.map(function(r){
+      out.innerHTML='<p class="m-sub">Per '+slotLbl.toLowerCase()+' \u00b7 obiettivo del pasto: circa '+goalR+'/'+goalG+' kcal ('+res.length+' piatti)</p>'+res.map(function(r){
         var manca=r.m.miss.length?('<small style="color:var(--muted)">manca: '+r.m.miss.slice(0,3).join(", ")+(r.m.miss.length>3?"\u2026":"")+'</small>'):'<small style="color:var(--herb-deep);font-weight:700">hai tutto \u2713</small>';
         return '<div class="card" style="width:100%; text-align:left; margin-bottom:10px">'
-          +'<div class="nm">'+r.dd.name+(r.dd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+(r.fit?' <span class="tempo" style="background:#DFF6E8;border-color:#9ADFB6;color:#1F8A5C">nel budget</span>':'')+'</div>'
+          +'<div class="nm">'+r.dd.name+(r.dd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+(r.fit?' <span class="tempo" style="background:#DFF6E8;border-color:#9ADFB6;color:#1F8A5C">in linea con l\u2019obiettivo</span>':'')+'</div>'
           +'<div class="ds">'+r.m.have+'/'+r.m.tot+' ingredienti \u00b7 '+r.dd.kr+'/'+r.dd.kg+' kcal \u00b7 '+r.dd.pr+'/'+r.dd.pg+' g prot<br>'+manca+'</div>'
           +'<div style="display:flex; gap:8px; margin-top:9px">'
           +'<button class="toolbtn" data-openlib="'+r.dd.id+'">Ricetta</button>'
@@ -3040,7 +3049,7 @@
       +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Il piano completo. Tocca un piatto per la ricetta; \u21C4 per cambiarlo; in fondo al giorno segna allenamenti, \u201cseguita \u2713\u201d e sgarri. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> genera la settimana nuova con variet\u00e0 (preferiti e cene vegetali favoriti, i \u201cmai pi\u00f9\u201d esclusi).</p>'
       +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal <b>piano della settimana</b> (non da quanto avete davvero mangiato): weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
       +'<h5><svg class=ico><use href=#i-flame></use></svg> La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'
-      +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Tutti i piatti con filtri (<svg class=ico><use href=#i-heartf></use></svg> <svg class=ico><use href=#i-leaf></use></svg> <svg class=ico><use href=#i-clock></use></svg> <svg class=ico><use href=#i-cheers></use></svg>), i men\u00f9 per gli ospiti, \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d (scrivi gli ingredienti, ti dice cosa cucinarci e se sta nel budget del pasto) e \u201c<svg class=ico><use href=#i-plus></use></svg> Vostro piatto\u201d.</p>'
+      +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Qui trovate tutti i piatti, i filtri, i men\u00f9 per gli ospiti e le ricette aggiunte da voi. Con \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d potete cercare cosa cucinare usando gli ingredienti disponibili e confrontare il risultato con l\u2019obiettivo del pasto.</p>'
       +'<h5><svg class=ico><use href=#i-cycle></use></svg> I due telefoni insieme</h5><p>In Profili, \u201cSincronizza i due telefoni\u201d: collegate i telefoni una volta sola (un codice, generato l\u00ec) e da allora i dati restano allineati da soli, senza fare nulla. <b>Esporta/importa</b> resta come rete di sicurezza in pi\u00f9 \u2014 un file scaricato sul telefono, utile se doveste mai perdere l\u2019accesso alla sincronizzazione.</p>'
       +'<h5><svg class=ico><use href=#i-user></use></svg> Profili</h5><p>In Settimana, in alto: obiettivi calcolati sui vostri dati, andamento peso, ed \u00e8 dove si trovano sincronizzazione, esporta/importa e la modalit\u00e0 <svg class=ico><use href=#i-plane></use></svg> trasferta per le vacanze.</p>'
       +'<p class="note-box" style="margin-top:14px">Un consiglio solo: segnate \u201cseguita \u2713\u201d la sera e \u201cCucinato oggi\u201d nelle ricette \u2014 sono trenta secondi, e danno vita a serie, diario e coach. I numeri di kcal e proteine sono stime indicative, non prescrizioni.</p>'
