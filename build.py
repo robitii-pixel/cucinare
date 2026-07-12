@@ -14,8 +14,25 @@ w = w.replace('''    if(!pr.dob){ var fx=PROF_FIXED[k];
     }''', '    if(!pr.goal){ pr.goal=PROF_FIXED[k].goal; }')
 w = w.replace('<div class="pname">Roberto <span style="font-weight:400;font-size:.75rem;color:var(--muted)">\u00b7 n. 21/02/1980 \u00b7 175 cm</span></div>', '<div class="pname">Roberto</div>')
 w = w.replace('<div class="pname">Gigi <span style="font-weight:400;font-size:.75rem;color:var(--muted)">\u00b7 n. 16/04/1990 \u00b7 185 cm</span></div>', '<div class="pname">Gigi</div>')
+
+# La build pubblica usa profili neutri; la build personale conserva i nomi reali.
+assert 'Roberto' in w and 'Gigi' in w, 'nomi profili non trovati prima della neutralizzazione'
+w = w.replace('Roberto', 'Persona 1').replace('Gigi', 'Persona 2')
+
+def checked_replace(src, dst):
+    global w
+    assert src in w, f'anchor pubblico non trovato: {src}'
+    w = w.replace(src, dst)
+
+checked_replace('Arriva a Persona 1 insieme a versione e dispositivo',
+                'Arriva allo sviluppatore insieme a versione e dispositivo')
+checked_replace('La parmigiana della nonna di Persona 2', 'La parmigiana di famiglia')
+checked_replace('porzioni tue / di Persona 2', 'porzioni Persona 1 / Persona 2')
+checked_replace('porzioni tue e di Persona 2', 'porzioni di Persona 1 e Persona 2')
+checked_replace('dose tua | dose Persona 2', 'dose Persona 1 | dose Persona 2')
 assert 'var PERSONAL=false;' in w, 'flag PERSONAL non convertito'
 assert '1980' not in w and '1990-04' not in w, 'DATI PERSONALI RESIDUI NELLA BUILD WEB'
+assert 'Roberto' not in w and 'Gigi' not in w, 'NOMI PERSONALI RESIDUI NELLA BUILD WEB'
 open('index.html', 'w', encoding='utf-8').write(w)
 q = open('qa.js', encoding='utf-8').read().replace('la-nostra-cucina.html', 'index.html')
 open('qa-web.js', 'w', encoding='utf-8').write(q)

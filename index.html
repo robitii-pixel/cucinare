@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0D7391">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icona.png">
-<title>La nostra settimana · Roberto & Gigi</title>
+<title>La nostra settimana · Persona 1 & Persona 2</title>
 <style>
   /* ============================================
      LA NOSTRA CUCINA · stile
@@ -738,7 +738,7 @@
     <summary><span class="sec-mini">Profili e obiettivi</span><span class="prof-hint" id="prof-hint">tocca per impostare età, altezza, peso e obiettivo</span></summary>
     <div class="prof-grid">
       <div class="pcard r">
-        <div class="pname">Roberto</div>
+        <div class="pname">Persona 1</div>
         <div class="pfields">
           <label>Età<input type="number" inputmode="numeric" id="pr-age" min="18" max="90" placeholder="anni"></label>
           <label>Altezza<input type="number" inputmode="numeric" id="pr-h" min="140" max="210" placeholder="cm"></label>
@@ -751,7 +751,7 @@
         <div class="pout" id="pr-out"></div>
       </div>
       <div class="pcard g">
-        <div class="pname">Gigi</div>
+        <div class="pname">Persona 2</div>
         <div class="pfields">
           <label>Età<input type="number" inputmode="numeric" id="pg-age" min="18" max="90" placeholder="anni"></label>
           <label>Altezza<input type="number" inputmode="numeric" id="pg-h" min="140" max="210" placeholder="cm"></label>
@@ -784,8 +784,8 @@
 <section class="wrap sec-week" id="settimana">
   <div class="sec-head"><h2>La settimana</h2></div>
   <div class="legend legend-week">
-    <span class="goal r"><span class="dot" style="background:var(--citrus)"></span><span id="leg-r">Roberto</span></span>
-    <span class="goal g"><span class="dot" style="background:var(--melon)"></span><span id="leg-g">Gigi</span></span>
+    <span class="goal r"><span class="dot" style="background:var(--citrus)"></span><span id="leg-r">Persona 1</span></span>
+    <span class="goal g"><span class="dot" style="background:var(--melon)"></span><span id="leg-g">Persona 2</span></span>
     <span class="water"><svg class=ico><use href=#i-drop></use></svg> 2,5 L · sale con l'allenamento</span>
     <button class="reset" id="gen-week"><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</button>
     <button class="reset" id="reset-all"><svg class=ico><use href=#i-cycle></use></svg> Ripristina</button>
@@ -910,7 +910,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v41";
+  var APPV="v42";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -1044,7 +1044,7 @@
     var b=document.getElementById("font-toggle"); if(b) b.textContent=FONTL[f];
   }
 
-  /* kr/kg = kcal Roberto/Gigi · pr/pg = proteine (g) */
+  /* kr/kg = kcal Persona 1/Persona 2 · pr/pg = proteine (g) */
   var LIB={
     colazione:[
       {id:"c1",pm:"yogurt",name:"Yogurt greco, pesche e mandorle",time:"5 min",desc:"Fresca e proteica, pronta in un attimo.",kr:360,kg:335,pr:24,pg:23,
@@ -1336,7 +1336,7 @@
     volley:{l:"Volley",ic:"<svg class=ico><use href=#i-ball></use></svg>",cls:"ball",k:120,pp:0}
   };
   var ACT_ORDER=["riposo","corsa","forza","volley"];
-  var BASE={r:{k:2350,p:135,name:"Roberto"},g:{k:2075,p:125,name:"Gigi"}};
+  var BASE={r:{k:2350,p:135,name:"Persona 1"},g:{k:2075,p:125,name:"Persona 2"}};
   var BASE_DEFAULT={r:{k:2350,p:135},g:{k:2075,p:125}};
   var GOALS={ricomp:{adj:-0.05,gkg:1.8,l:"ricomposizione"},cut:{adj:-0.15,gkg:2.0,l:"definizione"},
              mant:{adj:0,gkg:1.6,l:"mantenimento"},massa:{adj:0.08,gkg:1.8,l:"massa leggera"}};
@@ -1448,7 +1448,7 @@
     w.done[day][person]=now;
     save(state);
     if(now){
-      var n=streakOf(person), name=person==="r"?"Roberto":"Gigi", msg;
+      var n=streakOf(person), name=person==="r"?"Persona 1":"Persona 2", msg;
       if(n===7) msg="Una settimana intera, "+name+". Bravi.";
       else if(n===14) msg="Due settimane di fila. Impressionante.";
       else if(n===30) msg="Un mese intero. Notevole davvero.";
@@ -1495,7 +1495,7 @@
   function selBtns(day,person){
     var t=trainFor(day,person), a=ACTS[t.act];
     var cls=person==="r"?"r":"g";
-    var h='<div class="selrow '+cls+'"><span class="seln">'+(person==="r"?"Roberto":"Gigi")+'</span>'
+    var h='<div class="selrow '+cls+'"><span class="seln">'+(person==="r"?"Persona 1":"Persona 2")+'</span>'
       +'<button class="selbtn act-'+a.cls+'" data-cycle="'+day+'|'+person+'">'+a.ic+' '+a.l+'</button>';
     if(t.act!=="riposo"){
       h+='<button class="selbtn when" data-when="'+day+'|'+person+'">'+(t.when==="mattina"?"<svg class=ico><use href=#i-sun></use></svg>":"<svg class=ico><use href=#i-moon></use></svg>")+'</button>';
@@ -1513,7 +1513,7 @@
       return (t.when==="mattina")?"carboidrati a colazione, recupero nello spuntino":"carboidrati a pranzo/merenda, proteine a cena"; }
     var pr=part(tr), pg=part(tg);
     if(pr&&pg&&pr===pg) return "Allenamento "+(tr.when===tg.when?(tr.when==="mattina"?"mattutino":"serale"):"")+": "+pr+".";
-    var out=[]; if(pr) out.push("Tu: "+pr); if(pg) out.push("Gigi: "+pg);
+    var out=[]; if(pr) out.push("Tu: "+pr); if(pg) out.push("Persona 2: "+pg);
     return out.join(" · ")+".";
   }
   var FAMN={insalata:"insalata",pasta:"pasta",frittata:"frittata",forno:"piatto al forno",cereali:"insalata di cereali",sugo:"piatto al sugo",zuppa:"zuppa",verdure:"verdure"};
@@ -1594,12 +1594,12 @@
     var sr=streakOf("r"), sg=streakOf("g");
     var html='<div class="coach">'
       +'<div class="c-head"><svg class=ico><use href=#i-compass></use></svg> Il coach \u00b7 '+DAY_LABEL[DAYS[(TODAY.getDay()+6)%7]]+'</div>'
-      +'<div class="c-line">'+coachTrainLine("r","Roberto")+'</div>'
-      +'<div class="c-line">'+coachTrainLine("g","Gigi")+'</div>'
+      +'<div class="c-line">'+coachTrainLine("r","Persona 1")+'</div>'
+      +'<div class="c-line">'+coachTrainLine("g","Persona 2")+'</div>'
       +'<div class="c-grid">'
       +(state.trip
         ?'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">in pausa</span><span class="c-s"><svg class=ico><use href=#i-plane></use></svg> in trasferta \u2014 la serie non si tocca, riprende al ritorno</span></div>'
-        :'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">Roberto '+sr+(sr===1?" giorno":" giorni")+' \u00b7 Gigi '+sg+(sg===1?" giorno":" giorni")+'</span><span class="c-s">giornate seguite di fila \u2014 la spunta \u2713 la sera le fa crescere</span></div>')
+        :'<div class="c-cell"><span class="c-k">Serie <svg class=ico><use href=#i-flame></use></svg></span><span class="c-v">Persona 1 '+sr+(sr===1?" giorno":" giorni")+' \u00b7 Persona 2 '+sg+(sg===1?" giorno":" giorni")+'</span><span class="c-s">giornate seguite di fila \u2014 la spunta \u2713 la sera le fa crescere</span></div>')
       +'<div class="c-cell'+(twDone?' okc':'')+'"><span class="c-k">Percorso · prossima tappa</span><span class="c-v">'+(twDone?"\u2713 ":"")+'<button class="c-link" data-tk="'+tw.id+'">'+tw.name+'</button></span><span class="c-s">'+(twDone?"Completata. La prossima tecnica sar\u00e0 disponibile luned\u00ec.":(twCtx?"La trovate nella cena di stasera, cos\u00ec potete impararla cucinando.":"Il percorso procede dalle Fondamenta alle Alchimie, una tecnica alla settimana."))+'</span></div>'
       +(state.trip
         ?'<div class="c-cell"><span class="c-k">Cene vegetali <svg class=ico><use href=#i-leaf></use></svg></span><span class="c-v">in pausa</span><span class="c-s"><svg class=ico><use href=#i-plane></use></svg> in trasferta \u2014 l\'obiettivo non conta, si riparte al ritorno</span></div>'
@@ -1853,10 +1853,10 @@
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Il quadro lungo</div><h3 id="m-title">I vostri progressi</h3>'
       +'<div class="time">Il peso, l\u2019aderenza, la scuola: la direzione conta pi\u00f9 del giorno</div></div><div class="m-body">'
-      +'<p class="m-sub">Peso \u00b7 Roberto</p>'+spark(state.whist.r,"#F0B429")+trendNote("r")
-      +'<p class="m-sub" style="margin-top:14px">Peso \u00b7 Gigi</p>'+spark(state.whist.g,"#EF7D93")+trendNote("g")
+      +'<p class="m-sub">Peso \u00b7 Persona 1</p>'+spark(state.whist.r,"#F0B429")+trendNote("r")
+      +'<p class="m-sub" style="margin-top:14px">Peso \u00b7 Persona 2</p>'+spark(state.whist.g,"#EF7D93")+trendNote("g")
       +'<p class="m-sub" style="margin-top:18px">Giornate seguite \u00b7 ultime settimane</p>'
-      +(last8.length?'<div class="pb-wrap">'+bars+'</div><div class="ws-note" style="margin-top:4px"><span style="color:#B58712">\u25A0</span> Roberto \u00b7 <span style="color:#D45E77">\u25A0</span> Gigi \u00b7 barra piena = 7 su 7</div>':'<div class="ws-note">le settimane si accumulano qui man mano</div>')
+      +(last8.length?'<div class="pb-wrap">'+bars+'</div><div class="ws-note" style="margin-top:4px"><span style="color:#B58712">\u25A0</span> Persona 1 \u00b7 <span style="color:#D45E77">\u25A0</span> Persona 2 \u00b7 barra piena = 7 su 7</div>':'<div class="ws-note">le settimane si accumulano qui man mano</div>')
       +'<p class="m-sub" style="margin-top:18px">La Bottega \u00b7 '+mia+' tecniche vostre su '+CURRICULUM.length+'</p>'
       +(learned?'<ul class="listy">'+learned+'</ul>':'<div class="ws-note">le tecniche conquistate compariranno qui, con la data</div>')
       +'</div>';
@@ -1924,8 +1924,8 @@
       var vw=state.trip?[]:varietyWarnings(day);
       if(vw.length) html+='<div class="warnrow"><svg class=ico><use href=#i-warn></use></svg> Varietà: '+vw.join(" · ")+'. Usa il pulsante Cambia per scegliere un altro piatto.</div>';
       html+='<div class="totals"><div class="xnote">incl. extra quotidiani (pane, frutta, olio, caffellatte): +'+EXTRA.r.k+'/+'+EXTRA.g.k+' kcal</div>'
-          +ttRow("r","Roberto",dnR,sgR,kr,tR.k,pr,tR.p)
-          +ttRow("g","Gigi",dnG,sgG,kg,tG.k,pg,tG.p)
+          +ttRow("r","Persona 1",dnR,sgR,kr,tR.k,pr,tR.p)
+          +ttRow("g","Persona 2",dnG,sgG,kg,tG.k,pg,tG.p)
           +'</div></article>';
     });
     document.getElementById("week").innerHTML=html;
@@ -1956,8 +1956,8 @@
         +'<div class="ws-note">media giornaliera · le serate libere non sono contate</div>'
         +'<div class="ws-note" style="margin-top:5px">giornate seguite: R '+(wk.dnR||0)+' · G '+(wk.dnG||0)+(((wk.sgR||0)+(wk.sgG||0))?' · pasti fuori programma: '+((wk.sgR||0)+(wk.sgG||0)):'')+' · cene <svg class=ico><use href=#i-leaf></use></svg>: '+vgDinners()+'/2</div></div>'
         +'<button class="wnav" data-wnav="1" aria-label="Settimana successiva"><svg class=ico><use href=#i-chevron></use></svg></button></div>'
-        +'<div class="ws-row r"><span class="ws-who">Roberto</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · giorni seguiti: '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' · pasti fuori programma: '+(wk.sgR||0)+'</span></div>'
-        +'<div class="ws-row g"><span class="ws-who">Gigi</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · giorni seguiti: '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' · pasti fuori programma: '+(wk.sgG||0)+'</span></div>';
+        +'<div class="ws-row r"><span class="ws-who">Persona 1</span><span class="vs"><i class="d '+dot(avg(wk.kr),avg(wk.tkr))+'"></i>'+avg(wk.kr)+' / '+avg(wk.tkr)+' kcal · <i class="d '+dot(avg(wk.pr),avg(wk.tpr),"p")+'"></i>'+avg(wk.pr)+' / '+avg(wk.tpr)+' g · giorni seguiti: '+(wk.dnR||0)+(wk.ver?'/'+wk.ver:'')+' · pasti fuori programma: '+(wk.sgR||0)+'</span></div>'
+        +'<div class="ws-row g"><span class="ws-who">Persona 2</span><span class="vs"><i class="d '+dot(avg(wk.kg),avg(wk.tkg))+'"></i>'+avg(wk.kg)+' / '+avg(wk.tkg)+' kcal · <i class="d '+dot(avg(wk.pg),avg(wk.tpg),"p")+'"></i>'+avg(wk.pg)+' / '+avg(wk.tpg)+' g · giorni seguiti: '+(wk.dnG||0)+(wk.ver?'/'+wk.ver:'')+' · pasti fuori programma: '+(wk.sgG||0)+'</span></div>';
     }
     if(typeof renderPrep==="function") renderPrep();
   }
@@ -2032,11 +2032,11 @@
           +'<button class="multb'+(MULT===2?' on':'')+'" data-mult="2">+2 ospiti</button>'
           +'<button class="multb'+(MULT===3?' on':'')+'" data-mult="3">+4 ospiti</button></div>';
       }
-      html+='<p class="m-sub">Ingredienti · porzioni tue / di Gigi'+(MULT>1?' · dosi ×'+MULT:'')+'</p><ul class="ing-list">'+dd.ing.map(ingLine).join("")+'</ul>';
+      html+='<p class="m-sub">Ingredienti · porzioni Persona 1 / Persona 2'+(MULT>1?' · dosi ×'+MULT:'')+'</p><ul class="ing-list">'+dd.ing.map(ingLine).join("")+'</ul>';
       if(dd.left){ html+='<div class="note-box" style="margin:0 0 14px"><svg class=ico><use href=#i-ice></use></svg> <b>Se ne avanza:</b> '+dd.left+'</div>'; }
       html+='<p class="m-sub">Preparazione</p><ol class="steps">'+dd.steps.map(stepHtml).join("")+'</ol>';
-    html+='<div class="nutri"><div class="nbox r"><div class="who">Roberto</div><div class="v">'+dd.pr+' g <small>prot</small> · '+dd.kr+' <small>kcal</small></div></div>'
-      +'<div class="nbox g"><div class="who">Gigi</div><div class="v">'+dd.pg+' g <small>prot</small> · '+dd.kg+' <small>kcal</small></div></div></div>';
+    html+='<div class="nutri"><div class="nbox r"><div class="who">Persona 1</div><div class="v">'+dd.pr+' g <small>prot</small> · '+dd.kr+' <small>kcal</small></div></div>'
+      +'<div class="nbox g"><div class="who">Persona 2</div><div class="v">'+dd.pg+' g <small>prot</small> · '+dd.kg+' <small>kcal</small></div></div></div>';
     var dtk=DISH2TK[id]||[];
     if(dtk.length){ html+='<div>'+dtk.map(function(tid){var t=TKBY[tid]; return t?'<span class="tklink" data-tk="'+tid+'"><svg class=ico><use href=#i-flame></use></svg> '+t.name+'</span>':"";}).join("")+'</div>'; }
     }    html+='<div class="mdiv">Il vostro diario del piatto</div>';
@@ -2149,7 +2149,7 @@
       +'<div class="time">Ordinata per banco del mercato, quantit\u00e0 gi\u00e0 sommate per voi due</div></div><div class="m-body">'
       +trip("<svg class=ico><use href=#i-cart></use></svg> Spesa 1 \u00b7 weekend","Copre luned\u00ec\u2013mercoled\u00ec, insieme alla base della domenica.",function(mm){return mm.first<=2;})
       +trip("<svg class=ico><use href=#i-cart></use></svg> Spesa 2 \u00b7 gioved\u00ec","Il fresco per gioved\u00ec\u2013domenica.",function(mm){return mm.first>2;})
-      +'<div class="note-box">Le quantit\u00e0 sono la somma indicativa delle porzioni tue e di Gigi nella settimana; arrotonda alla confezione. Dispensa (olio, sale, spezie) esclusa.</div></div>';
+      +'<div class="note-box">Le quantit\u00e0 sono la somma indicativa delle porzioni di Persona 1 e Persona 2 nella settimana; arrotonda alla confezione. Dispensa (olio, sale, spezie) esclusa.</div></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
     document.getElementById("m-close").focus();
   }
@@ -2584,8 +2584,8 @@
       +'<div class="mealbox"><h5>Il piatto \u2014 dentro la vostra settimana</h5>'
       +'<div class="mn">'+t.meal.n+'</div><div class="md">'+t.meal.d+'</div>'
       +'<div class="chips"><span class="mchip slot">'+t.meal.slot+'</span>'
-      +'<span class="mchip r">Roberto '+t.meal.kr+' kcal \u00b7 '+t.meal.pr+' g</span>'
-      +'<span class="mchip g">Gigi '+t.meal.kg+' kcal \u00b7 '+t.meal.pg+' g</span></div></div>'
+      +'<span class="mchip r">Persona 1 '+t.meal.kr+' kcal \u00b7 '+t.meal.pr+' g</span>'
+      +'<span class="mchip g">Persona 2 '+t.meal.kg+' kcal \u00b7 '+t.meal.pg+' g</span></div></div>'
       +'<div style="margin:0 0 12px"><button class="toolbtn primaryish" data-cookmode="'+t.id+'"><svg class=ico><use href=#i-hat></use></svg> Modalit\u00e0 cucina</button></div>'
       +'<div class="strow"><button class="stb prova'+(st==="prova"?' on':'')+'" data-tkst="prova"><svg class=ico><use href=#i-check></use></svg> Provata</button>'
       +'<button class="stb mia'+(st==="mia"?' on':'')+'" data-tkst="mia"><svg class=ico><use href=#i-medal></use></svg> Imparata</button></div>'
@@ -2765,9 +2765,9 @@
   function openFeedback(){
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">La nostra cucina</div><h3 id="m-title">Invia un feedback</h3>'
-      +'<div class="time">Arriva a Roberto insieme a versione e dispositivo, che si aggiungono da soli</div></div><div class="m-body">'
+      +'<div class="time">Arriva allo sviluppatore insieme a versione e dispositivo, che si aggiungono da soli</div></div><div class="m-body">'
       +'<div class="addf">'
-      +'<label>Chi sei?<select id="fd-chi"><option value="">Preferisco non dirlo</option><option value="Roberto">Roberto</option><option value="Gigi">Gigi</option></select></label>'
+      +'<label>Chi sei?<select id="fd-chi"><option value="">Preferisco non dirlo</option><option value="Persona 1">Persona 1</option><option value="Persona 2">Persona 2</option></select></label>'
       +'<label>Quanto ti sta piacendo l’app in questo periodo?<div class="fchips" id="fd-voto" role="group" aria-label="Valutazione da 1 a 5">'
       +[1,2,3,4,5].map(function(n){ return '<button type="button" class="fchip" data-v="'+n+'" aria-label="'+n+' su 5" aria-pressed="false">'+n+'</button>'; }).join("")
       +'</div><span class="rating-scale"><span>Da migliorare</span><span>Molto bene</span></span></label>'
@@ -2883,14 +2883,14 @@
       +'<div class="kicker">Il vostro ricettario</div><h3 id="m-title">Aggiungi un piatto</h3>'
       +'<div class="time">Compare nel ricettario e tra le alternative, con i vostri numeri</div></div><div class="m-body">'
       +'<div class="addf">'
-      +'<label>Nome del piatto<input id="ad-name" placeholder="Es. La parmigiana della nonna di Gigi"></label>'
+      +'<label>Nome del piatto<input id="ad-name" placeholder="Es. La parmigiana di famiglia"></label>'
       +'<label>Momento<select id="ad-type"><option value="colazione">Colazione</option><option value="spuntino">Spuntino/merenda</option><option value="pranzo">Pranzo</option><option value="cena" selected>Cena</option></select></label>'
       +'<div class="addrow"><label>Minuti<input id="ad-time" type="number" inputmode="numeric" placeholder="25"></label>'
       +'<label>Vegetale <svg class=ico><use href=#i-leaf></use></svg><select id="ad-vg"><option value="0">No</option><option value="1">S\u00ec</option></select></label></div>'
-      +'<label>Ingredienti \u2014 uno per riga: nome | dose tua | dose Gigi (o una dose sola). Scrivi le dosi in grammi (\u201c150 g\u201d) se vuoi che il calcolo qui sotto funzioni.<textarea id="ad-ing" placeholder="Melanzane | 300 g | 300 g&#10;Grana | 30 g | 22 g&#10;Basilico | q.b."></textarea></label>'
+      +'<label>Ingredienti \u2014 uno per riga: nome | dose Persona 1 | dose Persona 2 (o una dose sola). Scrivi le dosi in grammi (\u201c150 g\u201d) se vuoi che il calcolo qui sotto funzioni.<textarea id="ad-ing" placeholder="Melanzane | 300 g | 300 g&#10;Grana | 30 g | 22 g&#10;Basilico | q.b."></textarea></label>'
       +'<button class="toolbtn" id="ad-calc" style="font-size:.9rem"><svg class=ico><use href=#i-wand></use></svg> Calcola dai tuoi ingredienti</button>'
       +'<p class="notew-hint" id="ad-calc-note" style="font-size:.8rem;color:var(--muted);margin:6px 0 0"></p>'
-      +'<div class="addrow" style="margin-top:10px"><label>kcal Roberto<input id="ad-kr" type="number" inputmode="numeric"></label><label>kcal Gigi<input id="ad-kg" type="number" inputmode="numeric"></label></div>'
+      +'<div class="addrow" style="margin-top:10px"><label>kcal Persona 1<input id="ad-kr" type="number" inputmode="numeric"></label><label>kcal Persona 2<input id="ad-kg" type="number" inputmode="numeric"></label></div>'
       +'<div class="addrow"><label>Proteine R (g)<input id="ad-pr" type="number" inputmode="numeric"></label><label>Proteine G (g)<input id="ad-pg" type="number" inputmode="numeric"></label></div>'
       +'<label>Passi \u2014 uno per riga<textarea id="ad-steps" placeholder="Friggi le melanzane\u2026&#10;Componi gli strati\u2026"></textarea></label>'
       +'<button class="toolbtn" id="ad-save" style="font-size:.95rem">\u2713 Salva il piatto</button>'

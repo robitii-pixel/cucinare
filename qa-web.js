@@ -2,6 +2,7 @@ const {JSDOM}=require('jsdom');
 const fs=require('fs');
 const html=fs.readFileSync('index.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('manifest.json','utf8'));
+const isWeb=/var PERSONAL=false/.test(html);
 const dom=new JSDOM(html,{url:"http://localhost/",runScripts:"dangerously",pretendToBeVisual:true,
   beforeParse(w){
     w.matchMedia=q=>({matches:/max-width/.test(q), media:q, addEventListener(){}, removeEventListener(){}});
@@ -19,6 +20,7 @@ function T(name,cond,extra){ if(cond){pass++;/*console.log(" ok  "+name)*/} else
 setTimeout(function(){
 // 1. boot & home
 T("boot: home renderizzata", d.getElementById("home-body").innerHTML.length>100);
+T("build pubblica: nomi personali assenti", !isWeb||!/Roberto|Gigi/.test(html));
 T("boot: sezione settimana nascosta in vista home", d.getElementById("settimana").style.display==="none");
 T("barra mobile: Home evidenziata semanticamente", d.getElementById("nav-today").getAttribute("aria-current")==="page");
 T("fab: nascosto quando si è già in Home", d.getElementById("fab-home").style.display==="none");

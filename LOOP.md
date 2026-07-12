@@ -44,3 +44,7 @@ nell’app File, e il ripristino accetta sia il nuovo formato `.txt` sia i prece
 **Ciclo v41 — barra inferiore.** La navigazione mobile diventa un dock pieno e aderente al bordo,
 con la sezione attiva evidenziata e senza trasparenza. Il pulsante Home flottante scompare quando
 si è già nella Home, riducendo sovrapposizioni e ridondanze.
+
+**Ciclo v42 — versione pubblica neutra.** La build pubblica sostituisce ogni nome personale con
+“Persona 1” e “Persona 2” e usa testi generici per feedback, dosi ed esempi. La build personale
+continua a mostrare Roberto e Gigi.
