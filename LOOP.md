@@ -37,3 +37,6 @@ hanno rilevato altri interventi ad alto impatto: il loop torna quindi alla modal
 portati sopra WCAG AA, nuova icona con ciotola e germoglio, centro “Altro” per raccogliere le
 funzioni secondarie e feedback raggiungibile anche dalla Home. Il ricettario cresce di otto
 proposte che introducono tofu, edamame, chia, tahina, orzo, polenta e nuove alternative vegetali.
+
+**Ciclo v40 — backup su iPhone.** Il backup viene condiviso come vero file di testo, salvabile
+nell’app File, e il ripristino accetta sia il nuovo formato `.txt` sia i precedenti `.json`.

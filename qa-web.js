@@ -152,6 +152,9 @@ click(d.getElementById("m-close"));
 w.URL.createObjectURL=w.URL.createObjectURL||(()=>"blob:x"); w.URL.revokeObjectURL=w.URL.revokeObjectURL||(()=>{});
 click(d.getElementById("btn-export"));
 T("backup: lastExport registrato", !!state().lastExport);
+T("backup iPhone: azioni espresse in modo chiaro", /Salva un backup/.test(d.getElementById("btn-export").textContent)&&/Ripristina un backup/.test(d.getElementById("btn-import").textContent));
+T("backup iPhone: nuovo formato txt e vecchio json accettati", /\.txt/.test(d.getElementById("import-file").accept)&&/\.json/.test(d.getElementById("import-file").accept));
+T("backup iPhone: condivisione usa un vero file", /files:\[file\]/.test(html)&&/backup-.*\.txt/.test(html));
 
 // 13. tema
 click(d.getElementById("dark-toggle"));

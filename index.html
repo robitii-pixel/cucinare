@@ -404,6 +404,7 @@
   .more-action .ico{width:1.35rem; height:1.35rem}
   .more-action small{color:var(--muted); font-weight:500; line-height:1.3}
   .rating-scale{display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:.75rem; margin-top:-8px}
+  .backup-hint{margin:8px 2px 0; color:var(--muted); font-size:.82rem}
   .tmr{border:1px solid var(--aqua-line); background:var(--aqua); color:var(--ink); border-radius:999px; padding:3px 10px; font-size:.76rem; font-weight:800; margin-left:6px; min-height:30px}
   html.dark .tmr{background:#123038; border-color:#245560; color:#7FD8E8}
   #timerchip{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(84px + env(safe-area-inset-bottom)); z-index:80; background:var(--ink); color:#fff; border-radius:999px; padding:12px 20px; font-weight:800; font-variant-numeric:tabular-nums; box-shadow:0 10px 30px rgba(10,90,115,.35); cursor:pointer}
@@ -761,13 +762,14 @@
       </div>
     </div>
     <div class="databar">
-      <button class="toolbtn" id="btn-export"><svg class=ico><use href=#i-down></use></svg> Esporta i vostri dati</button>
-      <button class="toolbtn" id="btn-import"><svg class=ico><use href=#i-up></use></svg> Importa</button>
+      <button class="toolbtn" id="btn-export"><svg class=ico><use href=#i-down></use></svg> Salva un backup</button>
+      <button class="toolbtn" id="btn-import"><svg class=ico><use href=#i-up></use></svg> Ripristina un backup</button>
       <button class="toolbtn" id="btn-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button>
       <button class="toolbtn" id="btn-trip"></button>
       <button class="toolbtn" id="btn-feedback"><svg class=ico><use href=#i-mail></use></svg> Invia un feedback</button>
-      <input type="file" id="import-file" accept=".json,application/json" style="display:none">
+      <input type="file" id="import-file" accept=".txt,.json,text/plain,application/json" style="display:none">
     </div>
+    <p class="backup-hint">Su iPhone scegli “Salva su File”. Per recuperare i dati, usa “Ripristina un backup”.</p>
     <div class="note-box" id="sync-box" style="margin-top:14px">
       <p style="margin:0 0 8px"><b><svg class=ico><use href=#i-cycle></use></svg> Sincronizza i due telefoni</b></p>
       <div id="sync-body"></div>
@@ -905,7 +907,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v39";
+  var APPV="v40";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -2717,21 +2719,28 @@
     var stale=!last||((new Date())-last)/86400000>14;
     if(stale&&Object.keys(state.weeks||{}).length){
       var bar=document.createElement("div"); bar.className="bkban";
-      bar.innerHTML='<span><svg class=ico><use href=#i-down></use></svg> I vostri dati non hanno un backup recente.</span><button class="toolbtn" id="bk-now">Esporta ora</button>';
+      bar.innerHTML='<span><svg class=ico><use href=#i-down></use></svg> I vostri dati non hanno un backup recente.</span><button class="toolbtn" id="bk-now">Salva ora</button>';
       var host=document.getElementById("prof-box"); if(host&&host.parentNode) host.parentNode.insertBefore(bar,host.nextSibling);
       bar.addEventListener("click",function(e){ if(e.target.closest("#bk-now")){ document.getElementById("btn-export").click(); bar.remove(); } });
     }
   })();
   document.getElementById("btn-export").addEventListener("click",function(){
     var data=JSON.stringify(state);
-    try{
-      var blob=new Blob([data],{type:"application/json"});
+    var name="la-nostra-cucina-backup-"+iso(new Date())+".txt";
+    var blob=new Blob([data],{type:"text/plain;charset=utf-8"});
+    function done(){ state.lastExport=(new Date()).toISOString(); save(state); }
+    function download(){ try{
       var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-      a.download="la-nostra-cucina-backup-"+iso(new Date())+".json"; a.click();
+      a.download=name; a.click();
       setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
-    }catch(e){}
-    state.lastExport=(new Date()).toISOString(); save(state);
-    if(navigator.share){ navigator.share({title:"Backup La nostra cucina",text:data}).catch(function(){}); }
+      done();
+    }catch(e){} }
+    try{
+      var file=new File([blob],name,{type:"text/plain"});
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+        navigator.share({title:"Backup La nostra cucina",files:[file]}).then(done).catch(function(){});
+      } else download();
+    }catch(e){ download(); }
   });
   document.getElementById("btn-import").addEventListener("click",function(){ document.getElementById("import-file").click(); });
   document.getElementById("import-file").addEventListener("change",function(e){
@@ -2741,7 +2750,7 @@
         if(!d||typeof d!=="object") throw 0;
         if(!confirm("Sostituire i dati attuali con quelli del backup?")) return;
         localStorage.setItem(KEY,JSON.stringify(d)); location.reload();
-      }catch(err){ alert("File non valido."); } };
+      }catch(err){ alert("Questo file non è un backup valido."); } };
     r.readAsText(f);
   });
   function tripBtn(){ document.getElementById("btn-trip").innerHTML=state.trip?"<svg class=ico><use href=#i-plane></use></svg> Disattiva modalit\u00e0 trasferta":"<svg class=ico><use href=#i-plane></use></svg> Attiva modalit\u00e0 trasferta"; }
