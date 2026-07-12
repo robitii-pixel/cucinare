@@ -17,8 +17,8 @@
      ============================================ */
   :root{
     --ink:#0D7391; --ink-2:#0A5A73; --paper:#F9FCF9; --paper-2:#E3F4E9;
-    --citrus:#F0B429; --citrus-deep:#9C7300; --herb:#2FB57C; --herb-deep:#14663F;
-    --melon:#EF7D93; --melon-deep:#D14D6E; --aqua:#D9F4F0; --aqua-line:#9ADFD6;
+    --citrus:#F0B429; --citrus-deep:#8A6500; --herb:#2FB57C; --herb-deep:#14663F;
+    --melon:#EF7D93; --melon-deep:#B83A5B; --aqua:#D9F4F0; --aqua-line:#9ADFD6;
     --text:#17333A; --muted:#4C646A; --line:#DBE7DE;
     --ok:#4E8C57; --wait:#D9920C; --no:#CE4458; --wait-deep:#8A5A08;
     --shadow:0 1px 2px rgba(10,90,115,.05),0 8px 24px rgba(10,90,115,.07);
@@ -39,7 +39,7 @@
   .sun{position:absolute; top:-90px; right:-70px; width:340px; height:340px; border-radius:50%;
     background:radial-gradient(circle at 50% 50%, var(--citrus) 0%, var(--citrus-deep) 60%, rgba(232,147,12,0) 72%); opacity:.5; filter:blur(2px)}
   .hero-inner{position:relative; padding:54px 0 46px}
-  .hero .eyebrow{color:#A67C12}
+  .hero .eyebrow{color:#765500}
   .hero h1{font-size:clamp(2.3rem,7vw,4rem); line-height:.98; letter-spacing:-.02em; margin:14px 0 0; color:#0A4B60}
   .hero h1 em{font-style:italic; color:var(--citrus)}
   .lede{max-width:58ch; margin:18px 0 0; color:#3D5E66; font-size:1.03rem}
@@ -398,6 +398,12 @@
   .h-tkok{font-size:.68rem; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--herb-deep)}
   html.dark .h-tkok{color:#5FD1A0}
   .h-links{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  .h-links .toolbtn{flex:1 1 150px}
+  .more-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+  .more-action{min-height:82px; text-align:left; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:5px; padding:14px 16px}
+  .more-action .ico{width:1.35rem; height:1.35rem}
+  .more-action small{color:var(--muted); font-weight:500; line-height:1.3}
+  .rating-scale{display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:.75rem; margin-top:-8px}
   .tmr{border:1px solid var(--aqua-line); background:var(--aqua); color:var(--ink); border-radius:999px; padding:3px 10px; font-size:.76rem; font-weight:800; margin-left:6px; min-height:30px}
   html.dark .tmr{background:#123038; border-color:#245560; color:#7FD8E8}
   #timerchip{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(84px + env(safe-area-inset-bottom)); z-index:80; background:var(--ink); color:#fff; border-radius:999px; padding:12px 20px; font-weight:800; font-variant-numeric:tabular-nums; box-shadow:0 10px 30px rgba(10,90,115,.35); cursor:pointer}
@@ -549,7 +555,14 @@
   footer .line{width:48px; height:3px; background:var(--citrus); border-radius:3px; margin:0 auto 18px}
 
   @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
-  @media (max-width:720px){ .prep-grid{grid-template-columns:1fr} .duo{grid-template-columns:1fr} .hero-inner{padding:40px 0 34px} }
+  @media (max-width:720px){
+    .prep-grid{grid-template-columns:1fr} .duo{grid-template-columns:1fr}
+    .hero-inner{padding:27px 0 24px}
+    .hero h1{font-size:2.45rem; margin-top:9px}
+    .hero .eyebrow{font-size:.62rem; letter-spacing:.14em}
+    .lede{font-size:.94rem; line-height:1.45; margin-top:12px}
+    .more-grid{grid-template-columns:1fr}
+  }
   @media (min-width:560px){ .overlay{align-items:center} .modal{border-radius:22px} }
 
   /* ============================================================
@@ -699,7 +712,7 @@
       <button class="qn" id="nav-shop"><span class="qi"><svg class=ico><use href=#i-cart></use></svg></span><span class="qt">Spesa</span></button>
       <button class="qn" id="nav-bottega"><span class="qi"><svg class=ico><use href=#i-flame></use></svg></span><span class="qt">Bottega</span></button>
       <button class="qn" id="nav-ric"><span class="qi"><svg class=ico><use href=#i-book></use></svg></span><span class="qt">Ricettario</span></button>
-      <button class="qn" id="nav-prof"><span class="qi"><svg class=ico><use href=#i-user></use></svg></span><span class="qt">Profilo</span></button>
+      <button class="qn" id="nav-prof"><span class="qi"><svg class=ico><use href=#i-compass></use></svg></span><span class="qt">Altro</span></button>
       <span class="qsearch"><input type="search" id="q" placeholder="Cerca piatti e tecniche…" autocomplete="off"><span class="qn-n" id="q-n"></span></span>
     </nav>
     <div class="legend legend-min">
@@ -892,7 +905,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v38";
+  var APPV="v39";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -1070,7 +1083,13 @@
         steps:["Scalda farro e lenticchie insieme 2–3 minuti in padella con un filo d’olio.","Mandorle e melograno sopra.","Limone e menta a crudo: svegliano il piatto."]},
       {id:"c14",vg:1,name:"Toast di segale con crema di ceci al cacao e banana",time:"8 min",desc:"La colazione dolce vegetale, senza creme spalmabili industriali.",kr:420,kg:375,pr:15,pg:14,
         ing:[{n:"Pane di segale",r:"70 g",g:"55 g"},{n:"Ceci",q:"80 g"},{n:"Cacao amaro",q:"1 cucchiaio"},{n:"Miele o datteri",q:"1 cucchiaino"},{n:"Banana",q:"1"}],
-        steps:["Frulla ceci, cacao e miele con un filo d’acqua: crema densa e liscia.","Tosta il pane, spalma la crema.","Banana a fette sopra, cannella se piace."]}
+        steps:["Frulla ceci, cacao e miele con un filo d’acqua: crema densa e liscia.","Tosta il pane, spalma la crema.","Banana a fette sopra, cannella se piace."]},
+      {id:"c15",pm:"ricotta",name:"Crêpe di ceci con ricotta e spinaci",time:"15 min",desc:"Una colazione salata morbida dentro e dorata ai bordi.",kr:455,kg:405,pr:24,pg:22,
+        ing:[{n:"Farina di ceci",r:"60 g",g:"50 g"},{n:"Acqua",q:"quanto basta per la pastella"},{n:"Ricotta",r:"100 g",g:"90 g"},{n:"Spinaci",q:"100 g"},{n:"Limone e pepe",q:"q.b."}],
+        steps:["Mescola farina di ceci, acqua e un pizzico di sale; lascia riposare 5 minuti.","Cuoci una crêpe sottile in padella ben calda, 2 minuti per lato.","Farcisci con ricotta lavorata al limone e spinaci appena saltati."]},
+      {id:"c16",vg:1,pm:"semi",name:"Budino di chia, cacao e pera",time:"5 min + riposo",desc:"Si prepara la sera: cremoso, fresco e pronto al risveglio.",kr:410,kg:365,pr:16,pg:15,
+        ing:[{n:"Semi di chia",r:"30 g",g:"25 g"},{n:"Yogurt di soia",q:"180 g"},{n:"Cacao amaro",q:"1 cucchiaio"},{n:"Pera",q:"1"},{n:"Nocciole",r:"15 g",g:"12 g"}],
+        steps:["Mescola chia, yogurt di soia e cacao; riposa in frigo almeno 4 ore.","Mescola di nuovo per sciogliere eventuali grumi.","Completa con pera a cubetti e nocciole tostate."]}
     ],
     spuntino:[
       {id:"s1",pm:"yogurt",name:"Yogurt greco e miele",time:"1 min",desc:"Lo spuntino proteico base.",kr:150,kg:145,pr:17,pg:17,
@@ -1131,7 +1150,13 @@
         steps:["Pesche o fichi a spicchi, in padella calda 2 minuti finché iniziano a dorarsi.","Aceto e miele sciolti insieme, versati sul bordo caldo della padella: 45–60 secondi finché lucidi (la tecnica dell’agrodolce della Bottega).","Tiepidi, con la crema di anacardi e la granella sopra."]},
       {id:"s22",sea:"inverno",pm:"dolce",vg:1,name:"Pere al forno con cannella e crema di anacardi",time:"25 min",desc:"Il forno acceso d’inverno lavora anche per il dolce: pere morbide, profumate, quasi senza sforzo.",kr:220,kg:195,pr:4,pg:4,
         ing:[{n:"Pere",q:"1 a testa"},{n:"Cannella",q:"q.b."},{n:"Miele",q:"1 cucchiaino"},{n:"Crema di anacardi (Bottega)",q:"1 cucchiaio"}],
-        steps:["Pere a metà, private del torsolo, in teglia con un filo di miele e cannella.","Forno 190° per 20 minuti finché morbide.","Tiepide, con la crema di anacardi a filo."]}
+        steps:["Pere a metà, private del torsolo, in teglia con un filo di miele e cannella.","Forno 190° per 20 minuti finché morbide.","Tiepide, con la crema di anacardi a filo."]},
+      {id:"s23",vg:1,pm:"legumi",name:"Edamame al limone e sesamo",time:"6 min",desc:"Tiepidi, sapidi e croccanti: uno spuntino da mangiare con calma.",kr:185,kg:170,pr:16,pg:15,
+        ing:[{n:"Edamame sgusciati",r:"140 g",g:"130 g"},{n:"Limone",q:"½"},{n:"Sesamo tostato",q:"1 cucchiaino"},{n:"Paprica",q:"un pizzico"}],
+        steps:["Scalda gli edamame in acqua bollente o al vapore 4 minuti.","Scola bene e condisci con limone, sesamo e paprica."]},
+      {id:"s24",pm:"yogurt",name:"Yogurt, tahina e arancia",time:"3 min",desc:"Cremoso e agrumato, con il sesamo che dà profondità.",kr:215,kg:195,pr:15,pg:14,
+        ing:[{n:"Yogurt greco",r:"170 g",g:"170 g"},{n:"Tahina",q:"1 cucchiaino"},{n:"Arancia",q:"1"},{n:"Cannella",q:"q.b."}],
+        steps:["Lavora yogurt e tahina fino a ottenere una crema uniforme.","Aggiungi l’arancia a vivo e un pizzico di cannella."]}
     ],
     pranzo:[
       {id:"p1",fam:"pasta",pm:"legumi",name:"Fregola con ceci, pomodorini e basilico",time:"15 min",desc:"Il piatto sardo per eccellenza.",kr:635,kg:560,pr:32,pg:30,
@@ -1193,7 +1218,13 @@
         steps:["Taglia il tempeh a cubetti, rosolalo 4–5 minuti finché croccante, ultimo minuto con un filo di soia.","Componi farro, pomodorini, rucola.","Tempeh sopra, limone e olio a crudo."]},
       {id:"p20",sea:"inverno",fam:"insalata",pm:"legumi",vg:1,name:"Farro tiepido con radicchio, noci e ceci",time:"15 min (farro pronto)",desc:"L’amaro del radicchio scaldato in padella, addolcito dalle noci: l’inverno che non pesa.",kr:600,kg:530,pr:26,pg:24,
         ing:[{n:"Farro cotto",r:"90 g",g:"75 g"},{n:"Radicchio",q:"150 g"},{n:"Noci",r:"20 g",g:"15 g"},{n:"Ceci",r:"100 g",g:"100 g"},{n:"Pecorino a scaglie",q:"20 g"}],
-        steps:["Radicchio a listarelle, appassito in padella 3–4 minuti con un filo d’olio.","Unisci farro e ceci, scalda insieme 2 minuti.","Noci e pecorino sopra; sale e pepe."]}
+        steps:["Radicchio a listarelle, appassito in padella 3–4 minuti con un filo d’olio.","Unisci farro e ceci, scalda insieme 2 minuti.","Noci e pecorino sopra; sale e pepe."]},
+      {id:"p21",fam:"cereali",pm:"legumi",vg:1,name:"Orzo con piselli, rucola e pesto di mandorle",time:"18 min",desc:"Verde, fresco e adatto alla schiscetta: il pesto lega senza coprire.",kr:610,kg:535,pr:27,pg:25,
+        ing:[{n:"Orzo cotto",r:"180 g",g:"150 g"},{n:"Piselli",r:"150 g",g:"140 g"},{n:"Rucola",q:"1 manciata"},{n:"Mandorle",r:"20 g",g:"15 g"},{n:"Limone e basilico",q:"q.b."}],
+        steps:["Frulla mandorle, basilico, limone e poca acqua fino a una salsa grossolana.","Salta orzo e piselli 3 minuti in padella.","Fuori dal fuoco unisci pesto e rucola: resta buono anche freddo."]},
+      {id:"p22",fam:"cereali",pm:"tofu",vg:1,name:"Riso croccante con tofu, melanzane e basilico",time:"25 min",desc:"Una ciotola completa: fondo croccante, tofu dorato e melanzane morbide.",kr:625,kg:550,pr:30,pg:27,
+        ing:[{n:"Riso integrale cotto",r:"180 g",g:"150 g"},{n:"Tofu",r:"150 g",g:"130 g"},{n:"Melanzane",q:"200 g"},{n:"Salsa di soia",q:"1 cucchiaio"},{n:"Basilico e limone",q:"q.b."}],
+        steps:["Rosola il tofu a cubetti finché dorato; sfuma con poca salsa di soia.","Cuoci le melanzane a dadini nella stessa padella finché morbide.","Premi il riso sul fondo caldo per 3 minuti, poi completa con tofu, melanzane, basilico e limone."]}
     ],
     cena:[
       {id:"d1",fam:"frittata",pm:"uova",name:"Frittata di zucchine e menta con pane",time:"15 min",desc:"Con insalata di pomodori: cena d'estate.",kr:565,kg:470,pr:37,pg:35,
@@ -1264,7 +1295,13 @@
         steps:["Rosola aglio e rosmarino nell’olio, poi la zucca a cubetti 5 minuti.","Copri a filo d’acqua, cuoci 15 minuti finché la zucca si sfalda; unisci i ceci interi ultimi 3 minuti.","Schiaccia grossolanamente metà zuppa col cucchiaio per la cremosità; crostini di segale tostati sopra."]},
       {id:"d24",sea:"inverno",gst:1,fam:"forno",pm:"legumi",vg:1,name:"Cavolfiore arrosto con farro, melagrana e crema di anacardi",time:"35 min",desc:"Il forno che carammella i bordi del cavolfiore: la cena invernale che sembra una festa.",kr:570,kg:495,pr:26,pg:24,
         ing:[{n:"Cavolfiore a cimette",q:"350 g"},{n:"Farro cotto",r:"90 g",g:"75 g"},{n:"Ceci",r:"120 g",g:"120 g"},{n:"Crema di anacardi (Bottega)",q:"2 cucchiai"},{n:"Melagrana",q:"1 porzione"}],
-        steps:["Cavolfiore in forno 200° per 20–25 minuti con olio e sale, finché i bordi sono dorati.","Componi farro e ceci nel piatto, cavolfiore sopra.","Crema di anacardi a filo, chicchi di melagrana sopra: il rosso che accende il piatto."]}
+        steps:["Cavolfiore in forno 200° per 20–25 minuti con olio e sale, finché i bordi sono dorati.","Componi farro e ceci nel piatto, cavolfiore sopra.","Crema di anacardi a filo, chicchi di melagrana sopra: il rosso che accende il piatto."]},
+      {id:"d25",fam:"forno",pm:"tofu",vg:1,name:"Tofu alla pizzaiola con patate e fagiolini",time:"35 min",desc:"Pomodoro, origano e olive rendono il tofu una cena di casa, non un sostituto.",kr:575,kg:505,pr:31,pg:28,
+        ing:[{n:"Tofu",r:"180 g",g:"160 g"},{n:"Patate",r:"220 g",g:"180 g"},{n:"Fagiolini",q:"180 g"},{n:"Sugo di pomodoro",q:"180 g"},{n:"Olive, capperi e origano",q:"q.b."}],
+        steps:["Sbollenta patate a spicchi e fagiolini per 7 minuti.","Disponi in teglia con tofu a fette, sugo, olive, capperi e origano.","Forno 200° per 20 minuti, finché i bordi del tofu sono dorati."]},
+      {id:"d26",sea:"inverno",fam:"zuppa",pm:"legumi",vg:1,name:"Polenta morbida con lenticchie e funghi",time:"30 min",desc:"Calda e profonda: le lenticchie fanno il ragù, i funghi portano il bosco.",kr:590,kg:520,pr:27,pg:25,
+        ing:[{n:"Polenta",r:"90 g",g:"75 g"},{n:"Lenticchie cotte",r:"200 g",g:"180 g"},{n:"Funghi",q:"200 g"},{n:"Passata di pomodoro",q:"120 g"},{n:"Rosmarino e prezzemolo",q:"q.b."}],
+        steps:["Rosola i funghi a fiamma alta senza affollarli; sala alla fine.","Scalda lenticchie e passata con rosmarino per 10 minuti.","Cuoci la polenta morbida e servila con il ragù di lenticchie, funghi e prezzemolo."]}
     ]
   };
   var SPECIAL={
@@ -1630,7 +1667,8 @@
     }
     html+=renderCoach();
     html+='<div class="h-links"><button class="toolbtn" id="h-shop"><svg class=ico><use href=#i-cart></use></svg> La spesa</button>'
-      +'<button class="toolbtn" id="h-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button><button class="toolbtn" id="h-prof"><svg class=ico><use href=#i-user></use></svg> Profili</button></div>';
+      +'<button class="toolbtn" id="h-prog"><svg class=ico><use href=#i-chart></use></svg> Progressi</button><button class="toolbtn" id="h-prof"><svg class=ico><use href=#i-user></use></svg> Profili</button>'
+      +'<button class="toolbtn" id="h-feedback"><svg class=ico><use href=#i-mail></use></svg> Invia un feedback</button></div>';
     var hb=document.getElementById("home-body"); if(hb) hb.innerHTML=html;
     var hw=document.getElementById("h-week"); if(hw) hw.addEventListener("click",function(e){ e.stopPropagation(); setView("week",true); goToday(); });
     var hs=document.getElementById("h-shop"); if(hs) hs.addEventListener("click",buildShopping);
@@ -1640,6 +1678,7 @@
     var hf2=document.getElementById("h-prof2");
     if(hf2) hf2.addEventListener("click",function(){ setView("week"); var pb=document.getElementById("prof-box"); if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); } });
     var hf=document.getElementById("h-prof"); if(hf) hf.addEventListener("click",function(){ setView("week"); var pb=document.getElementById("prof-box"); if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); } });
+    var hfb=document.getElementById("h-feedback"); if(hfb) hfb.addEventListener("click",openFeedback);
   }
   document.addEventListener("click",function(e){
     if(e.target.closest("#c-vg")){
@@ -2633,11 +2672,7 @@
   document.getElementById("nav-shop").addEventListener("click",buildShopping);
   document.getElementById("nav-bottega").addEventListener("click",function(){ setView("bottega"); });
   document.getElementById("nav-ric").addEventListener("click",function(){ setView("ric"); });
-  document.getElementById("nav-prof").addEventListener("click",function(){
-    setView("week");
-    var pb=document.getElementById("prof-box");
-    if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); }
-  });
+  document.getElementById("nav-prof").addEventListener("click",openMore);
   setView(state.ui.view||"home",true); if((state.ui.view||"home")==="home") renderHome();
   var qEl=document.getElementById("q"), qN=document.getElementById("q-n"), qT=null;
   function doSearch(){
@@ -2720,13 +2755,13 @@
       +'<div class="time">Arriva a Roberto insieme a versione e dispositivo, che si aggiungono da soli</div></div><div class="m-body">'
       +'<div class="addf">'
       +'<label>Chi sei?<select id="fd-chi"><option value="">Preferisco non dirlo</option><option value="Roberto">Roberto</option><option value="Gigi">Gigi</option></select></label>'
-      +'<label>Quanto ti sta piacendo l’app in questo periodo?<div class="fchips" id="fd-voto">'
-      +[1,2,3,4,5].map(function(n){ return '<button type="button" class="fchip" data-v="'+n+'">'+n+'</button>'; }).join("")
-      +'</div></label>'
+      +'<label>Quanto ti sta piacendo l’app in questo periodo?<div class="fchips" id="fd-voto" role="group" aria-label="Valutazione da 1 a 5">'
+      +[1,2,3,4,5].map(function(n){ return '<button type="button" class="fchip" data-v="'+n+'" aria-label="'+n+' su 5" aria-pressed="false">'+n+'</button>'; }).join("")
+      +'</div><span class="rating-scale"><span>Da migliorare</span><span>Molto bene</span></span></label>'
       +'<label>Cosa ti è piaciuto<textarea id="fd-piaciuto" placeholder="Es. la spesa calcolata da sola, il coach…"></textarea></label>'
       +'<label>Cosa non ha funzionato<textarea id="fd-problema" placeholder="Es. un calcolo sbagliato, una schermata poco chiara…"></textarea></label>'
       +'<label>Un suggerimento, se ne hai uno<textarea id="fd-sugg"></textarea></label>'
-      +'<button class="toolbtn" id="fd-send" style="font-size:.95rem">✓ Invia il feedback</button>'
+      +'<button class="toolbtn" id="fd-send" style="font-size:.95rem"><svg class=ico><use href=#i-mail></use></svg> Invia il feedback</button>'
       +'<p class="notew-hint" id="fd-note" style="font-size:.8rem;color:var(--muted);margin:6px 0 0"></p>'
       +'</div></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
@@ -2734,7 +2769,7 @@
     document.getElementById("fd-voto").addEventListener("click",function(e){
       var b=e.target.closest(".fchip"); if(!b) return;
       voto=parseInt(b.getAttribute("data-v"),10);
-      document.querySelectorAll("#fd-voto .fchip").forEach(function(x){ x.classList.toggle("on",x===b); });
+      document.querySelectorAll("#fd-voto .fchip").forEach(function(x){ var on=x===b; x.classList.toggle("on",on); x.setAttribute("aria-pressed",on?"true":"false"); });
     });
     document.getElementById("fd-send").addEventListener("click",function(){
       var piaciuto=(document.getElementById("fd-piaciuto").value||"").trim();
@@ -2759,6 +2794,27 @@
     document.getElementById("m-close").focus();
   }
   document.getElementById("btn-feedback").addEventListener("click",openFeedback);
+  function openMore(){
+    modal.innerHTML='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
+      +'<div class="kicker">Tutto a portata di mano</div><h3 id="m-title">Altro</h3>'
+      +'<div class="time">Imparate, controllate i progressi o fateci sapere cosa migliorare.</div></div><div class="m-body">'
+      +'<div class="more-grid">'
+      +'<button class="toolbtn more-action" id="more-bottega"><svg class=ico><use href=#i-flame></use></svg><b>La Bottega</b><small>Tecniche e percorso di cucina</small></button>'
+      +'<button class="toolbtn more-action" id="more-recipes"><svg class=ico><use href=#i-book></use></svg><b>Ricettario</b><small>Piatti, alternative e preferiti</small></button>'
+      +'<button class="toolbtn more-action" id="more-progress"><svg class=ico><use href=#i-chart></use></svg><b>Progressi</b><small>Andamento e continuità</small></button>'
+      +'<button class="toolbtn more-action" id="more-profile"><svg class=ico><use href=#i-user></use></svg><b>Profili e dati</b><small>Obiettivi, backup e telefoni</small></button>'
+      +'<button class="toolbtn more-action" id="more-feedback"><svg class=ico><use href=#i-mail></use></svg><b>Invia un feedback</b><small>Segnala un problema o un’idea</small></button>'
+      +'<button class="toolbtn more-action" id="more-help"><svg class=ico><use href=#i-compass></use></svg><b>Come funziona</b><small>Guida rapida dell’app</small></button>'
+      +'</div></div>';
+    overlay.classList.add("on"); document.body.style.overflow="hidden";
+    document.getElementById("more-bottega").addEventListener("click",function(){ closeModal(); setView("bottega"); });
+    document.getElementById("more-recipes").addEventListener("click",function(){ closeModal(); setView("ric"); });
+    document.getElementById("more-progress").addEventListener("click",openProgress);
+    document.getElementById("more-profile").addEventListener("click",function(){ closeModal(); setView("week"); var pb=document.getElementById("prof-box"); if(pb){ pb.open=true; pb.scrollIntoView({behavior:"smooth"}); } });
+    document.getElementById("more-feedback").addEventListener("click",openFeedback);
+    document.getElementById("more-help").addEventListener("click",openHelp);
+    document.getElementById("m-close").focus();
+  }
   window.__fil="all";
   document.getElementById("fchips").addEventListener("click",function(e){
     var f=e.target.closest(".fchip"); if(!f) return;
@@ -2788,19 +2844,19 @@
   var INGKCAL={
     "farina di ceci":{k:387,p:22},"ceci":{k:164,p:8.9},"lenticchie":{k:116,p:9},"cannellini":{k:127,p:8.7},
     "fagioli":{k:127,p:8.7},"fagiolini":{k:31,p:1.8},"lupini":{k:127,p:15.6},"hummus":{k:166,p:8},
-    "farro":{k:127,p:4.8},"cous cous":{k:112,p:3.8},"riso":{k:123,p:2.7},"fregola":{k:158,p:5.8},
+    "farro":{k:127,p:4.8},"orzo":{k:123,p:3.5},"cous cous":{k:112,p:3.8},"riso":{k:123,p:2.7},"fregola":{k:158,p:5.8},
     "pasta":{k:158,p:5.8},"avena":{k:379,p:13.5},"pane":{k:265,p:9},"pangrattato":{k:395,p:13},
     "uova":{k:155,p:13},"uovo":{k:155,p:13},"ricotta":{k:146,p:8.8},"pecorino":{k:387,p:26},
     "parmigiano":{k:392,p:35},"grana":{k:392,p:35},"yogurt greco":{k:97,p:9},"yogurt":{k:61,p:3.5},
-    "primo sale":{k:270,p:20},"tempeh":{k:193,p:19},"tofu":{k:76,p:8},
+    "primo sale":{k:270,p:20},"tempeh":{k:193,p:19},"tofu":{k:76,p:8},"edamame":{k:121,p:12},
     "mandorle":{k:579,p:21},"anacardi":{k:553,p:18},"noci":{k:654,p:15},"nocciole":{k:628,p:15},
-    "pistacchi":{k:562,p:20},"semi":{k:550,p:20},
+    "pistacchi":{k:562,p:20},"semi di chia":{k:486,p:17},"semi":{k:550,p:20},"tahina":{k:595,p:17},
     "zucchine":{k:17,p:1.2},"melanzane":{k:25,p:1},"peperoni":{k:31,p:1},"pomodori":{k:18,p:0.9},
     "pomodorini":{k:18,p:0.9},"patate":{k:77,p:2},"carote":{k:35,p:0.9},"broccoli":{k:34,p:2.8},
-    "spinaci":{k:23,p:2.9},"bietole":{k:19,p:1.8},"cavolo":{k:25,p:1.3},"zucca":{k:26,p:1},
+    "spinaci":{k:23,p:2.9},"bietole":{k:19,p:1.8},"cavolo":{k:25,p:1.3},"zucca":{k:26,p:1},"piselli":{k:81,p:5.4},"funghi":{k:22,p:3.1},
     "banana":{k:89,p:1.1},"mela":{k:52,p:0.3},"pera":{k:57,p:0.4},"pesca":{k:39,p:0.9},
     "arancia":{k:47,p:0.9},"fichi":{k:74,p:0.8},"frutti di bosco":{k:43,p:0.7},"melograno":{k:83,p:1.7},
-    "olio":{k:884,p:0},"miele":{k:304,p:0.3},"cioccolato fondente":{k:546,p:7.8},"cacao":{k:228,p:19.6}
+    "polenta":{k:360,p:8},"yogurt di soia":{k:55,p:4},"olio":{k:884,p:0},"miele":{k:304,p:0.3},"cioccolato fondente":{k:546,p:7.8},"cacao":{k:228,p:19.6}
   };
   function parseGrams(str){ var m=/(\d+(?:[.,]\d+)?)\s*g\b/i.exec(str||""); return m?parseFloat(m[1].replace(",",".")):null; }
   function matchIngKcal(name){

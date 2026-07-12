@@ -1,9 +1,9 @@
-/* La nostra cucina — service worker v3
+/* La nostra cucina — service worker v4
    Strategia: per la pagina PRIMA LA RETE, ignorando la cache del browser (cosi' gli
    aggiornamenti arrivano DAVVERO subito), con un tempo massimo di attesa: se la rete e'
    lenta si mostra intanto l'ultima versione salvata, mentre il download prosegue in
    background e aggiorna la cache per la prossima apertura. Icone e manifest: cache-first. */
-const CACHE = "cucina-v3";
+const CACHE = "cucina-v4";
 const FILES = ["./", "./index.html", "./manifest.json", "./icona.png", "./icona-512.png"];
 const TIMEOUT_MS = 2500;
 

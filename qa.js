@@ -1,6 +1,7 @@
 const {JSDOM}=require('jsdom');
 const fs=require('fs');
 const html=fs.readFileSync('la-nostra-cucina.html','utf8');
+const manifest=JSON.parse(fs.readFileSync('manifest.json','utf8'));
 const dom=new JSDOM(html,{url:"http://localhost/",runScripts:"dangerously",pretendToBeVisual:true,
   beforeParse(w){
     w.matchMedia=q=>({matches:/max-width/.test(q), media:q, addEventListener(){}, removeEventListener(){}});
@@ -215,10 +216,14 @@ T("fab: chiude il modal e porta in Home", d.getElementById("home").style.display
 T("fab: overlay chiuso", !d.querySelector(".overlay").classList.contains("on"));
 T("versione: marcatore visibile", /v\d+/.test(d.getElementById("appv").textContent));
 
-// 21. profilo nella barra
+// 21. area Altro nella barra: tutte le funzioni secondarie sono reperibili
 click(d.getElementById("nav-prof"));
-T("nav profilo: apre la settimana", d.getElementById("settimana").style.display!=="none");
-T("nav profilo: pannello profili aperto", d.getElementById("prof-box").open===true);
+T("nav Altro: apre il centro strumenti", d.getElementById("m-title")&&d.getElementById("m-title").textContent==="Altro");
+T("nav Altro: feedback facilmente reperibile", !!d.getElementById("more-feedback"));
+T("nav Altro: funzioni principali raccolte", d.querySelectorAll(".more-action").length===6);
+click(d.getElementById("more-profile"));
+T("Altro: Profili apre la settimana", d.getElementById("settimana").style.display!=="none");
+T("Altro: pannello profili aperto", d.getElementById("prof-box").open===true);
 T("cerca: spostato in alto, esiste", !!d.getElementById("nav-search"));
 
 // 22. tecnica abbinata al piatto di stasera
@@ -311,6 +316,7 @@ if(pantryCta){ click(pantryCta);
   let chips=[...d.querySelectorAll(".pchipx")].map(c=>c.textContent);
   T("pantry: chip generati in quantità ampia (non più solo 27 scelti a mano, e non più tagliati a 60)", chips.length>=100, "trovati: "+chips.length);
   T("pantry: tempeh incluso tra i chip (nuova ricetta)", chips.includes("tempeh"));
+  T("pantry: nuovi ingredienti inclusi", ["tofu","edamame sgusciati","polenta","semi di chia"].every(x=>chips.includes(x)));
   T("pantry: ingredienti comuni ma poco frequenti inclusi (patate, fagiolini)", chips.includes("patate")&&chips.includes("fagiolini"));
   T("pantry: nessun chip 'acqua' spurio", !chips.includes("acqua"));
   T("pantry: nessun residuo non-ingrediente ('da limitare', 'il vostro ...')", !chips.some(c=>/da limitare|^il vostro/.test(c)));
@@ -418,14 +424,31 @@ click(d.getElementById("m-close"));
   click(d.getElementById("m-close"));
 });
 
-// 41. feedback: voto, messaggi di validazione, invio senza connessione gestito
-click(d.getElementById("nav-week"));
-click(d.getElementById("btn-feedback"));
+// 41. ampliamento ricettario v39: otto proposte realmente nuove e complete
+["c15","c16","s23","s24","p21","p22","d25","d26"].forEach(function(id){
+  let btn=d.querySelector('#library [data-openlib="'+id+'"]');
+  T("ricetta v39 "+id+": presente", !!btn);
+  if(!btn) return;
+  click(btn);
+  let boxes=[...d.querySelectorAll(".nutri .nbox .v")].map(n=>n.textContent);
+  T("ricetta v39 "+id+": ingredienti e preparazione completi", d.querySelectorAll(".ing-list li").length>=4&&d.querySelectorAll(".steps li").length>=2);
+  T("ricetta v39 "+id+": stime per entrambi senza errori", boxes.length===2&&boxes.every(t=>!/NaN|undefined/.test(t)));
+  click(d.getElementById("m-close"));
+});
+T("manifest: descrizione pubblica neutra", !/Roberto|Gigi/.test(manifest.description));
+T("icona: entrambe le dimensioni presenti", fs.statSync('icona.png').size>1000&&fs.statSync('icona-512.png').size>5000);
+
+// 42. feedback: voto, messaggi di validazione, invio senza connessione gestito
+click(d.getElementById("nav-today"));
+T("feedback: accesso diretto presente in Home", !!d.getElementById("h-feedback"));
+click(d.getElementById("h-feedback"));
 T("feedback: modulo aperto", d.getElementById("m-title") && /Invia un feedback/.test(d.getElementById("m-title").textContent));
 click(d.getElementById("fd-send"));
 T("feedback: chiede di scrivere qualcosa se il modulo è vuoto", /Scrivi almeno qualcosa/.test(d.getElementById("fd-note").textContent));
 click(d.querySelector('#fd-voto [data-v="5"]'));
 T("feedback: il voto scelto resta evidenziato", d.querySelector('#fd-voto [data-v="5"]').classList.contains("on"));
+T("feedback: il voto comunica lo stato selezionato", d.querySelector('#fd-voto [data-v="5"]').getAttribute("aria-pressed")==="true");
+T("feedback: la scala spiega il significato dei voti", /Da migliorare/.test(d.querySelector(".rating-scale").textContent)&&/Molto bene/.test(d.querySelector(".rating-scale").textContent));
 click(d.getElementById("fd-send"));
 T("feedback: senza Firebase disponibile (ambiente di test) avvisa e non perde i dati", /connessione/.test(d.getElementById("fd-note").textContent));
 click(d.getElementById("m-close"));

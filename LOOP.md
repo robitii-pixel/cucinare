@@ -32,3 +32,8 @@ un pasto preciso o in tutti i pasti. La scelta del momento precede la lunga list
 ingredienti, i risultati mantengono il pasto corretto quando vengono inseriti nel piano e i
 controlli hanno tocchi da almeno 44 px e stati accessibili. Due verifiche finali consecutive non
 hanno rilevato altri interventi ad alto impatto: il loop torna quindi alla modalità di campo.
+
+**Ciclo v39 — grafica, orientamento e varietà.** Testata mobile più compatta, contrasti cromatici
+portati sopra WCAG AA, nuova icona con ciotola e germoglio, centro “Altro” per raccogliere le
+funzioni secondarie e feedback raggiungibile anche dalla Home. Il ricettario cresce di otto
+proposte che introducono tofu, edamame, chia, tahina, orzo, polenta e nuove alternative vegetali.
