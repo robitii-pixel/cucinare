@@ -26,3 +26,9 @@ dispensa con obiettivo del pasto, generatore settimanale, icone SVG, cassetti mo
 piatto↔tecnica...). Punteggio stimato ~9.4. Fase attuale: **loop di campo** — le iterazioni
 nascono dalle segnalazioni d'uso reale del proprietario, che valgono più di ogni analisi a
 tavolino. Regola d'oro appresa: implementare poco e verificato batte implementare tanto e cieco.
+
+**Ultimo ciclo completato: v38.** La ricerca “Da ciò che c’è in casa” permette di cercare in
+un pasto preciso o in tutti i pasti. La scelta del momento precede la lunga lista degli
+ingredienti, i risultati mantengono il pasto corretto quando vengono inseriti nel piano e i
+controlli hanno tocchi da almeno 44 px e stati accessibili. Due verifiche finali consecutive non
+hanno rilevato altri interventi ad alto impatto: il loop torna quindi alla modalità di campo.

@@ -75,6 +75,18 @@ click(d.getElementById("pantry-go"));
 let res1=d.querySelectorAll("#pantry-out .card").length;
 T("dispensa: trova piatti", res1>0, "risultati="+res1);
 T("dispensa: obiettivo del pasto mostrato", /obiettivo del pasto/.test(d.getElementById("pantry-out").innerHTML));
+let psAll=d.querySelector('#pslot-row [data-ps="tutti"]');
+T("dispensa: selezione Tutti i pasti presente", !!psAll);
+T("dispensa: scelta del pasto precede la lunga lista ingredienti", !!(d.getElementById("pslot-row").compareDocumentPosition(d.querySelector("[data-pc]")) & d.defaultView.Node.DOCUMENT_POSITION_FOLLOWING));
+T("dispensa: riepilogo annunciato ai lettori di schermo", d.querySelector('#pantry-out [role="status"]').getAttribute("aria-live")==="polite");
+T("dispensa: i pulsanti non sono dentro l'area annunciata", !d.querySelector('#pantry-out [role="status"] button'));
+if(psAll){
+  click(psAll);
+  T("dispensa: filtro comunica lo stato selezionato", psAll.getAttribute("aria-pressed")==="true");
+  let allUse=[...d.querySelectorAll('#pantry-out [data-useit]')].map(x=>x.getAttribute("data-useit").split("|")[1]);
+  T("dispensa: Tutti i pasti cerca in più momenti", new Set(allUse).size>1, "momenti="+[...new Set(allUse)].join(","));
+  T("dispensa: Tutti i pasti assegna ogni ricetta al momento corretto", !allUse.includes("tutti"));
+}
 // cambio slot
 let psP=d.querySelector('#pslot-row [data-ps="pranzo"]');
 click(psP);
@@ -98,6 +110,7 @@ T("REGRESSIONE dispensa riaperta: slot cena si attiva", psC.classList.contains("
 let chip=d.querySelector('[data-pc="ceci"]');
 click(chip);
 T("REGRESSIONE dispensa riaperta: chip ingrediente si attiva", chip.classList.contains("on"));
+T("dispensa: ingrediente comunica lo stato selezionato", chip.getAttribute("aria-pressed")==="true");
 click(d.getElementById("m-close"));
 
 // 9. generatore settimana prossima

@@ -601,7 +601,7 @@
   .favb.on{background:#FADFE5; border-color:var(--melon); color:var(--melon-deep)}
   html.dark .favb{background:#152A30; border-color:#2A454C}
   .fchips{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 16px}
-  .fchip{border:1.5px solid var(--line); background:#fff; border-radius:999px; min-height:40px; padding:7px 14px; font-size:.82rem; font-weight:700; color:var(--muted)}
+  .fchip{border:1.5px solid var(--line); background:#fff; border-radius:999px; min-height:44px; padding:7px 14px; font-size:.82rem; font-weight:700; color:var(--muted)}
   .fchip.on{background:var(--ink); border-color:var(--ink); color:#fff}
   .qn .qi{margin-right:4px}
   @media(max-width:720px){ .qn .qi{margin-right:0} }
@@ -609,6 +609,8 @@
   @media(max-width:720px){ .qn.cur .qi{transform:scale(1.12)} }
   @media(min-width:721px){ .qn.cur{background:var(--aqua); border-color:var(--aqua-line)} }
   html.dark .fchip{background:#152A30; border-color:#2A454C}
+  .pantry-actions{display:flex; gap:8px; margin-top:9px; flex-wrap:wrap}
+  .pantry-actions .toolbtn{flex:1 1 180px}
   .card .favtag{position:absolute; top:12px; right:12px; font-size:.95rem}
   .card{position:relative}
   .mvrow{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 14px}
@@ -890,7 +892,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v37";
+  var APPV="v38";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -1593,7 +1595,7 @@
     html+='<div class="h-card h-card-pantry">'
       +'<div class="h-k">Si parte da qui</div>'
       +'<div class="h-name">Cosa avete in casa?</div>'
-      +'<div class="h-meta">Scrivete gli ingredienti che avete: troverete i piatti adatti a questo momento della giornata e ai vostri obiettivi.</div>'
+      +'<div class="h-meta">Scrivete gli ingredienti che avete e cercate un piatto per un momento preciso oppure per tutta la giornata.</div>'
       +'<div class="h-btns"><button class="cta" id="h-pantry-cta"><svg class=ico><use href=#i-basket></use></svg> Cosa cucino</button></div>'
       +'</div>';
     if(cdd){
@@ -2905,19 +2907,22 @@
     return {have:have,tot:tot,miss:miss};
   }
   var SLOT_SHARE={colazione:0.20,spuntino:0.09,pranzo:0.28,merenda:0.09,cena:0.26}; /* quota kcal per pasto (extra a parte) */
+  var PANTRY_SLOTS=[["tutti","Tutti i pasti"]].concat(SLOTS);
   function smartSlot(){ var h=(new Date()).getHours();
     if(h<10) return "colazione"; if(h<12) return "spuntino"; if(h<15) return "pranzo"; if(h<18) return "merenda"; return "cena"; }
   function todayKey(){ return DAYS[(TODAY.getDay()+6)%7]; }
   function openPantry(){
     var saved=state.pantry||"";
     var pslot=state.pslot||smartSlot();
-    var chips=PANTRY_CHIPS.map(function(c){ return '<button class="fchip pchipx" data-pc="'+c+'">'+c+'</button>'; }).join("");
+    var chips=PANTRY_CHIPS.map(function(c){ return '<button class="fchip pchipx" data-pc="'+c+'" aria-pressed="false">'+c+'</button>'; }).join("");
     var html='<div class="m-head"><button class="m-close" id="m-close" aria-label="Chiudi"><svg class=ico><use href=#i-plus></use></svg></button>'
       +'<div class="kicker">Si parte da qui</div><h3 id="m-title">Da ci\u00f2 che c\u2019\u00e8 in casa</h3>'
-      +'<div class="time">Scrivete o selezionate gli ingredienti che avete e cercate i piatti possibili.</div></div><div class="m-body">'
-      +'<textarea class="notew" id="pantry-in" placeholder="Es. pomodori, ceci, pane raffermo, basilico\u2026" style="min-height:60px">'+saved.replace(/</g,"&lt;")+'</textarea>'
-      +'<div class="fchips" style="margin:10px 0 12px">'+chips+'</div>'
-      +'<div class="fchips" id="pslot-row" style="margin:0 0 12px">'+SLOTS.map(function(sl){return '<button class="fchip'+(sl[0]===pslot?' on':'')+'" data-ps="'+sl[0]+'">'+sl[1]+'</button>';}).join("")+'</div>'
+      +'<div class="time">Scrivete o selezionate gli ingredienti e scegliete un pasto preciso oppure tutta la giornata.</div></div><div class="m-body">'
+      +'<textarea class="notew" id="pantry-in" aria-label="Ingredienti disponibili" placeholder="Es. pomodori, ceci, pane raffermo, basilico\u2026" style="min-height:60px">'+saved.replace(/</g,"&lt;")+'</textarea>'
+      +'<p class="m-sub" style="margin-top:14px">Per quale pasto?</p>'
+      +'<div class="fchips" id="pslot-row" style="margin:0 0 12px" role="group" aria-label="Momento della giornata">'+PANTRY_SLOTS.map(function(sl){return '<button class="fchip'+(sl[0]===pslot?' on':'')+'" data-ps="'+sl[0]+'" aria-pressed="'+(sl[0]===pslot?'true':'false')+'">'+sl[1]+'</button>';}).join("")+'</div>'
+      +'<p class="m-sub" style="margin-top:14px">Oppure scegliete gli ingredienti</p>'
+      +'<div class="fchips" style="margin:0 0 12px" role="group" aria-label="Ingredienti suggeriti">'+chips+'</div>'
       +'<button class="toolbtn" id="pantry-go" style="font-size:.95rem"><svg class=ico><use href=#i-pan></use></svg> Trova i piatti</button>'
       +'<div id="pantry-out" style="margin-top:16px"></div></div>';
     modal.innerHTML=html; overlay.classList.add("on"); document.body.style.overflow="hidden";
@@ -2927,30 +2932,34 @@
       state.pantry=raw; save(state);
       var toks=raw.split(/[,;\n]/).map(normTok).filter(Boolean);
       var out=document.getElementById("pantry-out");
-      if(!toks.length){ out.innerHTML='<div class="note-box">Scrivi almeno un ingrediente.</div>'; return; }
-      var goalR=Math.round(BASE.r.k*SLOT_SHARE[pslot]), goalG=Math.round(BASE.g.k*SLOT_SHARE[pslot]);
+      if(!toks.length){ out.innerHTML='<div class="note-box" role="status" aria-live="polite">Scrivi almeno un ingrediente.</div>'; return; }
       var res=[];
       Object.keys(BY_ID).forEach(function(id){
         var dd=BY_ID[id]; if(dd.free||dd.fam==="fuori") return;
-        if(dd.type&&dd.type!==pslot){ if(!(MINOR[pslot]&&MINOR[dd.type])) return; }
+        if(pslot!=="tutti"&&dd.type&&dd.type!==pslot){ if(!(MINOR[pslot]&&MINOR[dd.type])) return; }
         var m=pantryMatch(dd,toks);
         if(m.have>0){
+          var fitSlot=(pslot==="tutti"?(dd.type||smartSlot()):pslot);
+          var share=SLOT_SHARE[fitSlot]||SLOT_SHARE.cena;
+          var goalR=Math.round(BASE.r.k*share), goalG=Math.round(BASE.g.k*share);
           var fit=Math.abs((dd.kr||0)-goalR)<=Math.max(90,goalR*0.22);
-          res.push({dd:dd,m:m,fit:fit,score:(fit?0.5:0)+m.have/Math.max(1,m.tot)+m.have*0.01});
+          res.push({dd:dd,m:m,fit:fit,slot:fitSlot,goalR:goalR,goalG:goalG,score:(fit?0.5:0)+m.have/Math.max(1,m.tot)+m.have*0.01});
         }
       });
       res.sort(function(a,b){ return b.score-a.score; });
       res=res.slice(0,12);
-      if(!res.length){ out.innerHTML='<div class="note-box">Non abbiamo trovato piatti con questi ingredienti. Provate a usare nomi pi\u00f9 semplici, come \u201cpomodori\u201d o \u201cceci\u201d.</div>'; return; }
-      var slotLbl=SLOTS.filter(function(x){return x[0]===pslot;})[0][1];
-      out.innerHTML='<p class="m-sub">Per '+slotLbl.toLowerCase()+' \u00b7 obiettivo del pasto: circa '+goalR+'/'+goalG+' kcal ('+res.length+' piatti)</p>'+res.map(function(r){
+      if(!res.length){ out.innerHTML='<div class="note-box" role="status" aria-live="polite">Non abbiamo trovato piatti con questi ingredienti. Provate a usare nomi pi\u00f9 semplici, come \u201cpomodori\u201d o \u201cceci\u201d.</div>'; return; }
+      var slotLbl=PANTRY_SLOTS.filter(function(x){return x[0]===pslot;})[0][1];
+      var summary=pslot==="tutti"?slotLbl+' \u00b7 '+res.length+' piatti':('Per '+slotLbl.toLowerCase()+' \u00b7 obiettivo del pasto: circa '+res[0].goalR+'/'+res[0].goalG+' kcal ('+res.length+' piatti)');
+      out.innerHTML='<p class="m-sub" role="status" aria-live="polite">'+summary+'</p>'+res.map(function(r){
         var manca=r.m.miss.length?('<small style="color:var(--muted)">manca: '+r.m.miss.slice(0,3).join(", ")+(r.m.miss.length>3?"\u2026":"")+'</small>'):'<small style="color:var(--herb-deep);font-weight:700">hai tutto \u2713</small>';
+        var mealLabel=SLOTS.filter(function(x){return x[0]===r.slot;}); mealLabel=mealLabel.length?mealLabel[0][1]:"Pasto";
         return '<div class="card" style="width:100%; text-align:left; margin-bottom:10px">'
           +'<div class="nm">'+r.dd.name+(r.dd.vg?' <svg class=ico><use href=#i-leaf></use></svg>':'')+(r.fit?' <span class="tempo" style="background:#DFF6E8;border-color:#9ADFB6;color:#1F8A5C">in linea con l\u2019obiettivo</span>':'')+'</div>'
-          +'<div class="ds">'+r.m.have+'/'+r.m.tot+' ingredienti \u00b7 '+r.dd.kr+'/'+r.dd.kg+' kcal \u00b7 '+r.dd.pr+'/'+r.dd.pg+' g prot<br>'+manca+'</div>'
-          +'<div style="display:flex; gap:8px; margin-top:9px">'
+          +'<div class="ds">'+(pslot==="tutti"?mealLabel+' \u00b7 ':'')+r.m.have+'/'+r.m.tot+' ingredienti \u00b7 '+r.dd.kr+'/'+r.dd.kg+' kcal \u00b7 '+r.dd.pr+'/'+r.dd.pg+' g prot<br>'+manca+'</div>'
+          +'<div class="pantry-actions">'
           +'<button class="toolbtn" data-openlib="'+r.dd.id+'">Ricetta</button>'
-          +'<button class="toolbtn" data-useit="'+r.dd.id+'|'+pslot+'" style="background:var(--ink); color:#fff; border-color:var(--ink)">\u2713 Mettilo in oggi</button>'
+          +'<button class="toolbtn" data-useit="'+r.dd.id+'|'+r.slot+'" style="background:var(--ink); color:#fff; border-color:var(--ink)">Mettilo nel piano di oggi</button>'
           +'</div></div>';
       }).join("");
     }
@@ -2959,7 +2968,7 @@
     modal.onclick=function(e){
       var ps=e.target.closest("[data-ps]");
       if(ps){ pslot=ps.getAttribute("data-ps"); state.pslot=pslot; save(state);
-        document.querySelectorAll("#pslot-row .fchip").forEach(function(x){x.classList.toggle("on",x===ps);});
+        document.querySelectorAll("#pslot-row .fchip").forEach(function(x){ var on=x===ps; x.classList.toggle("on",on); x.setAttribute("aria-pressed",on?"true":"false"); });
         run(); return; }
       var ui=e.target.closest("[data-useit]");
       if(ui){ var pr=ui.getAttribute("data-useit").split("|");
@@ -2974,7 +2983,7 @@
         var cur=t.value.trim();
         var tok=pc.getAttribute("data-pc");
         if(cur.toLowerCase().indexOf(tok)<0) t.value=cur?(cur.replace(/[,\s]+$/,"")+", "+tok):tok;
-        pc.classList.toggle("on"); run(); }
+        pc.classList.toggle("on"); pc.setAttribute("aria-pressed",pc.classList.contains("on")?"true":"false"); run(); }
     };
     if(saved) run();
     document.getElementById("m-close").focus();
@@ -3049,7 +3058,7 @@
       +'<h5><svg class=ico><use href=#i-cal></use></svg> Settimana</h5><p>Qui trovate il piano completo. Toccate un piatto per aprire la ricetta e usate il pulsante Cambia per sceglierne un altro. In fondo a ogni giorno potete indicare gli allenamenti, segnare la giornata come seguita o registrare un pasto fuori programma. <b><svg class=ico><use href=#i-wand></use></svg> Prepara la prossima</b> crea una nuova settimana favorendo variet\u00e0, preferiti e cene vegetali ed escludendo i piatti segnati come \u201cmai pi\u00f9\u201d.</p>'
       +'<h5><svg class=ico><use href=#i-cart></use></svg> La spesa</h5><p>Due spese calcolate dal <b>piano della settimana</b> (non da quanto avete davvero mangiato): weekend e gioved\u00ec. Spunta ci\u00f2 che metti nel carrello: si ricorda.</p>'
       +'<h5><svg class=ico><use href=#i-flame></use></svg> La Bottega</h5><p>La scuola: 26 tecniche in un percorso ordinato \u2014 la mappa in alto mostra dove siete. \u201cModalit\u00e0 cucina\u201d le legge passo-passo, anche a voce.</p>'
-      +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Qui trovate tutti i piatti, i filtri, i men\u00f9 per gli ospiti e le ricette aggiunte da voi. Con \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d potete cercare cosa cucinare usando gli ingredienti disponibili e confrontare il risultato con l\u2019obiettivo del pasto.</p>'
+      +'<h5><svg class=ico><use href=#i-book></use></svg> Ricettario</h5><p>Qui trovate tutti i piatti, i filtri, i men\u00f9 per gli ospiti e le ricette aggiunte da voi. Con \u201cDa ci\u00f2 che c\u2019\u00e8 in casa\u201d potete cercare cosa cucinare usando gli ingredienti disponibili, per un pasto preciso o per tutta la giornata, e confrontare ogni proposta con il relativo obiettivo.</p>'
       +'<h5><svg class=ico><use href=#i-cycle></use></svg> I due telefoni insieme</h5><p>In Profili, \u201cSincronizza i due telefoni\u201d: collegate i telefoni una volta sola (un codice, generato l\u00ec) e da allora i dati restano allineati da soli, senza fare nulla. <b>Esporta/importa</b> resta come rete di sicurezza in pi\u00f9 \u2014 un file scaricato sul telefono, utile se doveste mai perdere l\u2019accesso alla sincronizzazione.</p>'
       +'<h5><svg class=ico><use href=#i-user></use></svg> Profili</h5><p>In Settimana, in alto: obiettivi calcolati sui vostri dati, andamento peso, ed \u00e8 dove si trovano sincronizzazione, esporta/importa e la modalit\u00e0 <svg class=ico><use href=#i-plane></use></svg> trasferta per le vacanze.</p>'
       +'<p class="note-box" style="margin-top:14px">Un consiglio solo: segnate \u201cseguita \u2713\u201d la sera e \u201cCucinato oggi\u201d nelle ricette \u2014 sono trenta secondi, e danno vita a serie, diario e coach. I numeri di kcal e proteine sono stime indicative, non prescrizioni.</p>'
