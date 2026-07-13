@@ -329,11 +329,14 @@
   function creaRitaglioTasto(tasto) {
     var ritaglio = el("span", "foto-tasto-reale");
     // Il riquadro usa le coordinate reali e conserva le proporzioni della foto 895×1758.
+    var ritaglioDato = tasto.crop || null;
     var inBasso = tasto.pos.y > 70;
-    var centroY = tasto.pos.y + (inBasso ? 1.2 : (tasto.pos.y === 21 ? 0.6 : -0.8));
-    var larghezza = tasto.pos.w * 0.86;
-    var altezza = tasto.pos.h * (inBasso ? 0.90 : 0.78);
-    var sinistra = tasto.pos.x - larghezza / 2;
+    var centroX = ritaglioDato ? ritaglioDato.x : tasto.pos.x;
+    var centroY = ritaglioDato ? ritaglioDato.y :
+      tasto.pos.y + (inBasso ? 1.2 : (tasto.pos.y === 21 ? 0.6 : -0.8));
+    var larghezza = ritaglioDato ? ritaglioDato.w : tasto.pos.w * 0.86;
+    var altezza = ritaglioDato ? ritaglioDato.h : tasto.pos.h * (inBasso ? 0.90 : 0.78);
+    var sinistra = centroX - larghezza / 2;
     var sopra = centroY - altezza / 2;
     ritaglio.style.aspectRatio = (larghezza * 895) + " / " + (altezza * 1758);
     ritaglio.style.backgroundSize = (10000 / larghezza) + "% " + (10000 / altezza) + "%";

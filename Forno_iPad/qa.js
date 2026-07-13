@@ -125,6 +125,10 @@ console.log("\nDati (data.js):");
   ok("ogni tasto ha una posizione sulla foto",
      DATI.FUNZIONI.every(f => f.pos && [f.pos.x, f.pos.y, f.pos.w, f.pos.h]
        .every(n => typeof n === "number" && n > 0)));
+  ok("le cinque correzioni dei tasti inferiori sono nel file dati",
+     DATI.FUNZIONI.concat(DATI.CONTROLLI).filter(f => f.crop).length === 5 &&
+     DATI.FUNZIONI.concat(DATI.CONTROLLI).filter(f => f.crop).every(f =>
+       [f.crop.x, f.crop.y, f.crop.w, f.crop.h].every(n => typeof n === "number" && n > 0)));
   ok("messaggi principali del display tradotti",
      ["DOOR", "END", "PRE HEAT", "ADD", "TURN", "STIR"].every(parola =>
        DATI.DISPLAY.some(v => v.inglese === parola)));
@@ -384,7 +388,7 @@ console.log("\nPWA:");
   ok("pagina: rete prima e cache del browser ignorata",
      /req\.mode === "navigate"/.test(sw) && /fetch\(req, \{ cache: "no-store" \}\)/.test(sw));
   ok("pagina: copia offline come ripiego", /catch\(function \(\) \{\s*return caches\.match\("\.\/index\.html"\)/.test(sw));
-  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v19"/.test(sw));
+  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v21"/.test(sw));
   ok("foto reale disponibile anche senza rete", sw.includes('"./assets/foto/pannello-reale.png"'));
   const htmlPwa = fs.readFileSync(path.join(CARTELLA, "index.html"), "utf8");
   ok("pagina: service worker registrato", /serviceWorker\.register\("sw\.js"\)/.test(htmlPwa));

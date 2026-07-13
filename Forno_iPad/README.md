@@ -67,7 +67,7 @@ python3 -m http.server 8000
 
 poi apri `http://localhost:8000` con Safari o Chrome.
 
-Controlli automatici (143 controlli su percorsi, pannello, ricette, sicurezza, PWA):
+Controlli automatici (144 controlli su percorsi, pannello, ricette, sicurezza, PWA):
 
 ```
 node qa.js
@@ -106,8 +106,8 @@ così scarica e salva tutto per l'uso senza rete.
 ## Aggiornare l'app dopo una modifica
 
 1. Modifica i file e fai `git push`.
-2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v19";`
-   (per esempio portandolo a `"forno-v20"`): è ciò che dice all'iPad di scaricare i file nuovi.
+2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v21";`
+   (per esempio portandolo a `"forno-v22"`): è ciò che dice all'iPad di scaricare i file nuovi.
 3. Sull'iPad: apri l'app **con la rete accesa**, chiudila del tutto
    (doppio clic sul tasto Home / scorri in su) e riaprila. La seconda
    apertura usa la versione nuova.

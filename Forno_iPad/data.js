@@ -175,7 +175,8 @@ window.FORNO_DATI = {
       serve: "Un recipiente leggero adatto al microonde, largo 17-20 centimetri e basso.",
       tempo: "La durata compare sul display dopo aver premuto Auto Clean.",
       attenzione: "Il recipiente diventa caldo. Usa le presine. Tenendo questo tasto per 3 secondi si regola l'orologio.",
-      pos: { x: 23, y: 72, w: 28, h: 10 }
+      pos: { x: 23, y: 72, w: 28, h: 10 },
+      crop: { x: 23, y: 72, w: 17, h: 7.2 }
     },
     {
       id: "stop-turntable", inglese: "Simbolo del piatto barrato", italiano: "Ferma il piatto girevole",
@@ -184,7 +185,8 @@ window.FORNO_DATI = {
       serve: "Un recipiente che entri bene e non tocchi le pareti.",
       tempo: "Non cambia il tempo di cottura: ferma soltanto la rotazione.",
       attenzione: "Funziona soltanto con aria calda, Combi Grill e Combi Air. Di solito è meglio lasciare girare il piatto.",
-      pos: { x: 76, y: 72, w: 23, h: 9 }
+      pos: { x: 76, y: 72, w: 23, h: 9 },
+      crop: { x: 76, y: 71.3, w: 13, h: 6 }
     },
     {
       id: "stop", inglese: "STOP", italiano: "Ferma o annulla",
@@ -216,7 +218,8 @@ window.FORNO_DATI = {
       serve: "Nessun accessorio.",
       tempo: "Non avvia il forno e non cambia da solo schermata.",
       attenzione: "Guarda quale numero lampeggia prima di premerlo.",
-      pos: { x: 24, y: 81, w: 21, h: 7 }
+      pos: { x: 24, y: 81, w: 21, h: 7 },
+      crop: { x: 24, y: 79.6, w: 17, h: 5.2 }
     },
     {
       id: "ok", inglese: "OK", italiano: "Conferma",
@@ -225,7 +228,8 @@ window.FORNO_DATI = {
       serve: "Nessun accessorio.",
       tempo: "Di solito non avvia la cottura: conferma soltanto la scelta.",
       attenzione: "Se non sei sicura del valore, premi STOP e ricomincia.",
-      pos: { x: 50, y: 81, w: 21, h: 7 }
+      pos: { x: 50, y: 81, w: 21, h: 7 },
+      crop: { x: 50, y: 79.6, w: 17, h: 5.2 }
     },
     {
       id: "piu", inglese: "+", italiano: "Aumenta",
@@ -234,7 +238,8 @@ window.FORNO_DATI = {
       serve: "Nessun accessorio.",
       tempo: "Durante la cottura, JET START aggiunge 30 secondi; il tasto più modifica invece il valore selezionato.",
       attenzione: "Guarda quale numero lampeggia prima di premerlo.",
-      pos: { x: 76, y: 81, w: 21, h: 7 }
+      pos: { x: 76, y: 81, w: 21, h: 7 },
+      crop: { x: 76, y: 79.6, w: 17, h: 5.2 }
     }
   ],
 
