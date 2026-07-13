@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Forno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Guida semplice, passo per passo, per usare il forno a microonde.">
+  <meta name="theme-color" content="#FFFDF6">
+  <!-- Installazione su iPad come app -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Forno">
+  <link rel="apple-touch-icon" href="assets/icona-192.png">
+  <link rel="icon" href="assets/icona-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css?v=10">
+</head>
+<body>
+  <noscript>
+    <p style="font-size:28px;padding:40px;text-align:center">
+      Per usare questa app serve JavaScript. Apri le Impostazioni di Safari e attiva JavaScript,
+      oppure chiedi aiuto a chi ha installato l'app.
+    </p>
+  </noscript>
+
+  <div id="app" aria-live="polite"></div>
+
+  <script src="data.js?v=10"></script>
+  <script src="app.js?v=10"></script>
+  <script>
+    // Registra il service worker per il funzionamento senza rete
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>

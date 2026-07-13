@@ -1,0 +1,15 @@
+Fotografie presenti:
+
+  pannello-originale.png  fotografia ricevuta, conservata senza modifiche
+  pannello-reale.png      copia raddrizzata e leggibile usata dall'app
+
+L'app aggiunge da sola il riquadro rosso sul tasto da spiegare.
+
+Fotografie facoltative ancora da aggiungere:
+
+  porta-aperta.jpg        forno con sportello aperto
+  porta-chiusa.jpg        forno con sportello chiuso
+
+Per usarle, tieni premuto il titolo "Forno" per 3 secondi e attiva
+"Usa le fotografie reali dello sportello". Se una foto manca, appare
+il disegno.
