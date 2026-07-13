@@ -328,16 +328,17 @@
 
   function creaRitaglioTasto(tasto) {
     var ritaglio = el("span", "foto-tasto-reale");
-    // Foto 895×1758, ritaglio largo 110 px, ingrandimento 5×.
-    // Il calcolo centra esattamente la zona reale senza includere il tasto vicino.
+    // Il riquadro usa le coordinate reali e conserva le proporzioni della foto 895×1758.
     var inBasso = tasto.pos.y > 70;
-    var altezza = Math.round(tasto.pos.h * (inBasso ? 9.2 : 7.8));
-    var altezzaFoto = 110 * 5 * 1758 / 895;
-    var centroY = tasto.pos.y + (inBasso ? 1.2 : -0.8);
-    var posizioneY = ((centroY / 100 * altezzaFoto - altezza / 2) /
-      (altezzaFoto - altezza)) * 100;
-    ritaglio.style.height = altezza + "px";
-    ritaglio.style.backgroundPosition = (tasto.pos.x * 1.25 - 12.5) + "% " + posizioneY + "%";
+    var centroY = tasto.pos.y + (inBasso ? 1.2 : (tasto.pos.y === 21 ? 0.6 : -0.8));
+    var larghezza = tasto.pos.w * 0.86;
+    var altezza = tasto.pos.h * (inBasso ? 0.90 : 0.78);
+    var sinistra = tasto.pos.x - larghezza / 2;
+    var sopra = centroY - altezza / 2;
+    ritaglio.style.aspectRatio = (larghezza * 895) + " / " + (altezza * 1758);
+    ritaglio.style.backgroundSize = (10000 / larghezza) + "% " + (10000 / altezza) + "%";
+    ritaglio.style.backgroundPosition = (sinistra / (100 - larghezza) * 100) + "% " +
+      (sopra / (100 - altezza) * 100) + "%";
     ritaglio.setAttribute("aria-hidden", "true");
     return ritaglio;
   }
@@ -725,9 +726,12 @@
       Math.min((pagina + 1) * perPagina, tasti.length) + " di " + tasti.length));
     mezzo.appendChild(el("h1", "titolo-passo", "Premi un tasto grande"));
     var risultato = el("section", "risposta-pannello");
+    risultato.hidden = true;
+    var fotoScelta = el("div", "tasto-scelto-foto");
     var etichetta = el("p", "risposta-etichetta", "Il forno è in attesa");
     var display = el("p", "display-simulato", ":");
     var spiegazione = el("p", "risposta-spiegazione", "La spiegazione apparirà qui, subito dopo il tasto scelto.");
+    risultato.appendChild(fotoScelta);
     risultato.appendChild(etichetta);
     risultato.appendChild(el("p", "etichetta-display-simulato", "Sul forno vedrai:"));
     risultato.appendChild(display);
@@ -737,44 +741,41 @@
       parla(testoCorrente);
     }, "Leggi ad alta voce la spiegazione del tasto"));
     var tornaAiGrandi = bottone("Scegli un altro tasto", "btn-altro-tasto", function () {
-      if (grandi && grandi.scrollIntoView) grandi.scrollIntoView({ block: "nearest" });
+      risultato.hidden = true;
+      scelte.hidden = false;
+      if (scelte.scrollIntoView) scelte.scrollIntoView({ block: "nearest" });
     });
-    tornaAiGrandi.hidden = true;
     risultato.appendChild(tornaAiGrandi);
     function mostraTasto(tasto, bottoneTasto) {
       var m = DATI.MESSAGGI_TASTI[tasto.id];
       if (!m) return;
-      var attivi = pannello.querySelectorAll(".tasto-foto-selezionato");
-      for (var i = 0; i < attivi.length; i++) attivi[i].classList.remove("tasto-foto-selezionato");
-      bottoneTasto.classList.add("tasto-foto-selezionato");
+      fotoScelta.textContent = "";
+      fotoScelta.appendChild(creaRitaglioTasto(tasto));
       etichetta.textContent = tasto.inglese + " — " + tasto.italiano;
       display.textContent = m.display;
       spiegazione.textContent = tasto.cosa + " Sul display: " + m.spiega;
       testoCorrente = tasto.inglese + ". " + tasto.italiano + ". " + tasto.cosa + " Sul display: " + m.spiega;
-      tornaAiGrandi.hidden = false;
+      scelte.hidden = true;
+      risultato.hidden = false;
       if (risultato.scrollIntoView) risultato.scrollIntoView({ block: "nearest" });
     }
-    var pannello = creaPannelloInterattivo(mostraTasto);
-    pannello.querySelector("img").alt = "Pannello reale del forno con tasti toccabili";
-    mezzo.appendChild(el("p", "invito-tasti-grandi", "Scegli un tasto grande:"));
+    var scelte = el("section", "scelte-tasti");
+    scelte.appendChild(el("p", "invito-tasti-grandi", "Scegli il tasto uguale a quello del forno:"));
     var grandi = el("div", "griglia-tasti-grandi");
     tasti.slice(pagina * perPagina, pagina * perPagina + perPagina).forEach(function (tasto) {
       var grande = bottone("", "tasto-grande", function () {
-        mostraTasto(tasto, pannello.querySelector('[data-tasto-id="' + tasto.id + '"]'));
+        mostraTasto(tasto, grande);
       }, "Spiega il tasto " + tasto.inglese);
       grande.setAttribute("data-tasto-grande", tasto.id);
       grande.appendChild(creaRitaglioTasto(tasto));
       grandi.appendChild(grande);
     });
-    mezzo.appendChild(grandi);
-    mezzo.appendChild(risultato);
-    aggiungiPaginazione(mezzo, pagina, totalePagine, function (p) {
+    scelte.appendChild(grandi);
+    aggiungiPaginazione(scelte, pagina, totalePagine, function (p) {
       return { tipo: "pannello-interattivo", pagina: p };
     });
-    mezzo.appendChild(el("p", "invito-foto", "Oppure tocca il tasto sulla foto:"));
-    var layout = el("div", "layout-pannello-interattivo");
-    layout.appendChild(pannello);
-    mezzo.appendChild(layout);
+    mezzo.appendChild(scelte);
+    mezzo.appendChild(risultato);
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottone("Fatto, avanti", "btn btn-avanti", function () {
       zitto();

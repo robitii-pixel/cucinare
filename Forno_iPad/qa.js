@@ -180,22 +180,28 @@ console.log("\nGuida al pannello reale:");
   let app = creaApp();
   bottonePerTesto(app.d, "Guida al forno").click();
   ok("la guida entra direttamente nel pannello", /Premi un tasto grande/.test(app.d.body.textContent));
-  ok("foto reale del pannello presente",
-     !!app.d.querySelector('img[src="assets/foto/pannello-reale.png"]'));
-  ok("tutti i 16 tasti della foto sono toccabili", app.d.querySelectorAll(".tasto-foto").length === 16);
   ok("quattro tasti grandi sempre disponibili", app.d.querySelectorAll(".tasto-grande").length === 4);
-  ok("i tasti grandi mostrano il ritaglio del tasto reale",
+  ok("i tasti grandi mostrano soltanto il ritaglio del tasto reale",
      app.d.querySelectorAll(".tasto-grande .foto-tasto-reale").length === 4 &&
      [...app.d.querySelectorAll(".tasto-grande")].every(b => !b.textContent.trim()));
+  ok("ogni ritaglio conserva proporzioni, centro e zona fotografica",
+     [...app.d.querySelectorAll(".foto-tasto-reale")].every(r =>
+       !!r.style.aspectRatio && r.style.backgroundSize.split("%").length >= 3 &&
+       r.style.backgroundPosition.split("%").length >= 3));
   ok("la spiegazione si trova subito dopo i tasti grandi",
      !!(app.d.querySelector(".griglia-tasti-grandi").compareDocumentPosition(app.d.querySelector(".risposta-pannello")) & 4));
-  app.d.querySelector('button[aria-label^="Tasto Micro:"]').click();
+  app.d.querySelector('[data-tasto-grande="micro"]').click();
+  ok("la spiegazione sostituisce i tasti senza allungare la pagina",
+     app.d.querySelector(".scelte-tasti").hidden && !app.d.querySelector(".risposta-pannello").hidden);
   ok("Micro produce il valore reale 800 W", /800 W/.test(app.d.querySelector(".display-simulato").textContent));
   ok("la spiegazione del tasto riunisce funzione e display",
      /microonde/i.test(app.d.querySelector(".risposta-spiegazione").textContent) &&
      /Sul display/.test(app.d.querySelector(".risposta-spiegazione").textContent));
   ok("la spiegazione del tasto si può ascoltare", !!bottonePerTesto(app.d, "Ascolta"));
   ok("dopo la scelta compare 'Scegli un altro tasto'", !!bottonePerTesto(app.d, "Scegli un altro tasto"));
+  bottonePerTesto(app.d, "Scegli un altro tasto").click();
+  ok("Scegli un altro tasto ripristina i quattro comandi",
+     !app.d.querySelector(".scelte-tasti").hidden && app.d.querySelector(".risposta-pannello").hidden);
   const grandiVisti = new Set();
   const ordineGrandi = [];
   for (let pagina = 0; pagina < 4; pagina++) {
@@ -378,7 +384,7 @@ console.log("\nPWA:");
   ok("pagina: rete prima e cache del browser ignorata",
      /req\.mode === "navigate"/.test(sw) && /fetch\(req, \{ cache: "no-store" \}\)/.test(sw));
   ok("pagina: copia offline come ripiego", /catch\(function \(\) \{\s*return caches\.match\("\.\/index\.html"\)/.test(sw));
-  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v18"/.test(sw));
+  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v19"/.test(sw));
   ok("foto reale disponibile anche senza rete", sw.includes('"./assets/foto/pannello-reale.png"'));
   const htmlPwa = fs.readFileSync(path.join(CARTELLA, "index.html"), "utf8");
   ok("pagina: service worker registrato", /serviceWorker\.register\("sw\.js"\)/.test(htmlPwa));

@@ -41,8 +41,10 @@ Dalla prima schermata, il pulsante **Guida al forno** apre direttamente un
 solo percorso ordinato:
 
 1. prima si tocca uno dei 16 comandi sulla fotografia reale; in alternativa
-   gli stessi comandi sono disponibili, quattro alla volta, come grandi
-   ritagli fotografici del tasto reale: stesso simbolo e stessa scritta;
+   gli stessi comandi sono disponibili, quattro alla volta, come ritagli
+   fotografici centrati sul tasto reale: stesso simbolo e stessa scritta;
+   dopo la scelta, la spiegazione sostituisce i quattro tasti e resta nella
+   stessa schermata;
 2. premendo **Fatto, avanti** si leggono, uno alla volta e sempre nello stesso
    ordine, DOOR, END, PRE HEAT, ADD, TURN, STIR, i numeri di programma, W e °C;
 3. **Torna ai tasti** riporta al pannello con un solo tocco, mentre **INIZIO**
@@ -65,7 +67,7 @@ python3 -m http.server 8000
 
 poi apri `http://localhost:8000` con Safari o Chrome.
 
-Controlli automatici (142 controlli su percorsi, pannello, ricette, sicurezza, PWA):
+Controlli automatici (143 controlli su percorsi, pannello, ricette, sicurezza, PWA):
 
 ```
 node qa.js
@@ -104,8 +106,8 @@ così scarica e salva tutto per l'uso senza rete.
 ## Aggiornare l'app dopo una modifica
 
 1. Modifica i file e fai `git push`.
-2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v18";`
-   (per esempio portandolo a `"forno-v19"`): è ciò che dice all'iPad di scaricare i file nuovi.
+2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v19";`
+   (per esempio portandolo a `"forno-v20"`): è ciò che dice all'iPad di scaricare i file nuovi.
 3. Sull'iPad: apri l'app **con la rete accesa**, chiudila del tutto
    (doppio clic sul tasto Home / scorri in su) e riaprila. La seconda
    apertura usa la versione nuova.
