@@ -705,18 +705,24 @@
     mezzo.className += " contenuto-pannello-interattivo";
     mezzo.appendChild(el("p", "numero-passo", "Tasti " + (pagina * perPagina + 1) + "–" +
       Math.min((pagina + 1) * perPagina, tasti.length) + " di " + tasti.length));
-    mezzo.appendChild(el("h1", "titolo-passo", "Tocca un tasto"));
+    mezzo.appendChild(el("h1", "titolo-passo", "Premi un tasto grande"));
     var risultato = el("section", "risposta-pannello");
     var etichetta = el("p", "risposta-etichetta", "Il forno è in attesa");
     var display = el("p", "display-simulato", ":");
-    var spiegazione = el("p", "risposta-spiegazione", "Premi uno dei pulsanti grandi. Se vuoi, più sotto puoi anche toccare la foto.");
+    var spiegazione = el("p", "risposta-spiegazione", "La spiegazione apparirà qui, subito dopo il tasto scelto.");
     risultato.appendChild(etichetta);
+    risultato.appendChild(el("p", "etichetta-display-simulato", "Sul forno vedrai:"));
     risultato.appendChild(display);
     risultato.appendChild(spiegazione);
     var testoCorrente = "Il forno è in attesa. Tocca una scritta sulla foto.";
     risultato.appendChild(bottone("Ascolta", "btn-ascolta btn-ascolta-compatto", function () {
       parla(testoCorrente);
     }, "Leggi ad alta voce la spiegazione del tasto"));
+    var tornaAiGrandi = bottone("Scegli un altro tasto", "btn-altro-tasto", function () {
+      if (grandi && grandi.scrollIntoView) grandi.scrollIntoView({ block: "nearest" });
+    });
+    tornaAiGrandi.hidden = true;
+    risultato.appendChild(tornaAiGrandi);
     function mostraTasto(tasto, bottoneTasto) {
       var m = DATI.MESSAGGI_TASTI[tasto.id];
       if (!m) return;
@@ -727,10 +733,11 @@
       display.textContent = m.display;
       spiegazione.textContent = tasto.cosa + " Sul display: " + m.spiega;
       testoCorrente = tasto.inglese + ". " + tasto.italiano + ". " + tasto.cosa + " Sul display: " + m.spiega;
+      tornaAiGrandi.hidden = false;
+      if (risultato.scrollIntoView) risultato.scrollIntoView({ block: "nearest" });
     }
     var pannello = creaPannelloInterattivo(mostraTasto);
     pannello.querySelector("img").alt = "Pannello reale del forno con tasti toccabili";
-    mezzo.appendChild(risultato);
     mezzo.appendChild(el("p", "invito-tasti-grandi", "Scegli un tasto grande:"));
     var grandi = el("div", "griglia-tasti-grandi");
     tasti.slice(pagina * perPagina, pagina * perPagina + perPagina).forEach(function (tasto) {
@@ -741,6 +748,7 @@
       grandi.appendChild(grande);
     });
     mezzo.appendChild(grandi);
+    mezzo.appendChild(risultato);
     aggiungiPaginazione(mezzo, pagina, totalePagine, function (p) {
       return { tipo: "pannello-interattivo", pagina: p };
     });

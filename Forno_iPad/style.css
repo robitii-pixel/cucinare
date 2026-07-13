@@ -411,6 +411,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
   text-align: center;
 }
 .risposta-etichetta { font-size: 23px; font-weight: 800; }
+.etichetta-display-simulato { margin: 7px 0 0; font-size: 17px; font-weight: 750; }
 .display-simulato {
   margin: 8px 0;
   padding: 9px 8px;
@@ -431,6 +432,18 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
   font-size: 19px;
   font-weight: 800;
 }
+.btn-altro-tasto {
+  min-height: 44px;
+  margin: 8px 0 0 8px;
+  padding: 5px 10px;
+  border: 3px solid var(--inchiostro);
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: var(--inchiostro);
+  font-size: 18px;
+  font-weight: 800;
+}
+.btn-altro-tasto[hidden] { display: none; }
 .invito-tasti-grandi { margin: 8px 0 5px; font-size: 19px; font-weight: 750; }
 .invito-foto { margin: 14px 0 5px; font-size: 19px; font-weight: 750; }
 .contenuto-pannello-interattivo > .risposta-pannello { width: min(100%, 620px); }
