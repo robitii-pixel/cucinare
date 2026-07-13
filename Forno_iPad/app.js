@@ -321,7 +321,25 @@
   }
 
   function tuttiITasti() {
-    return DATI.FUNZIONI.concat(DATI.CONTROLLI || []);
+    return DATI.FUNZIONI.concat(DATI.CONTROLLI || []).slice().sort(function (a, b) {
+      return a.pos.y === b.pos.y ? a.pos.x - b.pos.x : a.pos.y - b.pos.y;
+    });
+  }
+
+  function creaRitaglioTasto(tasto) {
+    var ritaglio = el("span", "foto-tasto-reale");
+    // Foto 895×1758, ritaglio largo 110 px, ingrandimento 5×.
+    // Il calcolo centra esattamente la zona reale senza includere il tasto vicino.
+    var inBasso = tasto.pos.y > 70;
+    var altezza = Math.round(tasto.pos.h * (inBasso ? 9.2 : 7.8));
+    var altezzaFoto = 110 * 5 * 1758 / 895;
+    var centroY = tasto.pos.y + (inBasso ? 1.2 : -0.8);
+    var posizioneY = ((centroY / 100 * altezzaFoto - altezza / 2) /
+      (altezzaFoto - altezza)) * 100;
+    ritaglio.style.height = altezza + "px";
+    ritaglio.style.backgroundPosition = (tasto.pos.x * 1.25 - 12.5) + "% " + posizioneY + "%";
+    ritaglio.setAttribute("aria-hidden", "true");
+    return ritaglio;
   }
 
   function creaPannelloInterattivo(onScelta) {
@@ -741,10 +759,11 @@
     mezzo.appendChild(el("p", "invito-tasti-grandi", "Scegli un tasto grande:"));
     var grandi = el("div", "griglia-tasti-grandi");
     tasti.slice(pagina * perPagina, pagina * perPagina + perPagina).forEach(function (tasto) {
-      var grande = bottone(tasto.inglese, "tasto-grande", function () {
+      var grande = bottone("", "tasto-grande", function () {
         mostraTasto(tasto, pannello.querySelector('[data-tasto-id="' + tasto.id + '"]'));
       }, "Spiega il tasto " + tasto.inglese);
       grande.setAttribute("data-tasto-grande", tasto.id);
+      grande.appendChild(creaRitaglioTasto(tasto));
       grandi.appendChild(grande);
     });
     mezzo.appendChild(grandi);

@@ -184,6 +184,9 @@ console.log("\nGuida al pannello reale:");
      !!app.d.querySelector('img[src="assets/foto/pannello-reale.png"]'));
   ok("tutti i 16 tasti della foto sono toccabili", app.d.querySelectorAll(".tasto-foto").length === 16);
   ok("quattro tasti grandi sempre disponibili", app.d.querySelectorAll(".tasto-grande").length === 4);
+  ok("i tasti grandi mostrano il ritaglio del tasto reale",
+     app.d.querySelectorAll(".tasto-grande .foto-tasto-reale").length === 4 &&
+     [...app.d.querySelectorAll(".tasto-grande")].every(b => !b.textContent.trim()));
   ok("la spiegazione si trova subito dopo i tasti grandi",
      !!(app.d.querySelector(".griglia-tasti-grandi").compareDocumentPosition(app.d.querySelector(".risposta-pannello")) & 4));
   app.d.querySelector('button[aria-label^="Tasto Micro:"]').click();
@@ -194,11 +197,17 @@ console.log("\nGuida al pannello reale:");
   ok("la spiegazione del tasto si può ascoltare", !!bottonePerTesto(app.d, "Ascolta"));
   ok("dopo la scelta compare 'Scegli un altro tasto'", !!bottonePerTesto(app.d, "Scegli un altro tasto"));
   const grandiVisti = new Set();
+  const ordineGrandi = [];
   for (let pagina = 0; pagina < 4; pagina++) {
-    app.d.querySelectorAll("[data-tasto-grande]").forEach(b => grandiVisti.add(b.getAttribute("data-tasto-grande")));
+    app.d.querySelectorAll("[data-tasto-grande]").forEach(b => {
+      grandiVisti.add(b.getAttribute("data-tasto-grande"));
+      ordineGrandi.push(b.getAttribute("data-tasto-grande"));
+    });
     if (pagina < 3) bottonePerTesto(app.d, "Altre").click();
   }
   ok("tutti i 16 tasti hanno anche un pulsante grande", grandiVisti.size === 16);
+  ok("i tasti seguono l'ordine fisico dall'alto in basso",
+     ordineGrandi.join(",") === "micro,grill,forced-air,combi,crisp,steam,jet-reheat,jet-defrost,chef-menu,auto-clean,stop-turntable,meno,ok,piu,stop,jet-start");
   bottonePerTesto(app.d, "INIZIO").click();
   ok("INIZIO torna direttamente alla prima schermata", !!bottonePerTesto(app.d, "Guida al forno"));
   bottonePerTesto(app.d, "Guida al forno").click();
@@ -369,7 +378,7 @@ console.log("\nPWA:");
   ok("pagina: rete prima e cache del browser ignorata",
      /req\.mode === "navigate"/.test(sw) && /fetch\(req, \{ cache: "no-store" \}\)/.test(sw));
   ok("pagina: copia offline come ripiego", /catch\(function \(\) \{\s*return caches\.match\("\.\/index\.html"\)/.test(sw));
-  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v17"/.test(sw));
+  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v18"/.test(sw));
   ok("foto reale disponibile anche senza rete", sw.includes('"./assets/foto/pannello-reale.png"'));
   const htmlPwa = fs.readFileSync(path.join(CARTELLA, "index.html"), "utf8");
   ok("pagina: service worker registrato", /serviceWorker\.register\("sw\.js"\)/.test(htmlPwa));
