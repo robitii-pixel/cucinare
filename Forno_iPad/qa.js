@@ -42,6 +42,16 @@ function bottoni(d) { return [...d.querySelectorAll("button")]; }
 function bottonePerTesto(d, t) {
   return bottoni(d).find(b => testo(b).toLowerCase().startsWith(t.toLowerCase()));
 }
+function trovaBottonePaginato(app, testoCercato) {
+  for (let pagina = 0; pagina < 20; pagina++) {
+    const trovato = bottoni(app.d).find(b => testo(b).includes(testoCercato));
+    if (trovato) return trovato;
+    const altre = bottonePerTesto(app.d, "Altre");
+    if (!altre) return null;
+    altre.click();
+  }
+  return null;
+}
 function clicca(w, b) { b.dispatchEvent(new w.window ? null : 0); }
 
 function percorriFlusso(app, nomeBottoneIniziale, opzioni = {}) {
@@ -106,6 +116,9 @@ console.log("\nDati (data.js):");
   ok("JET START dichiarato non verificato", DATI.CONFIG.jetStart.verificato === false);
   ok("13 tasti del pannello spiegati", DATI.FUNZIONI.length === 13,
      "trovati " + DATI.FUNZIONI.length);
+  ok("anche meno, OK e più sono spiegati", DATI.CONTROLLI.length === 3);
+  ok("ogni tasto interattivo ha una risposta fedele",
+     DATI.FUNZIONI.concat(DATI.CONTROLLI).every(f => !!DATI.MESSAGGI_TASTI[f.id]));
   ok("ogni tasto ha traduzione, uso, accessorio, tempo e avvertenza",
      DATI.FUNZIONI.every(f => f.id && f.inglese && f.italiano && f.cosa &&
        f.ricette && f.serve && f.tempo && f.attenzione));
@@ -168,24 +181,39 @@ console.log("\nGuida al pannello reale:");
   bottonePerTesto(app.d, "Conosci il forno").click();
   ok("sezione separata con scelta tasti", !!bottonePerTesto(app.d, "Capire i tasti"));
   ok("sezione separata con scelta display", !!bottonePerTesto(app.d, "Capire il display"));
+  ok("sezione con pannello toccabile", !!bottonePerTesto(app.d, "Tocca il pannello"));
+  bottonePerTesto(app.d, "Tocca il pannello").click();
   ok("foto reale del pannello presente",
      !!app.d.querySelector('img[src="assets/foto/pannello-reale.png"]'));
+  ok("tutti i 16 tasti della foto sono toccabili", app.d.querySelectorAll(".tasto-foto").length === 16);
+  app.d.querySelector('button[aria-label^="Tasto Micro:"]').click();
+  ok("Micro produce il valore reale 800 W", /800 W/.test(app.d.querySelector(".display-simulato").textContent));
+
+  app = creaApp();
+  bottonePerTesto(app.d, "Conosci il forno").click();
   bottonePerTesto(app.d, "Capire i tasti").click();
-  ok("elenco aderente al pannello: Micro, Crisp e Steam",
-     ["Micro", "Crisp", "Steam"].every(v => !!bottonePerTesto(app.d, v)));
+  ok("prima pagina tasti: Micro, Grill e Forced Air",
+     ["Micro", "Grill", "Forced Air"].every(v => !!bottonePerTesto(app.d, v)));
+  bottonePerTesto(app.d, "Altre").click();
+  ok("seconda pagina tasti: Combi, Crisp e Steam",
+     ["Combi", "Crisp", "Steam"].every(v => !!bottonePerTesto(app.d, v)));
   bottonePerTesto(app.d, "Crisp").click();
   ok("Crisp spiegato in italiano", /Doratura sopra e sotto/.test(app.d.body.textContent));
-  ok("Crisp spiega anche come funziona il tempo",
-     /Come funziona il tempo/.test(app.d.body.textContent) && /2 o 3 minuti/.test(app.d.body.textContent));
   ok("tasto Crisp evidenziato sulla foto", !!app.d.querySelector(".evidenzia-tasto"));
+  bottonePerTesto(app.d, "Altre").click();
+  bottonePerTesto(app.d, "Altre").click();
+  ok("Crisp spiega anche come funziona il tempo",
+     /Tempo e attenzione/.test(app.d.body.textContent) && /2 o 3 minuti/.test(app.d.body.textContent));
   ok("scheda funzione ha sempre una via d'uscita", !!bottonePerTesto(app.d, "Indietro"));
 
   app = creaApp();
   bottonePerTesto(app.d, "Conosci il forno").click();
   bottonePerTesto(app.d, "Capire il display").click();
-  ok("display traduce DOOR, END e PRE HEAT",
-     ["DOOR", "END", "PRE HEAT"].every(v => app.d.body.textContent.includes(v)) &&
-     /Apri e richiudi lo sportello/.test(app.d.body.textContent));
+  ok("display traduce DOOR", /DOOR/.test(app.d.body.textContent) && /Apri e richiudi lo sportello/.test(app.d.body.textContent));
+  bottonePerTesto(app.d, "Altre").click();
+  ok("display traduce END", /END/.test(app.d.body.textContent) && /Fine/.test(app.d.body.textContent));
+  bottonePerTesto(app.d, "Altre").click();
+  ok("display traduce PRE HEAT", /PRE HEAT/.test(app.d.body.textContent) && /Preriscaldamento/.test(app.d.body.textContent));
   ok("guida al display si può ascoltare", !!bottonePerTesto(app.d, "Ascolta"));
 }
 
@@ -228,7 +256,7 @@ console.log("\nRicette (dall'inizio alla fine):");
     for (const persone of ["Per una persona", "Per due persone"]) {
       const app = creaApp();
       bottonePerTesto(app.d, "Ricette").click();
-      const carta = bottoni(app.d).find(b => testo(b).includes(nome));
+      const carta = trovaBottonePaginato(app, nome);
       if (!carta) { ok(nome + " (" + persone + ")", false, "carta non trovata"); continue; }
       carta.click();
       const r = percorriFlusso(app, persone.startsWith("Per una") ? "Per una" : "Per due");
@@ -307,8 +335,10 @@ console.log("\nPannello amministratore:");
   t.vaiHome();
   bottonePerTesto(app.d, "Ricette").click();
   ok("una ricetta spenta non compare",
-     !bottoni(app.d).some(b => testo(b).includes("Melanzane al pomodoro")));
-  ok("le altre restano", bottoni(app.d).some(b => testo(b).includes("Cous cous")));
+     !trovaBottonePaginato(app, "Melanzane al pomodoro"));
+  t.vaiHome();
+  bottonePerTesto(app.d, "Ricette").click();
+  ok("le altre restano", !!trovaBottonePaginato(app, "Cous cous"));
   t.mostra({ tipo: "admin" });
   const etichette = [...app.d.querySelectorAll(".admin .riga label")];
   ok("controlli del pannello collegati alle etichette",
@@ -343,7 +373,7 @@ console.log("\nPWA:");
   ok("pagina: rete prima e cache del browser ignorata",
      /req\.mode === "navigate"/.test(sw) && /fetch\(req, \{ cache: "no-store" \}\)/.test(sw));
   ok("pagina: copia offline come ripiego", /catch\(function \(\) \{\s*return caches\.match\("\.\/index\.html"\)/.test(sw));
-  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v10"/.test(sw));
+  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v14"/.test(sw));
   ok("foto reale disponibile anche senza rete", sw.includes('"./assets/foto/pannello-reale.png"'));
   const htmlPwa = fs.readFileSync(path.join(CARTELLA, "index.html"), "utf8");
   ok("pagina: service worker registrato", /serviceWorker\.register\("sw\.js"\)/.test(htmlPwa));
@@ -354,6 +384,9 @@ console.log("\nPWA:");
   const css = fs.readFileSync(path.join(CARTELLA, "style.css"), "utf8");
   ok("iPhone: testata adattata sotto 480 pixel",
      /@media \(max-width: 480px\)/.test(css) && /\.btn-ferma \{ font-size: 18px/.test(css));
+  ok("uso quotidiano senza scorrimento, amministrazione scorrevole",
+     /\.contenuto\s*\{[^}]*overflow:\s*hidden/s.test(css) &&
+     /\.contenuto-admin\s*\{[^}]*overflow-y:\s*auto/s.test(css));
 }
 
 console.log("\nRisultato: " + passati + " controlli superati, " + falliti + " falliti.");

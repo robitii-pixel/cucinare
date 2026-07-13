@@ -77,7 +77,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
 
 .contenuto {
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
@@ -85,6 +85,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
   padding: 18px 24px 12px;
   text-align: center;
 }
+.contenuto-admin { overflow-y: auto; }
 
 .barra-sotto {
   display: flex;
@@ -225,7 +226,7 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
   border: 4px solid var(--bordo);
   padding: 0;
 }
-.foto-pannello-compatta { width: min(58%, 300px); }
+.foto-pannello-compatta { width: min(42%, 220px); }
 .foto-pannello {
   display: block;
   width: 100%;
@@ -335,6 +336,89 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
 .parola-italiana { font-size: 27px; font-weight: 800; color: var(--verde-scuro); margin: 5px 0; }
 .spiegazione-display { font-size: 23px; font-weight: 600; line-height: 1.3; }
 
+.paginazione {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 700px;
+  margin-top: 12px;
+}
+.paginazione > :last-child { justify-self: end; }
+.btn-pagina {
+  min-height: 52px;
+  padding: 7px 14px;
+  border: 3px solid var(--inchiostro);
+  border-radius: 13px;
+  background: #FFFFFF;
+  color: var(--inchiostro);
+  font-size: 21px;
+  font-weight: 800;
+}
+.numero-pagina { font-size: 19px; font-weight: 750; color: #4A4536; }
+
+.schermata-funzione .foto-pannello-compatta { width: min(30%, 160px); }
+.schermata-funzione .scheda-spiegazione { padding: 8px 4px; }
+.dettaglio-funzione-con-foto {
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.dettaglio-funzione-con-foto .foto-pannello-compatta { width: min(27%, 150px); margin: 0; }
+.dettaglio-funzione-con-foto .scheda-spiegazione { width: min(62%, 410px); }
+
+/* Pannello fotografico realmente toccabile */
+.layout-pannello-interattivo {
+  min-height: 0;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.pannello-interattivo { width: min(38%, 205px); margin: 0; }
+.tasto-foto {
+  position: absolute;
+  z-index: 2;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 2px solid rgba(11, 87, 208, .72);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .10);
+  color: transparent;
+}
+.tasto-foto:focus-visible,
+.tasto-foto-selezionato {
+  border: 6px solid var(--rosso);
+  background: rgba(163, 21, 21, .12);
+  outline: 3px solid #FFFFFF;
+  outline-offset: 0;
+}
+.risposta-pannello {
+  width: min(52%, 390px);
+  border: 4px solid var(--inchiostro);
+  border-radius: 18px;
+  background: #FFFFFF;
+  padding: 14px;
+  text-align: center;
+}
+.risposta-etichetta { font-size: 23px; font-weight: 800; }
+.display-simulato {
+  margin: 8px 0;
+  padding: 9px 8px;
+  border-radius: 8px;
+  background: #111111;
+  color: #F5F5F0;
+  font: 800 29px/1.1 ui-monospace, Menlo, monospace;
+}
+.risposta-spiegazione { font-size: 21px; font-weight: 650; line-height: 1.25; }
+
 /* ---------- elenco puntato grande (ingredienti, sicurezza) ---------- */
 
 .elenco {
@@ -433,14 +517,55 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
 /* Schermo orizzontale: figura più piccola per evitare lo scorrimento */
 @media (orientation: landscape) and (max-height: 860px) {
   .figura { width: min(60%, 400px); }
-  .foto-pannello-compatta { width: min(32%, 220px); }
+  .foto-pannello-compatta { width: min(25%, 170px); }
   .titolo-passo { font-size: 38px; }
   .istruzione { font-size: 30px; }
 }
 
+/* iPhone tenuto di lato: tutto resta raggiungibile senza scorrere */
+@media (orientation: landscape) and (max-height: 500px) {
+  .barra-sopra { padding: 3px 10px; gap: 8px; }
+  .titolo-app { font-size: 25px; padding: 3px 8px; }
+  .btn-esci, .btn-ferma { min-height: 44px; font-size: 18px; padding: 3px 10px; border-width: 3px; }
+  .contenuto { padding: 5px 12px 4px; }
+  .barra-sotto { padding: 4px 10px; gap: 8px; }
+  .barra-sotto .btn { min-height: 48px; padding: 4px 12px; font-size: 21px; border-width: 3px; }
+  .saluto { font-size: 21px; margin: 0 0 3px; }
+  .menu { grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 2px; max-width: 640px; }
+  .menu-sicurezza { grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; padding-top: 5px; }
+  .voce-menu, .menu-principale .voce-menu, .menu-sicurezza .voce-menu {
+    min-height: 44px; padding: 3px 9px; border-width: 3px; border-radius: 12px; font-size: 18px;
+  }
+  .contenuto-conosci .titolo-passo,
+  .contenuto-funzioni .titolo-passo { font-size: 27px; margin-bottom: 2px; }
+  .contenuto-conosci .introduzione-forno,
+  .contenuto-funzioni .introduzione-forno { font-size: 17px; line-height: 1.1; margin: 0 0 3px; }
+  .contenuto-conosci .menu { grid-template-columns: repeat(3, 1fr); }
+  .griglia-funzioni, .griglia-ricette { grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 2px; }
+  .carta-funzione, .carta-ricetta { min-height: 62px; padding: 3px 8px; }
+  .nome-inglese, .carta-ricetta .nome { font-size: 20px; }
+  .traduzione, .carta-ricetta .dettagli { font-size: 16px; }
+  .paginazione { margin-top: 4px; }
+  .btn-pagina { min-height: 42px; padding: 3px 8px; font-size: 17px; }
+  .numero-pagina { font-size: 15px; }
+  .numero-passo { font-size: 17px; margin-bottom: 1px; }
+  .titolo-passo { font-size: 28px; margin-bottom: 3px; }
+  .istruzione { font-size: 21px; line-height: 1.12; }
+  .contenuto > .figura:not(.foto-pannello-wrap) { display: none; }
+  .btn-ascolta { min-height: 42px; margin-top: 4px; padding: 3px 10px; font-size: 18px; }
+  .avviso { font-size: 17px; line-height: 1.12; padding: 4px 8px; margin-top: 4px; border-width: 3px; }
+  .contenuto-pannello-interattivo .titolo-passo { font-size: 27px; margin-bottom: 1px; }
+  .layout-pannello-interattivo { gap: 10px; }
+  .pannello-interattivo { width: 105px; }
+  .risposta-pannello { width: min(62%, 390px); padding: 6px 10px; }
+  .risposta-etichetta { font-size: 18px; }
+  .display-simulato { font-size: 22px; margin: 4px 0; padding: 5px; }
+  .risposta-spiegazione { font-size: 16px; line-height: 1.12; }
+}
+
 @media (max-width: 600px) {
   .griglia-funzioni { grid-template-columns: 1fr; }
-  .foto-pannello-compatta { width: min(72%, 280px); }
+  .foto-pannello-compatta { width: min(42%, 160px); }
 }
 
 /* iPhone: la testata deve restare interamente visibile anche a 375 px */
@@ -449,8 +574,51 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
   .titolo-app { font-size: 27px; padding: 6px 4px; }
   .btn-esci { font-size: 20px; min-height: 56px; padding: 6px 10px; }
   .btn-ferma { font-size: 18px; min-height: 56px; padding: 6px 8px; }
-  .voce-menu { font-size: 32px; min-height: 96px; padding: 14px 20px; }
-  .contenuto { padding-left: 16px; padding-right: 16px; }
+  .voce-menu { font-size: 28px; min-height: 82px; padding: 10px 16px; }
+  .contenuto { padding: 10px 12px 8px; }
+  .contenuto .titolo-passo { font-size: 35px; margin-bottom: 7px; }
+  .contenuto .istruzione { font-size: 27px; line-height: 1.22; }
+  .contenuto .numero-passo { font-size: 21px; margin-bottom: 3px; }
+  .contenuto .figura:not(.foto-pannello-wrap) { width: min(68%, 240px); margin-bottom: 7px; }
+  .contenuto .btn-ascolta { min-height: 48px; margin-top: 8px; font-size: 21px; padding: 6px 12px; }
+  .menu { gap: 10px; margin-top: 4px; }
+  .menu-sicurezza { margin-top: 6px; padding-top: 6px; }
+  .menu-principale .voce-menu,
+  .menu-sicurezza .voce-menu { min-height: 52px; font-size: 23px; padding: 4px 12px; border-width: 4px; border-radius: 15px; }
+  .menu-principale,
+  .menu-sicurezza { gap: 6px; }
+  .saluto { font-size: 27px; margin: 2px 0 7px; }
+  .introduzione-forno { font-size: 22px; margin: 2px 0 7px; }
+  .griglia-funzioni, .griglia-ricette { gap: 9px; margin-top: 4px; }
+  .carta-funzione, .carta-ricetta { min-height: 76px; padding: 8px 12px; }
+  .nome-inglese, .carta-ricetta .nome { font-size: 24px; }
+  .traduzione, .carta-ricetta .dettagli { font-size: 19px; }
+  .paginazione { margin-top: 8px; gap: 5px; }
+  .btn-pagina { min-height: 46px; padding: 5px 8px; font-size: 18px; }
+  .numero-pagina { font-size: 16px; }
+  .parola-sul-forno { font-size: 19px; }
+  .traduzione-grande { font-size: 23px; margin-bottom: 5px; }
+  .schermata-funzione .foto-pannello-compatta { width: 118px; }
+  .dettaglio-funzione-con-foto { gap: 10px; }
+  .dettaglio-funzione-con-foto .foto-pannello-compatta { width: 31%; }
+  .dettaglio-funzione-con-foto .scheda-spiegazione { width: 66%; text-align: left; }
+  .etichetta-spiegazione { font-size: 21px; }
+  .testo-spiegazione { font-size: 23px; line-height: 1.25; }
+  .voce-display { padding: 12px 15px; }
+  .parola-inglese { font-size: 30px; }
+  .parola-italiana { font-size: 25px; }
+  .spiegazione-display { font-size: 22px; }
+  .contenuto-pannello-interattivo .titolo-passo { font-size: 31px; }
+  .layout-pannello-interattivo { gap: 9px; }
+  .pannello-interattivo { width: 47%; }
+  .risposta-pannello { width: 50%; padding: 8px; border-width: 3px; }
+  .risposta-etichetta { font-size: 18px; }
+  .display-simulato { font-size: 21px; margin: 5px 0; padding: 7px 4px; }
+  .risposta-spiegazione { font-size: 17px; line-height: 1.18; }
   .barra-sotto { gap: 10px; padding-left: 10px; padding-right: 10px; }
   .barra-sotto .btn { font-size: 25px; padding-left: 12px; padding-right: 12px; }
+  .contenuto-funzioni .titolo-passo { font-size: 30px; }
+  .contenuto-funzioni .introduzione-forno { font-size: 19px; line-height: 1.18; margin-bottom: 3px; }
+  .contenuto-funzioni .griglia-funzioni { gap: 6px; }
+  .contenuto-funzioni .carta-funzione { min-height: 64px; padding-top: 4px; padding-bottom: 4px; }
 }

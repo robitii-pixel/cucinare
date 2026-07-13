@@ -180,18 +180,28 @@
     var passi = [];
     passi.push({
       t: ricetta.nome,
-      i: ricetta.tipo + ". Ricetta " + ricetta.difficolta.toLowerCase() + ", circa " + ricetta.tempoMin + " minuti. Ti serve: " +
-         ricetta.utensile.toLowerCase() + ".",
-      img: "ingredienti",
+      i: ricetta.tipo + ". Difficoltà: " + ricetta.difficolta.toLowerCase() +
+         ". Tempo indicativo: " + ricetta.tempoMin + " minuti.",
+      img: "ingredienti"
+    });
+    passi.push({
+      t: "Prepara l'utensile",
+      i: "Prendi " + ricetta.utensile.toLowerCase() + ".",
+      img: "contenitore",
       avviso: (ricetta.avvertenze && ricetta.avvertenze[0]) || null
     });
     passi.push({
-      t: "Gli ingredienti",
-      i: "Prepara sul tavolo questi ingredienti" + (persone === 2 ? " (per due persone)" : "") + ":",
-      img: null,
-      elenco: ricetta.ingredienti.map(function (ing) {
-        return ing.n + ": " + (persone === 2 ? ing.q2 : ing.q1);
-      })
+      t: "Prepara gli ingredienti",
+      i: "Ora prepariamo " + ricetta.ingredienti.length + " ingredienti, uno alla volta" +
+         (persone === 2 ? ", per due persone." : "."),
+      img: "ingredienti"
+    });
+    ricetta.ingredienti.forEach(function (ing, indiceIngrediente) {
+      passi.push({
+        t: "Ingrediente " + (indiceIngrediente + 1) + " di " + ricetta.ingredienti.length,
+        i: ing.n + ": " + (persone === 2 ? ing.q2 : ing.q1) + ". Mettilo sul tavolo.",
+        img: "ingredienti"
+      });
     });
     passiScaldati(ricetta.passi, persone).forEach(function (p) { passi.push(p); });
     if (ricetta.riposoMin) {
@@ -268,10 +278,10 @@
   function creaFigura(chiave) {
     if (!chiave) return null;
     if (chiave === "pannello-jetstart") {
-      return creaFotoPannello(trovaFunzione("jet-start"), ALT[chiave]);
+      return creaFotoPannello(trovaFunzione("jet-start"), ALT[chiave], true);
     }
     if (chiave === "pannello-stop") {
-      return creaFotoPannello(trovaFunzione("stop"), ALT[chiave]);
+      return creaFotoPannello(trovaFunzione("stop"), ALT[chiave], true);
     }
     var img = document.createElement("img");
     img.className = "figura";
@@ -307,6 +317,28 @@
       segno.style.height = p.h + "%";
       figura.appendChild(segno);
     }
+    return figura;
+  }
+
+  function tuttiITasti() {
+    return DATI.FUNZIONI.concat(DATI.CONTROLLI || []);
+  }
+
+  function creaPannelloInterattivo(onScelta) {
+    var figura = creaFotoPannello(null, "Pannello reale interattivo del forno", true);
+    figura.className += " pannello-interattivo";
+    figura.removeAttribute("role");
+    figura.removeAttribute("aria-label");
+    tuttiITasti().forEach(function (tasto) {
+      var p = tasto.pos;
+      var b = bottone("", "tasto-foto", function () { onScelta(tasto, b); },
+        "Tasto " + tasto.inglese + ": " + tasto.italiano);
+      b.style.left = (p.x - p.w / 2) + "%";
+      b.style.top = (p.y - p.h / 2) + "%";
+      b.style.width = p.w + "%";
+      b.style.height = p.h + "%";
+      figura.appendChild(b);
+    });
     return figura;
   }
 
@@ -393,8 +425,9 @@
   }
 
   function trovaFunzione(id) {
-    for (var i = 0; i < DATI.FUNZIONI.length; i++) {
-      if (DATI.FUNZIONI[i].id === id) return DATI.FUNZIONI[i];
+    var tasti = tuttiITasti();
+    for (var i = 0; i < tasti.length; i++) {
+      if (tasti[i].id === id) return tasti[i];
     }
     return null;
   }
@@ -449,15 +482,17 @@
     } else if (schermata.tipo === "scelta-scalda") {
       daLeggere = disegnaSceltaScalda(mezzo, sotto);
     } else if (schermata.tipo === "ricette") {
-      daLeggere = disegnaRicette(mezzo, sotto);
+      daLeggere = disegnaRicette(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "conosci-forno") {
       daLeggere = disegnaConosciForno(mezzo, sotto);
     } else if (schermata.tipo === "funzioni-forno") {
-      daLeggere = disegnaFunzioniForno(mezzo, sotto);
+      daLeggere = disegnaFunzioniForno(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "funzione-forno") {
-      daLeggere = disegnaFunzioneForno(mezzo, sotto, schermata.funzione);
+      daLeggere = disegnaFunzioneForno(mezzo, sotto, schermata.funzione, schermata.pagina || 0);
+    } else if (schermata.tipo === "pannello-interattivo") {
+      daLeggere = disegnaPannelloInterattivo(mezzo, sotto);
     } else if (schermata.tipo === "display-forno") {
-      daLeggere = disegnaDisplayForno(mezzo, sotto);
+      daLeggere = disegnaDisplayForno(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "persone") {
       daLeggere = disegnaPersone(mezzo, sotto, schermata.ricetta);
     } else if (schermata.tipo === "passo") {
@@ -469,6 +504,7 @@
     } else if (schermata.tipo === "ripresa") {
       daLeggere = disegnaRipresa(mezzo, sotto, schermata.dati);
     } else if (schermata.tipo === "admin") {
+      mezzo.className += " contenuto-admin";
       disegnaAdmin(mezzo, sotto);
     }
 
@@ -547,40 +583,72 @@
   /* --- guida al pannello reale --- */
 
   function disegnaConosciForno(mezzo, sotto) {
+    mezzo.className += " contenuto-conosci";
     mezzo.appendChild(el("h1", "titolo-passo", "Conosci il forno"));
-    mezzo.appendChild(creaFotoPannello(null, "Il pannello reale del forno Whirlpool MCP 349", true));
     mezzo.appendChild(el("p", "introduzione-forno",
-      "Sul pannello le parole sono in inglese. Qui puoi capire i tasti e i messaggi senza doverli ricordare."));
+      "Scegli una cosa alla volta. Puoi anche toccare direttamente i tasti nella foto."));
     var menu = el("div", "menu");
+    menu.appendChild(bottone("Tocca il pannello", "voce-menu", function () {
+      vai({ tipo: "pannello-interattivo" });
+    }));
     menu.appendChild(bottone("Capire i tasti", "voce-menu", function () {
-      vai({ tipo: "funzioni-forno" });
+      vai({ tipo: "funzioni-forno", pagina: 0 });
     }));
     menu.appendChild(bottone("Capire il display", "voce-menu", function () {
-      vai({ tipo: "display-forno" });
+      vai({ tipo: "display-forno", pagina: 0 });
     }));
     mezzo.appendChild(menu);
-    var testo = "Conosci il forno. Scegli: capire i tasti, oppure capire il display.";
+    var testo = "Conosci il forno. Scegli: tocca il pannello, capire i tasti, oppure capire il display.";
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottoneAscolta(testo));
     return testo;
   }
 
-  function disegnaFunzioniForno(mezzo, sotto) {
+  function aggiungiPaginazione(contenitore, pagina, totalePagine, creaSchermata) {
+    if (totalePagine <= 1) return;
+    var nav = el("div", "paginazione");
+    if (pagina > 0) {
+      nav.appendChild(bottone("Precedenti", "btn-pagina", function () {
+        mostra(creaSchermata(pagina - 1));
+      }));
+    } else {
+      nav.appendChild(el("span"));
+    }
+    nav.appendChild(el("span", "numero-pagina", "Pagina " + (pagina + 1) + " di " + totalePagine));
+    if (pagina < totalePagine - 1) {
+      nav.appendChild(bottone("Altre", "btn-pagina", function () {
+        mostra(creaSchermata(pagina + 1));
+      }));
+    } else {
+      nav.appendChild(el("span"));
+    }
+    contenitore.appendChild(nav);
+  }
+
+  function disegnaFunzioniForno(mezzo, sotto, pagina) {
+    mezzo.className += " contenuto-funzioni";
+    var perPagina = 3;
+    var tasti = tuttiITasti();
+    var totalePagine = Math.ceil(tasti.length / perPagina);
+    if (pagina >= totalePagine) pagina = totalePagine - 1;
     mezzo.appendChild(el("h1", "titolo-passo", "Cosa significano i tasti"));
     mezzo.appendChild(el("p", "introduzione-forno",
       "Tocca la parola che vedi sul forno. Sotto trovi già il significato in italiano."));
     var griglia = el("div", "griglia-funzioni");
-    DATI.FUNZIONI.forEach(function (f) {
+    tasti.slice(pagina * perPagina, pagina * perPagina + perPagina).forEach(function (f) {
       var b = el("button", "carta-funzione");
       b.type = "button";
       b.appendChild(el("span", "nome-inglese", f.inglese));
       b.appendChild(el("span", "traduzione", f.italiano));
       b.addEventListener("click", function () {
-        vai({ tipo: "funzione-forno", funzione: f });
+        vai({ tipo: "funzione-forno", funzione: f, pagina: 0 });
       });
       griglia.appendChild(b);
     });
     mezzo.appendChild(griglia);
+    aggiungiPaginazione(mezzo, pagina, totalePagine, function (p) {
+      return { tipo: "funzioni-forno", pagina: p };
+    });
     var testo = "Questi sono i tasti del forno. Tocca una parola per sapere che cosa fa e quando usarla.";
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottoneAscolta(testo));
@@ -594,43 +662,87 @@
     contenitore.appendChild(scheda);
   }
 
-  function disegnaFunzioneForno(mezzo, sotto, funzione) {
+  function disegnaFunzioneForno(mezzo, sotto, funzione, pagina) {
     if (!funzione) { indietro(); return ""; }
+    mezzo.className += " schermata-funzione";
+    var pagine = [
+      ["Che cosa fa", funzione.cosa],
+      ["Quando usarlo", funzione.ricette + " Ti serve: " + funzione.serve.toLowerCase()],
+      ["Tempo e attenzione", funzione.tempo + " " + funzione.attenzione]
+    ];
+    if (pagina >= pagine.length) pagina = pagine.length - 1;
     mezzo.appendChild(el("p", "parola-sul-forno", "Sul forno c'è scritto"));
     mezzo.appendChild(el("h1", "titolo-passo", funzione.inglese));
     mezzo.appendChild(el("p", "traduzione-grande", "In italiano: " + funzione.italiano));
-    mezzo.appendChild(creaFotoPannello(funzione,
-      "Il pannello reale del forno: il tasto " + funzione.inglese + " è cerchiato in rosso"));
-    aggiungiSpiegazione(mezzo, "Che cosa fa", funzione.cosa);
-    aggiungiSpiegazione(mezzo, "Quando usarlo", funzione.ricette);
-    aggiungiSpiegazione(mezzo, "Cosa serve", funzione.serve);
-    aggiungiSpiegazione(mezzo, "Come funziona il tempo", funzione.tempo);
-    mezzo.appendChild(el("p", "avviso", funzione.attenzione));
+    if (pagina === 0) {
+      var rigaFoto = el("div", "dettaglio-funzione-con-foto");
+      rigaFoto.appendChild(creaFotoPannello(funzione,
+        "Il pannello reale del forno: il tasto " + funzione.inglese + " è cerchiato in rosso", true));
+      aggiungiSpiegazione(rigaFoto, pagine[pagina][0], pagine[pagina][1]);
+      mezzo.appendChild(rigaFoto);
+    } else {
+      aggiungiSpiegazione(mezzo, pagine[pagina][0], pagine[pagina][1]);
+    }
+    aggiungiPaginazione(mezzo, pagina, pagine.length, function (p) {
+      return { tipo: "funzione-forno", funzione: funzione, pagina: p };
+    });
     var testo = funzione.inglese + ". In italiano: " + funzione.italiano + ". " +
-      funzione.cosa + " Quando usarlo: " + funzione.ricette + " Cosa serve: " +
-      funzione.serve + " Come funziona il tempo: " + funzione.tempo +
-      " Attenzione: " + funzione.attenzione;
+      pagine[pagina][0] + ": " + pagine[pagina][1];
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottoneAscolta(testo));
     return testo;
   }
 
-  function disegnaDisplayForno(mezzo, sotto) {
+  function disegnaPannelloInterattivo(mezzo, sotto) {
+    mezzo.className += " contenuto-pannello-interattivo";
+    mezzo.appendChild(el("h1", "titolo-passo", "Tocca un tasto"));
+    var risultato = el("section", "risposta-pannello");
+    var etichetta = el("p", "risposta-etichetta", "Il forno è in attesa");
+    var display = el("p", "display-simulato", ":");
+    var spiegazione = el("p", "risposta-spiegazione", "Tocca una scritta sulla foto per sapere cosa succede davvero.");
+    risultato.appendChild(etichetta);
+    risultato.appendChild(display);
+    risultato.appendChild(spiegazione);
+    var testoCorrente = "Il forno è in attesa. Tocca una scritta sulla foto.";
+    var pannello = creaPannelloInterattivo(function (tasto, bottoneTasto) {
+      var m = DATI.MESSAGGI_TASTI[tasto.id];
+      if (!m) return;
+      var attivi = pannello.querySelectorAll(".tasto-foto-selezionato");
+      for (var i = 0; i < attivi.length; i++) attivi[i].classList.remove("tasto-foto-selezionato");
+      bottoneTasto.classList.add("tasto-foto-selezionato");
+      etichetta.textContent = tasto.inglese + " — " + tasto.italiano;
+      display.textContent = m.display;
+      spiegazione.textContent = m.spiega;
+      testoCorrente = tasto.inglese + ". " + tasto.italiano + ". " + m.spiega;
+    });
+    pannello.querySelector("img").alt = "Pannello reale del forno con tasti toccabili";
+    var layout = el("div", "layout-pannello-interattivo");
+    layout.appendChild(pannello);
+    layout.appendChild(risultato);
+    mezzo.appendChild(layout);
+    sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
+    sotto.appendChild(bottone("Ascolta", "btn btn-ascolta", function () { parla(testoCorrente); },
+      "Leggi ad alta voce il risultato del tasto"));
+    return testoCorrente;
+  }
+
+  function disegnaDisplayForno(mezzo, sotto, pagina) {
+    if (pagina >= DATI.DISPLAY.length) pagina = DATI.DISPLAY.length - 1;
+    var voce = DATI.DISPLAY[pagina];
     mezzo.appendChild(el("h1", "titolo-passo", "Parole sul display"));
     mezzo.appendChild(el("p", "introduzione-forno",
-      "Quando compare una parola, cerca qui la stessa scritta."));
+      "Una parola alla volta, come appare sul forno."));
     var lista = el("div", "lista-display");
-    DATI.DISPLAY.forEach(function (voce) {
-      var scheda = el("section", "voce-display");
-      scheda.appendChild(el("h2", "parola-inglese", voce.inglese));
-      scheda.appendChild(el("p", "parola-italiana", voce.italiano));
-      scheda.appendChild(el("p", "spiegazione-display", voce.spiega));
-      lista.appendChild(scheda);
-    });
+    var scheda = el("section", "voce-display");
+    scheda.appendChild(el("h2", "parola-inglese", voce.inglese));
+    scheda.appendChild(el("p", "parola-italiana", voce.italiano));
+    scheda.appendChild(el("p", "spiegazione-display", voce.spiega));
+    lista.appendChild(scheda);
     mezzo.appendChild(lista);
-    var testo = "Parole sul display. " + DATI.DISPLAY.map(function (v) {
-      return v.inglese + " significa " + v.italiano + ". " + v.spiega;
-    }).join(" ");
+    aggiungiPaginazione(mezzo, pagina, DATI.DISPLAY.length, function (p) {
+      return { tipo: "display-forno", pagina: p };
+    });
+    var testo = voce.inglese + " significa " + voce.italiano + ". " + voce.spiega;
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottoneAscolta(testo));
     return testo;
@@ -638,11 +750,14 @@
 
   /* --- elenco ricette --- */
 
-  function disegnaRicette(mezzo, sotto) {
+  function disegnaRicette(mezzo, sotto, pagina) {
+    var perPagina = 3;
     mezzo.appendChild(el("p", "saluto", "Scegli una ricetta"));
     var griglia = el("div", "griglia-ricette");
     var attive = DATI.RICETTE.filter(function (r) { return cfg.ricetteAttive[r.id] !== false; });
-    attive.forEach(function (r) {
+    var totalePagine = Math.max(1, Math.ceil(attive.length / perPagina));
+    if (pagina >= totalePagine) pagina = totalePagine - 1;
+    attive.slice(pagina * perPagina, pagina * perPagina + perPagina).forEach(function (r) {
       var b = el("button", "carta-ricetta");
       b.type = "button";
       b.appendChild(el("span", "nome", r.nome));
@@ -654,6 +769,9 @@
       mezzo.appendChild(el("p", "istruzione", "Nessuna ricetta attiva. Chiedi a chi ti aiuta con l'app."));
     }
     mezzo.appendChild(griglia);
+    aggiungiPaginazione(mezzo, pagina, totalePagine, function (p) {
+      return { tipo: "ricette", pagina: p };
+    });
     var testo = "Scegli una ricetta toccando il suo riquadro.";
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottoneAscolta(testo));
@@ -721,7 +839,7 @@
 
     ricordaRipresa(flusso, indice);
 
-    mezzo.appendChild(el("p", "numero-passo", flusso.titolo + " — passaggio " + numero + " di " + totale));
+    mezzo.appendChild(el("p", "numero-passo", "Passaggio " + numero + " di " + totale));
     mezzo.appendChild(el("h1", "titolo-passo", passo.t));
 
     var fig = creaFigura(passo.img);

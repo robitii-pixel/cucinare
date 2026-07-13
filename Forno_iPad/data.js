@@ -206,6 +206,61 @@ window.FORNO_DATI = {
     }
   ],
 
+  /* I tre comandi centrali non avviano una funzione: modificano
+     o confermano il valore che lampeggia sul display. */
+  CONTROLLI: [
+    {
+      id: "meno", inglese: "−", italiano: "Diminuisci",
+      cosa: "Riduce il valore che lampeggia: tempo, peso, potenza, temperatura o numero del programma.",
+      ricette: "Si usa dopo aver scelto una funzione, quando il valore mostrato è troppo alto.",
+      serve: "Nessun accessorio.",
+      tempo: "Non avvia il forno e non cambia da solo schermata.",
+      attenzione: "Guarda quale numero lampeggia prima di premerlo.",
+      pos: { x: 24, y: 81, w: 21, h: 7 }
+    },
+    {
+      id: "ok", inglese: "OK", italiano: "Conferma",
+      cosa: "Conferma il valore che lampeggia e porta alla scelta successiva.",
+      ricette: "Si usa per confermare programma, peso, potenza, temperatura o tempo.",
+      serve: "Nessun accessorio.",
+      tempo: "Di solito non avvia la cottura: conferma soltanto la scelta.",
+      attenzione: "Se non sei sicura del valore, premi STOP e ricomincia.",
+      pos: { x: 50, y: 81, w: 21, h: 7 }
+    },
+    {
+      id: "piu", inglese: "+", italiano: "Aumenta",
+      cosa: "Aumenta il valore che lampeggia: tempo, peso, potenza, temperatura o numero del programma.",
+      ricette: "Si usa dopo aver scelto una funzione, quando il valore mostrato è troppo basso.",
+      serve: "Nessun accessorio.",
+      tempo: "Durante la cottura, JET START aggiunge 30 secondi; il tasto più modifica invece il valore selezionato.",
+      attenzione: "Guarda quale numero lampeggia prima di premerlo.",
+      pos: { x: 76, y: 81, w: 21, h: 7 }
+    }
+  ],
+
+  /* Risposta reale del pannello dopo il tocco. "letterale" è true
+     soltanto quando il manuale conferma la scritta o il valore esatto.
+     Negli altri casi descriviamo l'icona e il valore che lampeggia,
+     senza inventare parole che il display non mostra. */
+  MESSAGGI_TASTI: {
+    "micro": { letterale: true, display: "800 W", spiega: "Si accende l'icona Microonde e lampeggia la potenza iniziale di 800 watt." },
+    "grill": { letterale: false, display: "Tempo da scegliere", spiega: "Si accende l'icona Grill e lampeggia il tempo. Regolalo con più e meno." },
+    "forced-air": { letterale: false, display: "Temperatura da scegliere", spiega: "Si accende l'icona della ventola e lampeggiano i gradi. Durante il preriscaldamento compare PRE HEAT." },
+    "combi": { letterale: true, display: "1 oppure 2", spiega: "Scegli 1 per microonde più grill oppure 2 per microonde più aria calda, poi premi OK." },
+    "crisp": { letterale: false, display: "Tempo da scegliere", spiega: "Si accende l'icona Crisp e lampeggia il tempo. Regolalo con più e meno." },
+    "steam": { letterale: true, display: "P1 – P8", spiega: "Scegli il tipo di alimento: P1 pasta, P2 riso, P3-P8 gli altri alimenti indicati dal manuale." },
+    "jet-reheat": { letterale: true, display: "P1 – P5", spiega: "Scegli P1 zuppa, P2 salsa, P3 pizza fredda, P4 piatto pronto o P5 bevanda; poi imposta il peso." },
+    "jet-defrost": { letterale: true, display: "P1 – P6", spiega: "Scegli il tipo di alimento e poi il peso. Con P6 pane possono comparire PRE HEAT, ADD e TURN." },
+    "chef-menu": { letterale: false, display: "Numero della ricetta", spiega: "Compare il numero del programma. In alcuni programmi il forno chiede anche peso, ADD, STIR o TURN." },
+    "auto-clean": { letterale: false, display: "Durata della pulizia", spiega: "Si accende l'icona Auto Clean e il display mostra la durata del ciclo." },
+    "stop-turntable": { letterale: false, display: "Icona piatto fermo", spiega: "Si accende o si spegne l'icona del piatto girevole. Non compare una parola." },
+    "meno": { letterale: false, display: "Il numero diminuisce", spiega: "Diminuisce soltanto il valore che in quel momento lampeggia." },
+    "ok": { letterale: false, display: "Scelta confermata", spiega: "Il valore smette di lampeggiare e il forno passa alla scelta successiva." },
+    "piu": { letterale: false, display: "Il numero aumenta", spiega: "Aumenta soltanto il valore che in quel momento lampeggia." },
+    "stop": { letterale: false, display: "Orologio oppure :", spiega: "La scelta o la cottura viene annullata. In attesa il display torna all'orologio oppure ai due punti." },
+    "jet-start": { letterale: true, display: "30 secondi", spiega: "A forno fermo parte subito a 800 watt per 30 secondi. Ogni altra pressione aggiunge 30 secondi." }
+  },
+
   DISPLAY: [
     { inglese: "DOOR", italiano: "Apri e richiudi lo sportello", spiega: "È il blocco di sicurezza: il forno vuole sapere che hai aperto la porta prima di partire." },
     { inglese: "END", italiano: "Fine", spiega: "La cottura è terminata." },
