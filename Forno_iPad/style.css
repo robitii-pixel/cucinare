@@ -418,6 +418,17 @@ button:focus-visible, input:focus-visible, a:focus-visible, textarea:focus-visib
   font: 800 29px/1.1 ui-monospace, Menlo, monospace;
 }
 .risposta-spiegazione { font-size: 21px; font-weight: 650; line-height: 1.25; }
+.btn-ascolta-compatto {
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 5px 12px;
+  border: 3px solid var(--inchiostro);
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: var(--inchiostro);
+  font-size: 19px;
+  font-weight: 800;
+}
 
 /* ---------- elenco puntato grande (ingredienti, sicurezza) ---------- */
 

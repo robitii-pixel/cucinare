@@ -35,20 +35,17 @@ Mancano ancora soltanto due fotografie facoltative dello sportello:
 `porta-aperta.jpg` e `porta-chiusa.jpg`. Se non ci sono, l'app mostra
 automaticamente il disegno corrispondente.
 
-## Conosci il forno
+## Guida al forno
 
-Dalla prima schermata, il pulsante **Conosci il forno** apre una parte
-separata dall'uso quotidiano:
+Dalla prima schermata, il pulsante **Guida al forno** apre direttamente un
+solo percorso ordinato:
 
-- **Tocca il pannello** rende cliccabili i 16 comandi della fotografia reale:
-  dopo il tocco mostra la scritta o il valore che ci si deve aspettare sul
-  display e lo spiega subito in italiano;
-- **Capire i tasti** riproduce tutti i comandi visibili sul pannello MCP 349,
-  mostra la traduzione italiana, evidenzia il tasto sulla fotografia e spiega
-  che cosa fa, per quali preparazioni usarlo, quale accessorio serve e il
-  principale punto di attenzione;
-- **Capire il display** traduce i messaggi DOOR, END, PRE HEAT, ADD, TURN,
-  STIR, i numeri di programma, W e °C.
+1. prima si tocca uno dei 16 comandi sulla fotografia reale; l'app riunisce
+   nella stessa scheda il significato del tasto, la funzione e ciò che appare
+   sul display;
+2. premendo **Fatto, avanti** si leggono, uno alla volta e sempre nello stesso
+   ordine, DOOR, END, PRE HEAT, ADD, TURN, STIR, i numeri di programma, W e °C;
+3. l'ultimo messaggio termina con il pulsante **Fine** e riporta alla Home.
 
 Le spiegazioni possono essere ascoltate in italiano. Le pagine quotidiane
 sono divise in schede brevi per rimanere interamente nello schermo, senza
@@ -66,7 +63,7 @@ python3 -m http.server 8000
 
 poi apri `http://localhost:8000` con Safari o Chrome.
 
-Controlli automatici (138 controlli su percorsi, pannello, ricette, sicurezza, PWA):
+Controlli automatici (133 controlli su percorsi, pannello, ricette, sicurezza, PWA):
 
 ```
 node qa.js
@@ -105,8 +102,8 @@ così scarica e salva tutto per l'uso senza rete.
 ## Aggiornare l'app dopo una modifica
 
 1. Modifica i file e fai `git push`.
-2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v14";`
-   (per esempio portandolo a `"forno-v15"`): è ciò che dice all'iPad di scaricare i file nuovi.
+2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v15";`
+   (per esempio portandolo a `"forno-v16"`): è ciò che dice all'iPad di scaricare i file nuovi.
 3. Sull'iPad: apri l'app **con la rete accesa**, chiudila del tutto
    (doppio clic sul tasto Home / scorri in su) e riaprila. La seconda
    apertura usa la versione nuova.

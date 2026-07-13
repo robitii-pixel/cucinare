@@ -484,7 +484,7 @@
     } else if (schermata.tipo === "ricette") {
       daLeggere = disegnaRicette(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "conosci-forno") {
-      daLeggere = disegnaConosciForno(mezzo, sotto);
+      daLeggere = disegnaPannelloInterattivo(mezzo, sotto);
     } else if (schermata.tipo === "funzioni-forno") {
       daLeggere = disegnaFunzioniForno(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "funzione-forno") {
@@ -549,13 +549,13 @@
       avviaFlusso(percorsoSicurezza());
     }));
     if (cfg.mostra.conosciForno !== false) {
-      sicurezza.appendChild(bottone("Conosci il forno", "voce-menu", function () {
-        vai({ tipo: "conosci-forno" });
+      sicurezza.appendChild(bottone("Guida al forno", "voce-menu", function () {
+        vai({ tipo: "pannello-interattivo" });
       }));
     }
     mezzo.appendChild(sicurezza);
 
-    var testo = "Cosa vuoi fare? Puoi scegliere: scalda qualcosa, oppure ricette. Qui sotto trovi Ferma tutto, i consigli di sicurezza e Conosci il forno.";
+    var testo = "Cosa vuoi fare? Puoi scegliere: scalda qualcosa, oppure ricette. Qui sotto trovi Ferma tutto, i consigli di sicurezza e la Guida al forno.";
     sotto.appendChild(bottoneAscolta(testo));
     return null; // la prima schermata non si legge da sola: partirebbe a ogni apertura
   }
@@ -695,15 +695,19 @@
 
   function disegnaPannelloInterattivo(mezzo, sotto) {
     mezzo.className += " contenuto-pannello-interattivo";
+    mezzo.appendChild(el("p", "numero-passo", "Guida al forno — prima i tasti"));
     mezzo.appendChild(el("h1", "titolo-passo", "Tocca un tasto"));
     var risultato = el("section", "risposta-pannello");
     var etichetta = el("p", "risposta-etichetta", "Il forno è in attesa");
     var display = el("p", "display-simulato", ":");
-    var spiegazione = el("p", "risposta-spiegazione", "Tocca una scritta sulla foto per sapere cosa succede davvero.");
+    var spiegazione = el("p", "risposta-spiegazione", "Tocca una scritta sulla foto. Quando hai finito, premi Fatto, avanti.");
     risultato.appendChild(etichetta);
     risultato.appendChild(display);
     risultato.appendChild(spiegazione);
     var testoCorrente = "Il forno è in attesa. Tocca una scritta sulla foto.";
+    risultato.appendChild(bottone("Ascolta", "btn-ascolta btn-ascolta-compatto", function () {
+      parla(testoCorrente);
+    }, "Leggi ad alta voce la spiegazione del tasto"));
     var pannello = creaPannelloInterattivo(function (tasto, bottoneTasto) {
       var m = DATI.MESSAGGI_TASTI[tasto.id];
       if (!m) return;
@@ -712,8 +716,8 @@
       bottoneTasto.classList.add("tasto-foto-selezionato");
       etichetta.textContent = tasto.inglese + " — " + tasto.italiano;
       display.textContent = m.display;
-      spiegazione.textContent = m.spiega;
-      testoCorrente = tasto.inglese + ". " + tasto.italiano + ". " + m.spiega;
+      spiegazione.textContent = tasto.cosa + " Sul display: " + m.spiega;
+      testoCorrente = tasto.inglese + ". " + tasto.italiano + ". " + tasto.cosa + " Sul display: " + m.spiega;
     });
     pannello.querySelector("img").alt = "Pannello reale del forno con tasti toccabili";
     var layout = el("div", "layout-pannello-interattivo");
@@ -721,17 +725,18 @@
     layout.appendChild(risultato);
     mezzo.appendChild(layout);
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
-    sotto.appendChild(bottone("Ascolta", "btn btn-ascolta", function () { parla(testoCorrente); },
-      "Leggi ad alta voce il risultato del tasto"));
+    sotto.appendChild(bottone("Fatto, avanti", "btn btn-avanti", function () {
+      zitto();
+      vai({ tipo: "display-forno", pagina: 0 });
+    }, "Ho finito con i tasti, mostrami il display"));
     return testoCorrente;
   }
 
   function disegnaDisplayForno(mezzo, sotto, pagina) {
     if (pagina >= DATI.DISPLAY.length) pagina = DATI.DISPLAY.length - 1;
     var voce = DATI.DISPLAY[pagina];
-    mezzo.appendChild(el("h1", "titolo-passo", "Parole sul display"));
-    mezzo.appendChild(el("p", "introduzione-forno",
-      "Una parola alla volta, come appare sul forno."));
+    mezzo.appendChild(el("p", "numero-passo", "Messaggio " + (pagina + 1) + " di " + DATI.DISPLAY.length));
+    mezzo.appendChild(el("h1", "titolo-passo", "Sul display"));
     var lista = el("div", "lista-display");
     var scheda = el("section", "voce-display");
     scheda.appendChild(el("h2", "parola-inglese", voce.inglese));
@@ -739,12 +744,20 @@
     scheda.appendChild(el("p", "spiegazione-display", voce.spiega));
     lista.appendChild(scheda);
     mezzo.appendChild(lista);
-    aggiungiPaginazione(mezzo, pagina, DATI.DISPLAY.length, function (p) {
-      return { tipo: "display-forno", pagina: p };
-    });
     var testo = voce.inglese + " significa " + voce.italiano + ". " + voce.spiega;
-    sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
-    sotto.appendChild(bottoneAscolta(testo));
+    mezzo.appendChild(bottoneAscolta(testo));
+    sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () {
+      zitto();
+      if (pagina > 0) mostra({ tipo: "display-forno", pagina: pagina - 1 });
+      else indietro();
+    }));
+    if (pagina < DATI.DISPLAY.length - 1) {
+      sotto.appendChild(bottone("Fatto, avanti", "btn btn-avanti", function () {
+        zitto(); mostra({ tipo: "display-forno", pagina: pagina + 1 });
+      }));
+    } else {
+      sotto.appendChild(bottone("Fine", "btn btn-avanti", function () { tornaAllInizio(); }));
+    }
     return testo;
   }
 
@@ -1045,7 +1058,7 @@
     rigaAdmin(box, "Scalda un piatto", spunta(cfg.mostra.scaldaPiatto, function (v) { cfg.mostra.scaldaPiatto = v; salvaConfig(); }));
     rigaAdmin(box, "Scalda una tazza", spunta(cfg.mostra.scaldaTazza, function (v) { cfg.mostra.scaldaTazza = v; salvaConfig(); }));
     rigaAdmin(box, "Ricette", spunta(cfg.mostra.ricette, function (v) { cfg.mostra.ricette = v; salvaConfig(); }));
-    rigaAdmin(box, "Conosci il forno", spunta(cfg.mostra.conosciForno !== false, function (v) { cfg.mostra.conosciForno = v; salvaConfig(); }));
+    rigaAdmin(box, "Guida al forno", spunta(cfg.mostra.conosciForno !== false, function (v) { cfg.mostra.conosciForno = v; salvaConfig(); }));
     box.appendChild(el("p", "nota", "Ferma tutto e i consigli di sicurezza compaiono sempre."));
 
     /* --- immagini --- */
