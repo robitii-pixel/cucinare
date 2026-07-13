@@ -183,12 +183,22 @@ console.log("\nGuida al pannello reale:");
   ok("foto reale del pannello presente",
      !!app.d.querySelector('img[src="assets/foto/pannello-reale.png"]'));
   ok("tutti i 16 tasti della foto sono toccabili", app.d.querySelectorAll(".tasto-foto").length === 16);
+  ok("quattro tasti grandi sempre disponibili", app.d.querySelectorAll(".tasto-grande").length === 4);
   app.d.querySelector('button[aria-label^="Tasto Micro:"]').click();
   ok("Micro produce il valore reale 800 W", /800 W/.test(app.d.querySelector(".display-simulato").textContent));
   ok("la spiegazione del tasto riunisce funzione e display",
      /microonde/i.test(app.d.querySelector(".risposta-spiegazione").textContent) &&
      /Sul display/.test(app.d.querySelector(".risposta-spiegazione").textContent));
   ok("la spiegazione del tasto si può ascoltare", !!bottonePerTesto(app.d, "Ascolta"));
+  const grandiVisti = new Set();
+  for (let pagina = 0; pagina < 4; pagina++) {
+    app.d.querySelectorAll("[data-tasto-grande]").forEach(b => grandiVisti.add(b.getAttribute("data-tasto-grande")));
+    if (pagina < 3) bottonePerTesto(app.d, "Altre").click();
+  }
+  ok("tutti i 16 tasti hanno anche un pulsante grande", grandiVisti.size === 16);
+  bottonePerTesto(app.d, "INIZIO").click();
+  ok("INIZIO torna direttamente alla prima schermata", !!bottonePerTesto(app.d, "Guida al forno"));
+  bottonePerTesto(app.d, "Guida al forno").click();
   bottonePerTesto(app.d, "Fatto, avanti").click();
   ok("display traduce DOOR", /DOOR/.test(app.d.body.textContent) && /Apri e richiudi lo sportello/.test(app.d.body.textContent));
   ok("display ha un ordine visibile", /Messaggio 1 di/.test(app.d.body.textContent));
@@ -196,6 +206,7 @@ console.log("\nGuida al pannello reale:");
   ok("display traduce END", /END/.test(app.d.body.textContent) && /Fine/.test(app.d.body.textContent));
   bottonePerTesto(app.d, "Fatto, avanti").click();
   ok("display traduce PRE HEAT", /PRE HEAT/.test(app.d.body.textContent) && /Preriscaldamento/.test(app.d.body.textContent));
+  ok("dal display si torna ai tasti con un solo tocco", !!bottonePerTesto(app.d, "Torna ai tasti"));
   ok("guida al display si può ascoltare", !!bottonePerTesto(app.d, "Ascolta"));
 }
 
@@ -355,7 +366,7 @@ console.log("\nPWA:");
   ok("pagina: rete prima e cache del browser ignorata",
      /req\.mode === "navigate"/.test(sw) && /fetch\(req, \{ cache: "no-store" \}\)/.test(sw));
   ok("pagina: copia offline come ripiego", /catch\(function \(\) \{\s*return caches\.match\("\.\/index\.html"\)/.test(sw));
-  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v15"/.test(sw));
+  ok("service worker: versione aggiornata", /var VERSIONE = "forno-v16"/.test(sw));
   ok("foto reale disponibile anche senza rete", sw.includes('"./assets/foto/pannello-reale.png"'));
   const htmlPwa = fs.readFileSync(path.join(CARTELLA, "index.html"), "utf8");
   ok("pagina: service worker registrato", /serviceWorker\.register\("sw\.js"\)/.test(htmlPwa));
@@ -366,9 +377,11 @@ console.log("\nPWA:");
   const css = fs.readFileSync(path.join(CARTELLA, "style.css"), "utf8");
   ok("iPhone: testata adattata sotto 480 pixel",
      /@media \(max-width: 480px\)/.test(css) && /\.btn-ferma \{ font-size: 18px/.test(css));
-  ok("uso quotidiano senza scorrimento, amministrazione scorrevole",
-     /\.contenuto\s*\{[^}]*overflow:\s*hidden/s.test(css) &&
+  ok("nessun testo può essere nascosto: scorrimento verticale di emergenza",
+     /\.contenuto\s*\{[^}]*overflow-y:\s*auto/s.test(css) &&
      /\.contenuto-admin\s*\{[^}]*overflow-y:\s*auto/s.test(css));
+  ok("gli elementi non vengono compressi o sovrapposti",
+     /\.contenuto\s*>\s*\*\s*\{[^}]*flex-shrink:\s*0/s.test(css));
 }
 
 console.log("\nRisultato: " + passati + " controlli superati, " + falliti + " falliti.");

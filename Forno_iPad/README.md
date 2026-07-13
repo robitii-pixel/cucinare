@@ -40,16 +40,18 @@ automaticamente il disegno corrispondente.
 Dalla prima schermata, il pulsante **Guida al forno** apre direttamente un
 solo percorso ordinato:
 
-1. prima si tocca uno dei 16 comandi sulla fotografia reale; l'app riunisce
-   nella stessa scheda il significato del tasto, la funzione e ciò che appare
-   sul display;
+1. prima si tocca uno dei 16 comandi sulla fotografia reale; in alternativa
+   gli stessi comandi sono disponibili, quattro alla volta, come pulsanti
+   grandi e facili da premere;
 2. premendo **Fatto, avanti** si leggono, uno alla volta e sempre nello stesso
    ordine, DOOR, END, PRE HEAT, ADD, TURN, STIR, i numeri di programma, W e °C;
-3. l'ultimo messaggio termina con il pulsante **Fine** e riporta alla Home.
+3. **Torna ai tasti** riporta al pannello con un solo tocco, mentre **INIZIO**
+   riporta immediatamente alla Home; l'ultimo messaggio termina con **Fine**.
 
 Le spiegazioni possono essere ascoltate in italiano. Le pagine quotidiane
-sono divise in schede brevi per rimanere interamente nello schermo, senza
-scorrimento. La guida non avvia né controlla il forno: il display mostrato
+sono divise in schede brevi; se uno schermo è insolitamente basso, lo
+scorrimento verticale resta disponibile come sicurezza e nessun testo viene
+nascosto. La guida non avvia né controlla il forno: il display mostrato
 nell'app è una simulazione didattica del comportamento descritto dal manuale.
 
 ## Provare in locale
@@ -63,7 +65,7 @@ python3 -m http.server 8000
 
 poi apri `http://localhost:8000` con Safari o Chrome.
 
-Controlli automatici (133 controlli su percorsi, pannello, ricette, sicurezza, PWA):
+Controlli automatici (138 controlli su percorsi, pannello, ricette, sicurezza, PWA):
 
 ```
 node qa.js
@@ -102,8 +104,8 @@ così scarica e salva tutto per l'uso senza rete.
 ## Aggiornare l'app dopo una modifica
 
 1. Modifica i file e fai `git push`.
-2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v15";`
-   (per esempio portandolo a `"forno-v16"`): è ciò che dice all'iPad di scaricare i file nuovi.
+2. In `sw.js` aumenta il numero nella riga `var VERSIONE = "forno-v16";`
+   (per esempio portandolo a `"forno-v17"`): è ciò che dice all'iPad di scaricare i file nuovi.
 3. Sull'iPad: apri l'app **con la rete accesa**, chiudila del tutto
    (doppio clic sul tasto Home / scorri in su) e riaprila. La seconda
    apertura usa la versione nuova.

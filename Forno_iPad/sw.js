@@ -9,14 +9,14 @@
    Per pubblicare un aggiornamento: cambia VERSIONE qui sotto.
    ============================================================ */
 
-var VERSIONE = "forno-v15";
+var VERSIONE = "forno-v16";
 
 var FILE_BASE = [
   "./",
   "./index.html",
-  "./style.css?v=15",
-  "./app.js?v=15",
-  "./data.js?v=15",
+  "./style.css?v=16",
+  "./app.js?v=16",
+  "./data.js?v=16",
   "./manifest.webmanifest",
   "./assets/icona-192.png",
   "./assets/icona-512.png",

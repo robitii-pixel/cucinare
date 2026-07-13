@@ -333,6 +333,7 @@
       var p = tasto.pos;
       var b = bottone("", "tasto-foto", function () { onScelta(tasto, b); },
         "Tasto " + tasto.inglese + ": " + tasto.italiano);
+      b.setAttribute("data-tasto-id", tasto.id);
       b.style.left = (p.x - p.w / 2) + "%";
       b.style.top = (p.y - p.h / 2) + "%";
       b.style.width = p.w + "%";
@@ -443,13 +444,16 @@
     /* --- barra sopra --- */
     var sopra = el("div", "barra-sopra");
     var mostraEsci = schermata.tipo !== "home";
+    var schermataGuida = ["conosci-forno", "pannello-interattivo", "funzioni-forno",
+      "funzione-forno", "display-forno"].indexOf(schermata.tipo) >= 0;
     var mostraFerma = schermata.tipo !== "home" &&
                       !(schermata.flusso && schermata.flusso.id === "ferma-tutto");
 
     if (mostraEsci) {
-      sopra.appendChild(bottone("Esci", "btn btn-esci", function () {
-        vai({ tipo: "conferma-esci" });
-      }, "Esci e torna all'inizio"));
+      sopra.appendChild(bottone(schermataGuida ? "INIZIO" : "Esci", "btn btn-esci", function () {
+        if (schermataGuida) tornaAllInizio();
+        else vai({ tipo: "conferma-esci" });
+      }, schermataGuida ? "Torna subito alla prima schermata" : "Esci e torna all'inizio"));
     } else {
       sopra.appendChild(el("span"));
     }
@@ -490,7 +494,7 @@
     } else if (schermata.tipo === "funzione-forno") {
       daLeggere = disegnaFunzioneForno(mezzo, sotto, schermata.funzione, schermata.pagina || 0);
     } else if (schermata.tipo === "pannello-interattivo") {
-      daLeggere = disegnaPannelloInterattivo(mezzo, sotto);
+      daLeggere = disegnaPannelloInterattivo(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "display-forno") {
       daLeggere = disegnaDisplayForno(mezzo, sotto, schermata.pagina || 0);
     } else if (schermata.tipo === "persone") {
@@ -693,14 +697,19 @@
     return testo;
   }
 
-  function disegnaPannelloInterattivo(mezzo, sotto) {
+  function disegnaPannelloInterattivo(mezzo, sotto, pagina) {
+    var perPagina = 4;
+    var tasti = tuttiITasti();
+    var totalePagine = Math.ceil(tasti.length / perPagina);
+    if (pagina >= totalePagine) pagina = totalePagine - 1;
     mezzo.className += " contenuto-pannello-interattivo";
-    mezzo.appendChild(el("p", "numero-passo", "Guida al forno — prima i tasti"));
+    mezzo.appendChild(el("p", "numero-passo", "Tasti " + (pagina * perPagina + 1) + "–" +
+      Math.min((pagina + 1) * perPagina, tasti.length) + " di " + tasti.length));
     mezzo.appendChild(el("h1", "titolo-passo", "Tocca un tasto"));
     var risultato = el("section", "risposta-pannello");
     var etichetta = el("p", "risposta-etichetta", "Il forno è in attesa");
     var display = el("p", "display-simulato", ":");
-    var spiegazione = el("p", "risposta-spiegazione", "Tocca una scritta sulla foto. Quando hai finito, premi Fatto, avanti.");
+    var spiegazione = el("p", "risposta-spiegazione", "Premi uno dei pulsanti grandi. Se vuoi, più sotto puoi anche toccare la foto.");
     risultato.appendChild(etichetta);
     risultato.appendChild(display);
     risultato.appendChild(spiegazione);
@@ -708,7 +717,7 @@
     risultato.appendChild(bottone("Ascolta", "btn-ascolta btn-ascolta-compatto", function () {
       parla(testoCorrente);
     }, "Leggi ad alta voce la spiegazione del tasto"));
-    var pannello = creaPannelloInterattivo(function (tasto, bottoneTasto) {
+    function mostraTasto(tasto, bottoneTasto) {
       var m = DATI.MESSAGGI_TASTI[tasto.id];
       if (!m) return;
       var attivi = pannello.querySelectorAll(".tasto-foto-selezionato");
@@ -718,11 +727,26 @@
       display.textContent = m.display;
       spiegazione.textContent = tasto.cosa + " Sul display: " + m.spiega;
       testoCorrente = tasto.inglese + ". " + tasto.italiano + ". " + tasto.cosa + " Sul display: " + m.spiega;
-    });
+    }
+    var pannello = creaPannelloInterattivo(mostraTasto);
     pannello.querySelector("img").alt = "Pannello reale del forno con tasti toccabili";
+    mezzo.appendChild(risultato);
+    mezzo.appendChild(el("p", "invito-tasti-grandi", "Scegli un tasto grande:"));
+    var grandi = el("div", "griglia-tasti-grandi");
+    tasti.slice(pagina * perPagina, pagina * perPagina + perPagina).forEach(function (tasto) {
+      var grande = bottone(tasto.inglese, "tasto-grande", function () {
+        mostraTasto(tasto, pannello.querySelector('[data-tasto-id="' + tasto.id + '"]'));
+      }, "Spiega il tasto " + tasto.inglese);
+      grande.setAttribute("data-tasto-grande", tasto.id);
+      grandi.appendChild(grande);
+    });
+    mezzo.appendChild(grandi);
+    aggiungiPaginazione(mezzo, pagina, totalePagine, function (p) {
+      return { tipo: "pannello-interattivo", pagina: p };
+    });
+    mezzo.appendChild(el("p", "invito-foto", "Oppure tocca il tasto sulla foto:"));
     var layout = el("div", "layout-pannello-interattivo");
     layout.appendChild(pannello);
-    layout.appendChild(risultato);
     mezzo.appendChild(layout);
     sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () { zitto(); indietro(); }));
     sotto.appendChild(bottone("Fatto, avanti", "btn btn-avanti", function () {
@@ -746,10 +770,8 @@
     mezzo.appendChild(lista);
     var testo = voce.inglese + " significa " + voce.italiano + ". " + voce.spiega;
     mezzo.appendChild(bottoneAscolta(testo));
-    sotto.appendChild(bottone("Indietro", "btn btn-indietro", function () {
-      zitto();
-      if (pagina > 0) mostra({ tipo: "display-forno", pagina: pagina - 1 });
-      else indietro();
+    sotto.appendChild(bottone("Torna ai tasti", "btn btn-indietro", function () {
+      zitto(); mostra({ tipo: "pannello-interattivo", pagina: 0 });
     }));
     if (pagina < DATI.DISPLAY.length - 1) {
       sotto.appendChild(bottone("Fatto, avanti", "btn btn-avanti", function () {
