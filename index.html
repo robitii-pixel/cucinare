@@ -741,12 +741,14 @@
         <div class="pname"><span id="pname-r">Persona 1</span></div>
         <div class="pfields">
           <label>Nome<input type="text" id="pr-name" maxlength="30" autocomplete="name"></label>
+          <label>Formula<select id="pr-sex"><option value="">Scegli</option><option value="m">Uomo</option><option value="f">Donna</option></select></label>
           <label>Età<input type="number" inputmode="numeric" id="pr-age" min="18" max="90" placeholder="anni"></label>
           <label>Altezza<input type="number" inputmode="numeric" id="pr-h" min="140" max="210" placeholder="cm"></label>
           <label>Peso<input type="number" inputmode="decimal" id="pr-w" min="45" max="150" step="0.5" placeholder="kg"></label>
+          <label>Vita quotidiana<select id="pr-af"><option value="1.2">Molto sedentaria</option><option value="1.3">Leggermente attiva</option><option value="1.4">Attiva</option></select></label>
           <label>Obiettivo<select id="pr-goal">
-            <option value="ricomp">Ricomposizione</option><option value="cut">Definizione</option>
-            <option value="mant">Mantenimento</option><option value="massa">Massa leggera</option>
+            <option value="ricomp">Ricomposizione (−5%)</option><option value="cut">Dimagrimento (−15%)</option>
+            <option value="mant">Mantenimento</option><option value="massa">Aumento leggero (+8%)</option>
           </select></label>
         </div>
         <div class="pout" id="pr-out"></div>
@@ -755,12 +757,14 @@
         <div class="pname"><span id="pname-g">Persona 2</span></div>
         <div class="pfields">
           <label>Nome<input type="text" id="pg-name" maxlength="30" autocomplete="name"></label>
+          <label>Formula<select id="pg-sex"><option value="">Scegli</option><option value="m">Uomo</option><option value="f">Donna</option></select></label>
           <label>Età<input type="number" inputmode="numeric" id="pg-age" min="18" max="90" placeholder="anni"></label>
           <label>Altezza<input type="number" inputmode="numeric" id="pg-h" min="140" max="210" placeholder="cm"></label>
           <label>Peso<input type="number" inputmode="decimal" id="pg-w" min="45" max="150" step="0.5" placeholder="kg"></label>
+          <label>Vita quotidiana<select id="pg-af"><option value="1.2">Molto sedentaria</option><option value="1.3">Leggermente attiva</option><option value="1.4">Attiva</option></select></label>
           <label>Obiettivo<select id="pg-goal">
-            <option value="ricomp">Ricomposizione</option><option value="cut" selected>Definizione</option>
-            <option value="mant">Mantenimento</option><option value="massa">Massa leggera</option>
+            <option value="ricomp">Ricomposizione (−5%)</option><option value="cut" selected>Dimagrimento (−15%)</option>
+            <option value="mant">Mantenimento</option><option value="massa">Aumento leggero (+8%)</option>
           </select></label>
         </div>
         <div class="pout" id="pg-out"></div>
@@ -779,7 +783,7 @@
       <p style="margin:0 0 8px"><b><svg class=ico><use href=#i-cycle></use></svg> Sincronizza i due telefoni</b></p>
       <div id="sync-body"></div>
     </div>
-    <p class="prof-note">Calcolo dichiarato: metabolismo basale con <b>Mifflin–St Jeor</b>, fabbisogno con fattore 1,40 (vita quotidiana sedentaria — corsa, forza e volley vengono <b>già aggiunti giorno per giorno</b> dalle schede, quindi qui non si contano due volte). Obiettivo: ricomposizione −5%, definizione −15%, mantenimento 0, massa +8%. Proteine: 1,8 g/kg (ricomposizione e massa), 2,0 (definizione), 1,6 (mantenimento) — calcolate sul <b>peso di riferimento</b> (BMI 25) se il peso attuale lo supera, con tetto pratico a 135 g: oltre, da vegetariani senza integratori, la dieta si snaturerebbe — e per la ricomposizione non serve. Finché i campi sono vuoti restano i valori di base concordati. Le stime restano stime: bilancia e specchio a 3–4 settimane sono i veri giudici. <b>Nota:</b> tutti i valori di kcal e proteine sono <b>stime indicative</b>, utili per orientarsi — non sostituiscono una valutazione nutrizionale professionale, e la bilancia a 3–4 settimane resta il giudice vero. <b>Da collega:</b> se la settimana diventa prevalentemente vegetale, la B12 va integrata sempre (non è opinabile), e meritano attenzione ferro, iodio e omega-3 (semi di lino, noci).</p>
+    <p class="prof-note">Calcolo dichiarato: metabolismo basale con <b>Mifflin–St Jeor</b>, distinguendo la formula per uomo e donna; il fabbisogno usa il livello di attività quotidiana scelto. Corsa, forza e volley vengono <b>già aggiunti giorno per giorno</b>, quindi non vanno inclusi anche nell’attività quotidiana. Obiettivi: ricomposizione −5%, dimagrimento −15%, mantenimento 0%, aumento leggero +8%. Proteine: 1,8 g/kg (ricomposizione e aumento), 2,0 (dimagrimento), 1,6 (mantenimento), sul peso di riferimento se il BMI supera 25 e con tetto pratico a 135 g. <b>Nota:</b> kcal e proteine sono <b>stime indicative</b>, non prescrizioni. <b>In caso di diabete, terapia insulinica, malattia renale o altre condizioni cliniche, non usare questo piano come dieta terapeutica:</b> l’app non calcola carboidrati per pasto, glicemie né adattamenti dei farmaci; serve un piano concordato con medico o dietista. Se la settimana diventa prevalentemente vegetale, la B12 va valutata con un professionista, insieme a ferro, iodio e omega-3.</p>
   </details>
 </section>
 
@@ -912,7 +916,7 @@
 (function(){
   "use strict";
   var PERSONAL=false;
-  var APPV="v44";
+  var APPV="v45";
   var COPY={
     phoneLinked:"Telefono collegato",
     cookStart:"Inizia",
@@ -1370,27 +1374,31 @@
   var ACT_ORDER=["riposo","corsa","forza","volley"];
   var BASE={r:{k:2350,p:135,name:"Persona 1"},g:{k:2075,p:125,name:"Persona 2"}};
   var BASE_DEFAULT={r:{k:2350,p:135},g:{k:2075,p:125}};
-  var GOALS={ricomp:{adj:-0.05,gkg:1.8,l:"ricomposizione"},cut:{adj:-0.15,gkg:2.0,l:"definizione"},
-             mant:{adj:0,gkg:1.6,l:"mantenimento"},massa:{adj:0.08,gkg:1.8,l:"massa leggera"}};
+  var GOALS={ricomp:{adj:-0.05,gkg:1.8,l:"ricomposizione (−5%)"},cut:{adj:-0.15,gkg:2.0,l:"dimagrimento (−15%)"},
+             mant:{adj:0,gkg:1.6,l:"mantenimento"},massa:{adj:0.08,gkg:1.8,l:"aumento leggero (+8%)"}};
   state.prof=state.prof||{r:{},g:{}};
-  var PROF_FIXED={r:{goal:"ricomp"},g:{goal:"cut"}};
+  var PROF_FIXED={r:{af:1.2,goal:"ricomp"},g:{af:1.2,goal:"cut"}};
   function ageFrom(dob){ var d=new Date(dob),n=new Date(); var a=n.getFullYear()-d.getFullYear(); var m=n.getMonth()-d.getMonth(); if(m<0||(m===0&&n.getDate()<d.getDate())) a--; return a; }
   ["r","g"].forEach(function(k){
     var pr=state.prof[k]=state.prof[k]||{};
     if(!pr.goal){ pr.goal=PROF_FIXED[k].goal; }
+    pr.sex=pr.sex||PROF_FIXED[k].sex||(PERSONAL?"m":"");
+    pr.af=parseFloat(pr.af)||PROF_FIXED[k].af||(PERSONAL?1.4:1.2);
     if(pr.dob) pr.age=ageFrom(pr.dob);
   });
   function calcPerson(pr){
-    if(!pr||!pr.age||!pr.h||!pr.w) return null;
-    var bmr=Math.round(10*pr.w+6.25*pr.h-5*pr.age+5);       /* Mifflin–St Jeor, uomo */
-    var tdee=Math.round(bmr*1.40);                            /* NEAT sedentario; sport aggiunto per giorno */
+    if(!pr||!pr.sex||!pr.age||!pr.h||!pr.w) return null;
+    var sexConst=pr.sex==="f"?-161:5;
+    var bmr=Math.round(10*pr.w+6.25*pr.h-5*pr.age+sexConst); /* Mifflin–St Jeor */
+    var af=Math.min(1.4,Math.max(1.2,parseFloat(pr.af)||(PERSONAL?1.4:1.2)));
+    var tdee=Math.round(bmr*af);                              /* vita quotidiana; sport aggiunto per giorno */
     var g=GOALS[pr.goal||"ricomp"];
     var kcal=Math.round((tdee*(1+g.adj))/25)*25;
     var refW=Math.min(pr.w, 25*Math.pow(pr.h/100,2));   /* proteine sul peso di riferimento se BMI>25 */
     var prot=Math.round(refW*g.gkg), cap=false;
     if(prot>135){ prot=135; cap=true; }                  /* tetto pratico da vegetariani, senza integratori */
     var bmi=Math.round(pr.w/Math.pow(pr.h/100,2)*10)/10;
-    return {bmr:bmr,tdee:tdee,kcal:kcal,prot:prot,cap:cap,bmi:bmi,goal:g.l};
+    return {bmr:bmr,tdee:tdee,kcal:kcal,prot:prot,cap:cap,bmi:bmi,goal:g.l,af:af};
   }
   function applyProfile(){
     ["r","g"].forEach(function(k){
@@ -1401,8 +1409,8 @@
       else { BASE[k].k=BASE_DEFAULT[k].k; BASE[k].p=BASE_DEFAULT[k].p; }
       var out=document.getElementById("p"+k+"-out");
       if(out) out.innerHTML=c
-        ? "Basale <b>"+c.bmr+"</b> · fabbisogno <b>"+c.tdee+"</b> · obiettivo ("+c.goal+") <b>"+c.kcal+" kcal</b> · proteine <b>"+c.prot+" g"+(c.cap?" · tetto realistico":"")+"</b> · BMI "+String(c.bmi).replace(".",",")
-        : "Compila età, altezza e peso: finché mancano, valgono i valori di base.";
+        ? "Basale <b>"+c.bmr+"</b> · attività ×"+String(c.af).replace(".",",")+" · fabbisogno <b>"+c.tdee+"</b> · obiettivo ("+c.goal+") <b>"+c.kcal+" kcal</b> · proteine <b>"+c.prot+" g"+(c.cap?" · tetto realistico":"")+"</b> · BMI "+String(c.bmi).replace(".",",")
+        : "Scegli la formula e compila età, altezza e peso per calcolare una stima.";
       var hh=state.whist[k]||[];
       if(out&&hh.length>1){ var a0=hh[0],b0=hh[hh.length-1];
         var days=Math.max(1,Math.round((new Date(b0.d)-new Date(a0.d))/86400000));
@@ -1412,13 +1420,15 @@
       if(leg) leg.textContent=BASE[k].name+" · base "+BASE[k].k.toLocaleString("it-IT")+" kcal · "+BASE[k].p+" g";
     });
   }
-  var PROF_FIELDS=[["r","name"],["r","age"],["r","h"],["r","w"],["r","goal"],["g","name"],["g","age"],["g","h"],["g","w"],["g","goal"]];
+  var PROF_FIELDS=[["r","name"],["r","sex"],["r","age"],["r","h"],["r","w"],["r","af"],["r","goal"],["g","name"],["g","sex"],["g","age"],["g","h"],["g","w"],["g","af"],["g","goal"]];
   function refreshProfileFields(){
     PROF_FIELDS.forEach(function(f){
       var el=document.getElementById("p"+f[0]+"-"+(f[1]==="age"?"age":f[1]==="goal"?"goal":f[1]));
       if(!el) return;
       var pr=state.prof[f[0]];
       if(f[1]==="goal"){ el.value=pr.goal||"ricomp"; }
+      else if(f[1]==="sex"){ el.value=pr.sex||""; }
+      else if(f[1]==="af"){ el.value=String(pr.af||(PERSONAL?1.4:1.2)); }
       else if(f[1]==="name"){ el.value=pr.name||""; }
       else if(pr[f[1]]){ el.value=pr[f[1]]; }
     });
@@ -1429,7 +1439,7 @@
       var el=document.getElementById("p"+f[0]+"-"+(f[1]==="age"?"age":f[1]==="goal"?"goal":f[1]));
       if(!el) return;
       el.addEventListener("input",function(){
-        var v=(f[1]==="goal")?el.value:(f[1]==="name"?(el.value||"").trim():parseFloat(el.value)||null);
+        var v=(f[1]==="goal"||f[1]==="sex")?el.value:(f[1]==="name"?(el.value||"").trim():parseFloat(el.value)||null);
         state.prof[f[0]][f[1]]=v;
         if(f[1]==="w"&&v){ var hh=state.whist[f[0]]||(state.whist[f[0]]=[]);
           var tISO=iso(new Date());
@@ -1702,7 +1712,7 @@
     if(PERSONAL&&!state.trip){
       var tISO=iso(TODAY);
       if(tISO>="2026-07-24"&&tISO<="2026-08-08"){
-        html+='<div class="h-mini"><svg class=ico><use href=#i-plane></use></svg> <b>Si parte per la Francia!</b> Attivate la modalit\u00e0 trasferta: piano in pausa, tre regole da viaggio, zero sensi di colpa. <button class="c-link" id="h-trip">Attivala</button></div>';
+        html+='<div class="h-mini"><svg class=ico><use href=#i-plane></use></svg> <b>Modalità trasferta</b> Attivate la modalit\u00e0 trasferta: piano in pausa, tre regole da viaggio, zero sensi di colpa. <button class="c-link" id="h-trip">Attivala</button></div>';
       }
     }
     html+=renderCoach();
@@ -2446,7 +2456,7 @@
   twist:"Frulla una tazza di ceci caldi con la loro acqua, 1 cucchiaio di tahina e succo di mezzo limone: hummus vero in 3 minuti.",
   meal:{n:"Zuppa di lenticchie con uovo in camicia",d:"Lenticchie cremose col vostro soffritto, uovo in camicia sopra, pane tostato e grana.",slot:"Cena",kr:600,kg:520,pr:33,pg:31}},
 
- {id:"glassa",lv:2,name:"La glassatura lucida",time:"15 min",hook:"Melanzane laccate e brillanti, tra Cagliari e Kyoto: un dolce-salato che non stanca.",
+ {id:"glassa",lv:2,name:"La glassatura lucida",time:"15 min",hook:"Melanzane laccate e brillanti, tra Mediterraneo e Giappone: un dolce-salato che non stanca.",
   why:"Una riduzione di soia e miele concentra zuccheri e sapidità in uno sciroppo che aderisce e fa brillare. È la logica dell’agrodolce spostata sull’umami: per questo, pur venendo da lontano, suona familiare.",
   kit:["Melanzane già cotte (fette spesse rosolate o al forno — quelle della base vanno benissimo)","3 cucchiai di soia a ridotto sale (45 ml) + 1 cucchiaio di miele (20 g) + 2 cucchiai d’acqua","Padellino 18–20 cm · 1 cucchiaino di sesamo tostato · zenzero grattugiato se piace"],
   steps:["Nel padellino: soia, miele, acqua (e zenzero). Fiamma media.","Riduci 2–3 minuti osservando le bolle: da grandi e rade a piccole e fitte — è il segnale che l’acqua se n’è andata e lo sciroppo si sta formando.","Prova del cucchiaio: la glassa deve VELARLO restando lucida, senza filare. Se fila, è già troppo: recupera con 1 cucchiaio d’acqua.","Dentro le melanzane cotte: 60–90 secondi voltandole finché sono lucide su ogni lato.","Fuori dal fuoco SUBITO (la glassa continua ad addensare col calore residuo), sesamo sopra, in tavola calda. Conto energetico: ≈60 kcal di glassa a porzione — sapore concentrato, non condimento pesante."],
@@ -3099,6 +3109,25 @@
 
   /* ---------- generatore di varietà ---------- */
   function mulberry(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; var t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  var VARIETY_CORES=[
+    ["ceci",/\bcec/],["lenticchie",/lenticch/],["fagioli",/fagiol|cannellin/],["piselli",/pisell/],["uova",/\buov/],
+    ["ricotta",/ricotta/],["yogurt",/yogurt/],["tofu",/tofu/],["tempeh",/tempeh/],["farro",/farro/],
+    ["riso",/\briso/],["pasta",/pasta|malloredd|fregola|culurgion/],["pane",/pane|carasau|crostin/],
+    ["pomodoro",/pomodor/],["melanzane",/melanzan/],["zucchine",/zucchin/],["patate",/patat/],
+    ["mandorle",/mandorl/],["anacardi",/anacard/],["pecorino",/pecorino/]
+  ];
+  function varietyKeys(dd){
+    var found={};
+    (dd&&dd.ing||[]).forEach(function(i){
+      var raw=normIng(i.n).toLowerCase();
+      if(/olio|sale|pepe|acqua|limone|basilico|menta|origano|prezzemolo|rosmarino|spezi|paprica|cannella/.test(raw)) return;
+      var key="";
+      VARIETY_CORES.some(function(c){ if(c[1].test(raw)){ key=c[0]; return true; } return false; });
+      if(!key){ key=(raw.match(/[a-zà-ÿ]{5,}/i)||[""])[0]; }
+      if(key) found[key]=1;
+    });
+    return Object.keys(found);
+  }
   function genWeek(){
     var nm=new Date(mondayOf(TODAY)); nm.setDate(nm.getDate()+7);
     var nk=iso(nm);
@@ -3107,9 +3136,15 @@
     if(w.plan&&Object.keys(w.plan).length){ if(!confirm("La settimana prossima ha gi\u00e0 delle scelte: le rigenero?")) return; }
     w.plan={}; w.train=w.train||{}; w.sgarro=w.sgarro||{}; w.done=w.done||{};
     var rnd=mulberry(parseInt(nk.replace(/-/g,""),10));
-    var used={};
+    var used={}, weekKeys={};
     DAYS.forEach(function(dk){
       w.plan[dk]={};
+      var dayKeys={}, dayProtein={};
+      ["colazione","spuntino","merenda"].forEach(function(baseSlot){
+        var baseDish=BY_ID[DEFAULT_PLAN[dk][baseSlot]];
+        varietyKeys(baseDish).forEach(function(k){ dayKeys[k]=1; weekKeys[k]=(weekKeys[k]||0)+1; });
+        if(baseDish&&baseDish.pm) dayProtein[baseDish.pm]=1;
+      });
       ["pranzo","cena"].forEach(function(slot){
         var def=BY_ID[DEFAULT_PLAN[dk][slot]];
         if(!def||def.free){ return; } /* le serate libere restano libere */
@@ -3120,7 +3155,7 @@
         });
         if(!cands.length){ used[def.id]=1; return; }
         /* pesi: preferiti ×3, vegetali a cena ×2, già cucinati e piaciuti ×1,5 */
-        var weighted=[];
+        var weighted=[], totalWeight=0;
         var feriale=(dk!=="sab"&&dk!=="dom");
         cands.forEach(function(dd){
           var wgt=1;
@@ -3130,10 +3165,19 @@
           if(dd.sea&&season()!=="mezza"&&dd.sea!==season()) wgt*=0.35;
           var mins=parseInt(((dd.time||"").match(/\d+/)||[0])[0],10)||0;
           if(feriale&&mins>=25) wgt*=0.3;
-          for(var q=0;q<Math.round(wgt*2);q++) weighted.push(dd);
+          var keys=varietyKeys(dd);
+          if(keys.some(function(k){return dayKeys[k];})) wgt*=0.12;
+          if(dd.pm&&dayProtein[dd.pm]) wgt*=0.15;
+          var repeated=keys.filter(function(k){return (weekKeys[k]||0)>=2;}).length;
+          if(repeated) wgt*=Math.pow(0.55,Math.min(3,repeated));
+          wgt=Math.max(0.01,wgt); totalWeight+=wgt; weighted.push({dd:dd,w:wgt,keys:keys});
         });
-        var pick=weighted[Math.floor(rnd()*weighted.length)];
+        var cursor=rnd()*totalWeight, chosen=weighted[weighted.length-1];
+        weighted.some(function(item){ cursor-=item.w; if(cursor<=0){ chosen=item; return true; } return false; });
+        var pick=chosen.dd;
         w.plan[dk][slot]=pick.id; used[pick.id]=1;
+        chosen.keys.forEach(function(k){ dayKeys[k]=1; weekKeys[k]=(weekKeys[k]||0)+1; });
+        if(pick.pm) dayProtein[pick.pm]=1;
       });
     });
     /* garanzia: almeno 2 cene vegetali */

@@ -462,6 +462,22 @@ click(d.getElementById("fd-send"));
 T("feedback: senza Firebase disponibile (ambiente di test) avvisa e non perde i dati", /connessione/.test(d.getElementById("fd-note").textContent));
 click(d.getElementById("m-close"));
 
+// 43. profili nutrizionali: formula corretta e cautele cliniche
+function setField(id,value){
+  const el=d.getElementById(id); if(!el) return;
+  el.value=String(value); el.dispatchEvent(new w.Event("input",{bubbles:true}));
+}
+[["pr-sex","m"],["pr-age",60],["pr-h",170],["pr-w",70],["pr-af",1.2],["pr-goal","mant"],
+ ["pg-sex","f"],["pg-age",60],["pg-h",170],["pg-w",70],["pg-af",1.2],["pg-goal","mant"]].forEach(x=>setField(x[0],x[1]));
+const bmrR=parseInt((d.getElementById("pr-out").textContent.match(/Basale\s+(\d+)/)||[])[1],10);
+const bmrG=parseInt((d.getElementById("pg-out").textContent.match(/Basale\s+(\d+)/)||[])[1],10);
+T("profili: formula uomo e donna distinta di 166 kcal a parità di dati", bmrR-bmrG===166, "uomo="+bmrR+" donna="+bmrG);
+T("profili: attività quotidiana selezionabile", !!d.getElementById("pr-af")&&/Molto sedentaria/.test(d.getElementById("pr-af").textContent));
+T("profili: aumento leggero non presentato come dimagrimento", /Aumento leggero \(\+8%\)/.test(d.getElementById("pr-goal").textContent)&&!/Massa leggera/.test(d.getElementById("pr-goal").textContent));
+T("profili: avvertenza diabete visibile", /diabete/i.test(d.querySelector(".prof-note").textContent)&&/non calcola carboidrati/i.test(d.querySelector(".prof-note").textContent));
+T("generatore: controlla ingredienti e fonti proteiche del giorno", /dayKeys/.test(html)&&/dayProtein/.test(html)&&/varietyKeys/.test(html));
+T("generatore: penalizza ingredienti già frequenti nella settimana", /weekKeys/.test(html)&&/Math\.pow\(0\.55/.test(html));
+
 console.log("\nRISULTATO: "+pass+" ok, "+fail+" falliti");
 process.exit(fail?1:0);
 },800);

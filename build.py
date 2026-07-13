@@ -5,10 +5,10 @@
    Eseguire SEMPRE dopo ogni modifica alla build personale."""
 s = open('la-nostra-cucina.html', encoding='utf-8').read()
 w = s.replace('var PERSONAL=true;', 'var PERSONAL=false;')
-w = w.replace('var PROF_FIXED={r:{dob:"1980-02-21",h:175,w:74,goal:"ricomp"},g:{dob:"1990-04-16",h:185,w:86,goal:"cut"}};',
-              'var PROF_FIXED={r:{goal:"ricomp"},g:{goal:"cut"}};')
+w = w.replace('var PROF_FIXED={r:{dob:"1980-02-21",h:175,w:74,sex:"m",af:1.4,goal:"ricomp"},g:{dob:"1990-04-16",h:185,w:86,sex:"m",af:1.4,goal:"cut"}};',
+              'var PROF_FIXED={r:{af:1.2,goal:"ricomp"},g:{af:1.2,goal:"cut"}};')
 w = w.replace('''    if(!pr.dob){ var fx=PROF_FIXED[k];
-      pr.dob=fx.dob; pr.h=pr.h||fx.h; pr.goal=pr.goal||fx.goal;
+      pr.dob=fx.dob; pr.h=pr.h||fx.h; pr.sex=pr.sex||fx.sex; pr.af=pr.af||fx.af; pr.goal=pr.goal||fx.goal;
       pr.w=fx.w;
       var hh=state.whist&&state.whist[k]; if(hh&&(!hh.length||hh[hh.length-1].w!==pr.w)) hh.push({d:(new Date()).toISOString().slice(0,10),w:pr.w});
     }''', '    if(!pr.goal){ pr.goal=PROF_FIXED[k].goal; }')
@@ -30,9 +30,12 @@ checked_replace('La parmigiana della nonna di Persona 2', 'La parmigiana di fami
 checked_replace('porzioni tue / di Persona 2', 'porzioni Persona 1 / Persona 2')
 checked_replace('porzioni tue e di Persona 2', 'porzioni di Persona 1 e Persona 2')
 checked_replace('dose tua | dose Persona 2', 'dose Persona 1 | dose Persona 2')
+checked_replace('Si parte per la Francia!', 'Modalità trasferta')
+checked_replace('tra Cagliari e Kyoto', 'tra Mediterraneo e Giappone')
 assert 'var PERSONAL=false;' in w, 'flag PERSONAL non convertito'
 assert '1980' not in w and '1990-04' not in w, 'DATI PERSONALI RESIDUI NELLA BUILD WEB'
 assert 'Roberto' not in w and 'Gigi' not in w, 'NOMI PERSONALI RESIDUI NELLA BUILD WEB'
+assert 'Cagliari' not in w and 'Francia' not in w, 'LUOGHI PERSONALI RESIDUI NELLA BUILD WEB'
 open('index.html', 'w', encoding='utf-8').write(w)
 q = open('qa.js', encoding='utf-8').read().replace('la-nostra-cucina.html', 'index.html')
 open('qa-web.js', 'w', encoding='utf-8').write(q)

@@ -48,3 +48,10 @@ si è già nella Home, riducendo sovrapposizioni e ridondanze.
 **Ciclo v42 — versione pubblica neutra.** La build pubblica sostituisce ogni nome personale con
 “Persona 1” e “Persona 2” e usa testi generici per feedback, dosi ed esempi. La build personale
 continua a mostrare Roberto e Gigi.
+
+**Ciclo v45 — profili e varietà nutrizionale.** Il calcolo Mifflin–St Jeor distingue uomo e
+donna, l’attività quotidiana è selezionabile e resta separata dagli allenamenti aggiunti giorno
+per giorno. Gli obiettivi dichiarano chiaramente la variazione calorica; una nota protegge l’uso
+in caso di diabete e altre condizioni cliniche senza inventare carboidrati o indicazioni
+terapeutiche. Il generatore penalizza fonti proteiche e ingredienti principali già presenti
+nello stesso giorno o troppo frequenti nella settimana.
